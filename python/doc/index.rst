@@ -1,7 +1,7 @@
 
 ..
     ================================
-    XON: eXtensible Object Notation
+    AXON: An eXtensible Object Notation
     ================================
 
 .. Contents:
