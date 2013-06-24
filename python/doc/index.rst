@@ -155,10 +155,10 @@ Python axon library
 
 There are introductory `IPython` notebooks:
 
-* `Tutorial <http://nbviewer.ipython.org/urls/raw.github.com/intellimath/axon_tutorials/master/axon_tutorial.ipynb>`_
-* `Examples <http://nbviewer.ipython.org/urls/raw.github.com/intellimath/axon_tutorials/master/axon_examples.ipynb>`_
-* `Patterns <http://nbviewer.ipython.org/urls/raw.github.com/intellimath/axon_tutorials/master/axon_patterns.ipynb>`_
-* `Syntax <http://nbviewer.ipython.org/urls/raw.github.com/intellimath/axon_tutorials/master/axon_syntax.ipynb>`_
+* `Tutorial <http://nbviewer.ipython.org/url/intellimath.bitbucket.org/axon/notebooks/axon_tutorial.ipynb>`_
+* `Examples <http://nbviewer.ipython.org/url/intellimath.bitbucket.org/axon/notebooks/axon_examples.ipynb>`_
+* `Patterns <http://nbviewer.ipython.org/url/intellimath.bitbucket.org/axon/notebooks/axon_patterns.ipynb>`_
+* `Syntax <http://nbviewer.ipython.org/url/intellimath.bitbucket.org/axon/notebooks/axon_syntax.ipynb>`_
 
 API Reference
 -------------
