@@ -1,8 +1,8 @@
 
 ..
-    ================================
-    AXON: An eXtensible Object Notation
-    ================================
+    =================================
+    AXON: An eXtended Object Notation
+    =================================
 
 .. Contents:
 ..
@@ -18,7 +18,7 @@
 .. * :ref:`search`
 
 
-An eXtensible Object Notation (``AXON``) is simple text based format for interchanging
+An eXtended Object Notation (``AXON``) is simple text based format for interchanging
 objects, documents and data.
 Simple language constructions mainly borrowed from ``JSON``,
 ``TextFormat`` of ``Google Protocol Buffers`` and ``Python``'s indented statement syntax.
@@ -58,7 +58,7 @@ formatted form in both `C` and `Python` style for ease of developers.
 Expression form::
 
     axon {
-        name: "An eXtensible Object Notation"
+        name: "An eXtended Object Notation"
         short_name: "xON"
         python_library: "xon"
         atomic_values {
@@ -106,10 +106,10 @@ Expression form::
 
 Statement form::
 
-    xon:
-        name: "Simple Object Notation"
-        short_name: "SimpleON"
-        python_library: "xon"
+    axon:
+        name: "An eXtended Object Notation"
+        short_name: "AXON"
+        python_library: "axon"
         atomic_values:
             int: [0 -1 17]
             float: [3.1428 1.5e-17]
