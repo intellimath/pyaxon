@@ -41,7 +41,7 @@ if to_cythonize:
 setup(
     name = 'axon',
     version = '0.5',
-    description = 'Python library for An eXtensible Object Notation (AXON)',
+    description = 'Python library for An eXtended Object Notation (AXON)',
     author = 'Zaur Shibzukhov',
     author_email="szport@gmail.com",
     maintainer="Zaur Shibzukhov",

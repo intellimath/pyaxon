@@ -17,6 +17,8 @@
 .. * :ref:`modindex`
 .. * :ref:`search`
 
+What is AXON
+------------
 
 An eXtended Object Notation (``AXON``) is simple text based format for interchanging
 objects, documents and data.
