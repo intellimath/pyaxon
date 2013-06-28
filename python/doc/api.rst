@@ -7,9 +7,8 @@ API
 
 .. module:: axon
 
-This part of the documentation covers all the interfaces of *xon*.  For
-parts where *xon* depends on external libraries, we document the most
-important right here and provide links to the canonical documentation.
+This part of the documentation covers interfaces of *axon*.
+
 
 -------
 Classes
@@ -85,5 +84,5 @@ Exceptions
 
 .. class:: LoadExit
 
-   Exception for exit load SimpleON file or text.
+   Exception for exit load AXON representation from file or text.
 
