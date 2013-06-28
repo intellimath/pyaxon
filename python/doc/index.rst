@@ -151,7 +151,7 @@ Statement form::
 
 
 Python pyaxon library
--------------------
+---------------------
 
 `pyaxon <https://pypi.python.org/pypi/pyaxon>`_ is an `MIT Licensed <http://opensource.org/licenses/MIT>`_
 `python <http://www.python.org>`_ library for ``AXON``.
