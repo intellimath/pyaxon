@@ -28,10 +28,10 @@ def display(text, pretty=1, nsize=3, sorted=1):
     Display AXON text in formatted form for easy read.
 
     :param text:
-       `unicode` SimpleON text
+       `unicode` AXON text
 
     :returns:
-        formatted `unicode` SimpleON text
+        formatted `unicode` AXON text
     '''
     val = loads(text)
     print(dumps(val, pretty=pretty, crossref=True, nsize=nsize, sorted=1))
@@ -65,7 +65,7 @@ def dumps(val, pretty=0, crossref=False, quote=False, nsize=0, sorted=1):
         * False - do not use crosserefernce support (default)
 
     :returns:
-        unicode string of SimpleON representation of `val`.
+        unicode string of AXON representation of `val`.
     '''
     try:
         from io import StringIO
@@ -99,7 +99,7 @@ def loads(text, mode="safe", errto=None, json=False):
     Load values from unicode text.
 
     :param text:
-        `unicode` text in SimpleON.
+        `unicode` text in AXON.
 
     :param mode:
         specifies the method of building python objects for complex values
@@ -122,7 +122,7 @@ def iloads(text, mode="safe", errto=None, json=False):
     Iterative loading values from unicode text.
 
     :param text:
-        unicode text in SimpleON.
+        unicode text in AXON.
 
     :param mode:
         specifies the method of building python objects for complex values
@@ -145,7 +145,7 @@ def iloads(text, mode="safe", errto=None, json=False):
 
 def load(fd, mode="safe", errto=None, encoding='utf-8', json=False):
     '''
-    Load object from unicode text in SimpleON.
+    Load object from unicode text in AXON.
 
     :param fd:
         input file name of file object opening as TextIO/StringIO
