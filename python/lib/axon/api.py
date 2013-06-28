@@ -25,7 +25,7 @@ class Reader(object):
 
 def display(text, pretty=1, nsize=3, sorted=1):
     '''
-    Display SimpleON text in formatted form for easy read.
+    Display AXON text in formatted form for easy read.
 
     :param text:
        `unicode` SimpleON text
@@ -50,7 +50,7 @@ def dumps(val, pretty=0, crossref=False, quote=False, nsize=0, sorted=1):
 
     :param type_reducers:
        dictionary containing callables, which returns reduced data for
-       representation in SimpleON.
+       representation in AXON.
 
     :param pretty:
         flag indicating pretty dumping:
