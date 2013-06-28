@@ -48,7 +48,7 @@ Creation of ``AXON`` had following objectives:
 
 * Extension of ``JSON`` for native support of named/taged data structures
   (typed complex data, elements of documents etc.) in order to act in
-  cases where ``XML`` is more suitable then ``JSON``.
+  cases where ``XML`` is more suitable than ``JSON``.
 
 * Removing ``','`` as mandatory character-separator for items in containers.
 
@@ -61,8 +61,8 @@ Expression form::
 
     axon {
         name: "An eXtended Object Notation"
-        short_name: "xON"
-        python_library: "xon"
+        short_name: "AXON"
+        python_library: "pyaxon"
         atomic_values {
             int: [0 -1 17]
             float: [3.1428 1.5e-17]
@@ -111,7 +111,7 @@ Statement form::
     axon:
         name: "An eXtended Object Notation"
         short_name: "AXON"
-        python_library: "axon"
+        python_library: "pyaxon"
         atomic_values:
             int: [0 -1 17]
             float: [3.1428 1.5e-17]
@@ -161,6 +161,8 @@ There are introductory `IPython` notebooks:
 * `Examples <http://nbviewer.ipython.org/url/intellimath.bitbucket.org/axon/notebooks/axon_examples.ipynb>`_
 * `Patterns <http://nbviewer.ipython.org/url/intellimath.bitbucket.org/axon/notebooks/axon_patterns.ipynb>`_
 * `Syntax <http://nbviewer.ipython.org/url/intellimath.bitbucket.org/axon/notebooks/axon_syntax.ipynb>`_
+
+``AXON`` repository is `here <https://bitbucket.org/intellimath/axon>`_.
 
 API Reference
 -------------

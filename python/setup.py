@@ -2,8 +2,8 @@
 
 from distutils.core import setup
 from distutils.extension import Extension
-from Cython.Build import cythonize
 
+from Cython.Build import cythonize
 from Cython.Compiler import Options
 Options.fast_fail = True
 Options.binding = False
@@ -13,33 +13,32 @@ import os
 ext_modules = [
     Extension(
         "axon._objects",
-        ["lib/axon/_objects.py"]
+        ["lib/axon/_objects.c"]
     ),
     Extension(
         "axon._loader",
-        ["lib/axon/_loader.py"]
+        ["lib/axon/_loader.c"]
     ),
     Extension(
         "axon._dumper",
-        ["lib/axon/_dumper.py"]
+        ["lib/axon/_dumper.c"]
     ),
 ]
 
-to_cythonize = 1
-# for ext in ext_modules:
-#     for i, source in enumerate(ext.sources):
-#         print '***', source
-#         if source.endswith('.py'):
-#             c_source = source.replace('.py', '.c')
-#             if os.path.exists(c_source):
-#                 ext.sources[i] = c_source
-#                 to_cythonize = 0
+ext_modules = cythonize([
+     'lib/_objects.py',
+     'lib/_loader.py',
+     'lib/_dumper.py'])
 
-if to_cythonize:
-    ext_modules = cythonize(ext_modules)
+long_description = '''\
+Python library for `AXON <http://axon.intellimath.org>`_.
+
+An eXtended Object Notation (``AXON``) is simple text based format for interchanging
+objects, documents and data.
+'''
 
 setup(
-    name = 'axon',
+    name = 'pyaxon',
     version = '0.5',
     description = 'Python library for An eXtended Object Notation (AXON)',
     author = 'Zaur Shibzukhov',
@@ -50,25 +49,19 @@ setup(
     ext_modules = ext_modules,
     package_dir = {'': 'lib'},
     packages = ['axon', 'axon.test', 'axon.test.benchmark'],
-    long_description = """\
-Python library for An eXtended Object Notation (AXON).
-
-AXON is simple text based format for interchanging objects,
-documents and almost any data.
-
-This is reference implementation for AXON. It's reasonable fast.""",
+    url = 'http://axon.intellimath.org',
+    long_description = long_description,
     classifiers = [
-        'Beta',
+        'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
         'Intended Audience :: Information Technology',
-        'License :: OSI Approved :: BSD License',
+        'License :: OSI Approved :: MIT License',
         'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.2',
         'Programming Language :: Python :: 3.3',
         'Operating System :: OS Independent',
-        'Topic :: Text Processing :: Serialization',
         'Topic :: Software Development :: Libraries :: Python Modules'
     ],
 )

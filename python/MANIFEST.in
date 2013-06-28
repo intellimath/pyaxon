@@ -1,0 +1,9 @@
+include setup.py
+include test_all.py
+include lib/axon/*.py
+exclude lib/axon/_*.py
+include lib/axon/__init__.py
+include lib/axon/*.c
+include lib/axon/*.h
+include lib/axon/test/*.py
+include lib/axon/test/benchmark/*.py
