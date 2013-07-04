@@ -162,6 +162,7 @@ There are introductory `IPython` notebooks:
 * `Examples <http://nbviewer.ipython.org/url/intellimath.bitbucket.org/axon/notebooks/axon_examples.ipynb>`_
 * `Patterns <http://nbviewer.ipython.org/url/intellimath.bitbucket.org/axon/notebooks/axon_patterns.ipynb>`_
 * `Syntax <http://nbviewer.ipython.org/url/intellimath.bitbucket.org/axon/notebooks/axon_syntax.ipynb>`_
+* `Tutorial <http://nbviewer.ipython.org/url/intellimath.bitbucket.org/axon/notebooks/axon_what.ipynb>`_
 
 Repository for ``AXON`` and ``pyaxon`` is `here <https://bitbucket.org/intellimath/axon>`_.
 
