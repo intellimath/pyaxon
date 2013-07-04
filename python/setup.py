@@ -10,6 +10,7 @@ Options.binding = False
 
 import os
 
+'''
 ext_modules = [
     Extension(
         "axon._objects",
@@ -24,6 +25,7 @@ ext_modules = [
         ["lib/axon/_dumper.py"]
     ),
 ]
+'''
 
 ext_modules = cythonize([
      'lib/axon/_objects.py',
