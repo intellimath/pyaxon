@@ -405,6 +405,15 @@ class Mapping:
         self.name = c_as_name(name)
         self.mapping = c_as_dict(mapping)
     #
+    def get(self, name, default=undef):
+        return self.mapping.get(name, default)
+    #
+    def set(self, name, val):
+        self.mapping[name] = val
+    #
+    def update(self, map):
+        self.mapping.update(map)
+    #
     def __contains__(self, name):
         return name in self.mapping
     #
@@ -478,6 +487,21 @@ class Element:
     def __contains__(self, name):
         return name in self.mapping
     #
+    def get(self, name, default=undef):
+        return self.mapping.get(name, default)
+    #
+    def set(self, name, val):
+        self.mapping[name] = val
+    #
+    def update(self, map):
+        self.mapping.update(map)
+    #
+    def append(self, sub):
+        self.sequence.append(sub)
+    #
+    def extend(self, subs):
+        self.sequence.extend(subs)
+    #
     def __repr__(self):
         return  'element(' + \
                 ', '.join([repr(x) for x in (self.name, self.mapping, self.sequence) if x]) + ')'
@@ -545,6 +569,21 @@ class Instance:
     #
     def __setitem__(self, index, val):
         self.sequence[index] = val
+    #
+    def get(self, name, default=undef):
+        return self.mapping.get(name, default)
+    #
+    def set(self, name, val):
+        self.mapping[name] = val
+    #
+    def update(self, map):
+        self.mapping.update(map)
+    #
+    def append(self, sub):
+        self.sequence.append(sub)
+    #
+    def extend(self, subs):
+        self.sequence.extend(subs)
     #
     def __repr__(self):
         return  'instance(' + \

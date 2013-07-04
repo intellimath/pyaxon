@@ -13,22 +13,22 @@ import os
 ext_modules = [
     Extension(
         "axon._objects",
-        ["lib/axon/_objects.c"]
+        ["lib/axon/_objects.py"]
     ),
     Extension(
         "axon._loader",
-        ["lib/axon/_loader.c"]
+        ["lib/axon/_loader.py"]
     ),
     Extension(
         "axon._dumper",
-        ["lib/axon/_dumper.c"]
+        ["lib/axon/_dumper.py"]
     ),
 ]
 
 ext_modules = cythonize([
-     'lib/_objects.py',
-     'lib/_loader.py',
-     'lib/_dumper.py'])
+     'lib/axon/_objects.py',
+     'lib/axon/_loader.py',
+     'lib/axon/_dumper.py'])
 
 long_description = '''\
 Python library for `AXON <http://axon.intellimath.org>`_.
