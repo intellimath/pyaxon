@@ -3,14 +3,14 @@
 from distutils.core import setup
 from distutils.extension import Extension
 
-from Cython.Build import cythonize
+from Cython.Distutils import build_ext
+#from Cython.Build import cythonize
 from Cython.Compiler import Options
 Options.fast_fail = True
 Options.binding = False
 
 import os
 
-'''
 ext_modules = [
     Extension(
         "axon._objects",
@@ -25,12 +25,12 @@ ext_modules = [
         ["lib/axon/_dumper.py"]
     ),
 ]
-'''
 
-ext_modules = cythonize([
-     'lib/axon/_objects.py',
-     'lib/axon/_loader.py',
-     'lib/axon/_dumper.py'])
+
+#ext_modules = cythonize([
+#     'lib/axon/_objects.py',
+#     'lib/axon/_loader.py',
+#     'lib/axon/_dumper.py'])
 
 long_description = '''\
 Python library for `AXON <http://axon.intellimath.org>`_.
@@ -48,6 +48,7 @@ setup(
     maintainer="Zaur Shibzukhov",
     maintainer_email="szport@gmail.com",
     license="MIT License",
+    cmdclass = {'build_ext': build_ext},
     ext_modules = ext_modules,
     package_dir = {'': 'lib'},
     packages = ['axon', 'axon.test', 'axon.test.benchmark'],

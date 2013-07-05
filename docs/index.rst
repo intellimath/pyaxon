@@ -164,7 +164,7 @@ There are introductory `IPython` notebooks:
 * `Syntax <http://nbviewer.ipython.org/url/intellimath.bitbucket.org/axon/notebooks/axon_syntax.ipynb>`_
 * `What & Why <http://nbviewer.ipython.org/url/intellimath.bitbucket.org/axon/notebooks/axon_what.ipynb>`_
 
-Repository for ``AXON`` and ``pyaxon`` is `here <https://bitbucket.org/intellimath/axon>`_.
+Repository for ``AXON`` and ``pyaxon`` is `here <https://bitbucket.org/intellimath/pyaxon>`_.
 
 API Reference
 -------------
