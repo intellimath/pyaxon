@@ -2,23 +2,18 @@
 from __future__ import print_function
 
 import json
-import xon
+import axon
 import random
 import time
-import unittest
-from xon.types import unicode_type
+from axon.types import unicode_type
 import gc
 
 def random_string(n):
     text = ''.join(chr(ord('a')+random.randint(1,20)) for i in range(20))
-    text = xon.as_unicode(text)
-    #assert type(text) is unicode_type
+    text = axon.as_unicode(text)
     return text
 
-class SimpleONvsJSONTestCase(unittest.TestCase):
-
-    def setUp(self):
-        pass
+class AXONvsJSON:
 
     def test_vs_json_1(self):
         lst = []
@@ -38,13 +33,12 @@ class SimpleONvsJSONTestCase(unittest.TestCase):
                 random_string(8), random_string(32),
             ])
 
-        xon_text = xon.dumps(lst)
-        ldr = xon.iloads(xon_text)
+        axon_text = axon.dumps(lst)
         gc.collect()
         gc.disable()
         t0 = time.time()
-        v = ldr.load()
-        dt_xon = time.time() - t0
+        v = axon.loads(axon_text)
+        dt_axon = time.time() - t0
         gc.enable()
 
         json_text = json.dumps(lst)
@@ -55,9 +49,7 @@ class SimpleONvsJSONTestCase(unittest.TestCase):
         dt_json = time.time() - t0
         gc.enable()
 
-        print('\nxon:', dt_xon, 'json', dt_json)
-
-        #self.assertTrue(dt_xon < dt_json)
+        print('axon:', dt_axon, 'json', dt_json)
 
     def test_vs_json_2(self):
         lst = []
@@ -77,13 +69,12 @@ class SimpleONvsJSONTestCase(unittest.TestCase):
                 random_string(8): random_string(32),
             })
 
-        xon_text = xon.dumps(lst)
-        ldr = xon.iloads(xon_text)
+        axon_text = axon.dumps(lst)
         gc.collect()
         gc.disable()
         t0 = time.time()
-        v = ldr.load()
-        dt_xon = time.time() - t0
+        v = axon.loads(axon_text)
+        dt_axon = time.time() - t0
         gc.enable()
 
         json_text = json.dumps(lst)
@@ -94,9 +85,7 @@ class SimpleONvsJSONTestCase(unittest.TestCase):
         dt_json = time.time() - t0
         gc.enable()
 
-        print('\nxon:', dt_xon, 'json', dt_json)
-
-        #self.assertTrue(dt_xon < dt_json)
+        print('axon:', dt_axon, 'json', dt_json)
 
     def test_vs_json_3(self):
         d = {}
@@ -116,14 +105,13 @@ class SimpleONvsJSONTestCase(unittest.TestCase):
                 })
             d[random_string(8)] = lst
 
-        xon_text = xon.dumps([d])
-        #print(xon_text)
-        ldr = xon.iloads(xon_text)
+        axon_text = axon.dumps([d])
+        #print(axon_text)
         gc.collect()
         gc.disable()
         t0 = time.time()
-        v = ldr.load()
-        dt_xon = time.time() - t0
+        v = axon.loads(axon_text)
+        dt_axon = time.time() - t0
         gc.enable()
 
         json_text = json.dumps(d)
@@ -134,9 +122,7 @@ class SimpleONvsJSONTestCase(unittest.TestCase):
         dt_json = time.time() - t0
         gc.enable()
 
-        print('\nxon:', dt_xon, 'json', dt_json)
-
-        #self.assertTrue(dt_xon < dt_json)
+        print('axon:', dt_axon, 'json', dt_json)
 
     def test_vs_json_4(self):
         lst = []
@@ -159,14 +145,13 @@ class SimpleONvsJSONTestCase(unittest.TestCase):
                 random_string(8), random_string(32),
             ])
 
-        xon_text = xon.dumps(lst)
-        #print(xon_text)
-        ldr = xon.iloads(xon_text)
+        axon_text = axon.dumps(lst)
+        #print(axon_text)
         gc.collect()
         gc.disable()
         t0 = time.time()
-        v = ldr.load()
-        dt_xon = time.time() - t0
+        v = axon.loads(axon_text)
+        dt_axon = time.time() - t0
         gc.enable()
 
         json_text = json.dumps(lst)
@@ -177,9 +162,7 @@ class SimpleONvsJSONTestCase(unittest.TestCase):
         dt_json = time.time() - t0
         gc.enable()
 
-        print('\nxon:', dt_xon, 'json', dt_json)
-
-        #self.assertTrue(dt_xon < dt_json)
+        print('axon:', dt_axon, 'json', dt_json)
 
     def test_vs_json_5(self):
         lst = []
@@ -199,13 +182,13 @@ class SimpleONvsJSONTestCase(unittest.TestCase):
                 random_string(32), random_string(32),
             ])
 
-        xon_text = xon.dumps(lst)
-        ldr = xon.iloads(xon_text)
+        axon_text = axon.dumps(lst)
+        ldr = axon.iloads(axon_text)
         gc.collect()
         gc.disable()
         t0 = time.time()
-        v = ldr.load()
-        dt_xon = time.time() - t0
+        v = axon.loads(axon_text)
+        dt_axon = time.time() - t0
         gc.enable()
 
         json_text = json.dumps(lst)
@@ -216,9 +199,7 @@ class SimpleONvsJSONTestCase(unittest.TestCase):
         dt_json = time.time() - t0
         gc.enable()
 
-        print('\nxon:', dt_xon, 'json', dt_json)
-
-        #self.assertTrue(dt_xon < dt_json)
+        print('axon:', dt_axon, 'json', dt_json)
 
     def test_vs_json_6(self):
         lst = []
@@ -239,13 +220,13 @@ class SimpleONvsJSONTestCase(unittest.TestCase):
             ])
         lst = [lst]
 
-        xon_text = xon.dumps(lst)
-        ldr = xon.iloads(xon_text)
+        axon_text = axon.dumps(lst)
+        ldr = axon.iloads(axon_text)
         gc.collect()
         gc.disable()
         t0 = time.time()
-        v = ldr.load()
-        dt_xon = time.time() - t0
+        v = axon.loads(axon_text)
+        dt_axon = time.time() - t0
         gc.enable()
 
         json_text = json.dumps(lst)
@@ -256,9 +237,7 @@ class SimpleONvsJSONTestCase(unittest.TestCase):
         dt_json = time.time() - t0
         gc.enable()
 
-        print('\nxon:', dt_xon, 'json', dt_json)
-
-        #self.assertTrue(dt_xon < dt_json)
+        print('axon:', dt_axon, 'json', dt_json)
 
     def test_vs_json_7(self):
         lst = []
@@ -281,13 +260,12 @@ class SimpleONvsJSONTestCase(unittest.TestCase):
             ])
         lst = [lst]
 
-        xon_text = xon.dumps(lst)
-        ldr = xon.iloads(xon_text)
+        axon_text = axon.dumps(lst)
         gc.collect()
         gc.disable()
         t0 = time.time()
-        v = ldr.load()
-        dt_xon = time.time() - t0
+        v = axon.loads(axon_text)
+        dt_axon = time.time() - t0
         gc.enable()
 
         json_text = json.dumps(lst)
@@ -298,16 +276,13 @@ class SimpleONvsJSONTestCase(unittest.TestCase):
         dt_json = time.time() - t0
         gc.enable()
 
-        print('\nxon:', dt_xon, 'json', dt_json)
+        print('axon:', dt_axon, 'json', dt_json)
 
-        #self.assertTrue(dt_xon < dt_json)
 
-def run():
-    inst = SimpleONvsJSONTestCase()
+def test_json():
+    inst = AXONvsJSON()
     inst.test_vs_json_1()
     inst.test_vs_json_2()
     inst.test_vs_json_3()
     inst.test_vs_json_4()
     inst.test_vs_json_5()
-
-#run()

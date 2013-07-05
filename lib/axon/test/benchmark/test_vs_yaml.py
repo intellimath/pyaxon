@@ -4,17 +4,13 @@ from __future__ import print_function
 import yaml
 import random
 import time
-import unittest
-import xon
+import axon
 
 def random_string(n):
     text = ''.join([chr(ord('a')+random.randint(1,20)) for i in range(20)])
-    return xon.as_unicode(text)
+    return axon.as_unicode(text)
 
-class SimpleONvsYAMLTestCase(unittest.TestCase):
-
-    def setUp(self):
-        pass
+class AXONvsYAML:
 
     def test_vs_yaml_1(self):
         lst = []
@@ -35,14 +31,12 @@ class SimpleONvsYAMLTestCase(unittest.TestCase):
         v = yaml.load(yaml_text, Loader=yaml.CLoader)
         dt_yaml = time.time() - t0
 
-        xon_text = xon.dumps([lst], quote=True, pretty=False)
+        axon_text = axon.dumps(lst, pretty=False)
         t0 = time.time()
-        v = xon.loads(xon_text)
-        dt_xon = time.time() - t0
+        v = axon.loads(axon_text)
+        dt_axon = time.time() - t0
 
-        print('\nxon:', dt_xon, 'yaml', dt_yaml)
-
-        self.assertTrue(dt_xon < dt_yaml)
+        print('axon:', dt_axon, 'yaml', dt_yaml)
 
     def test_vs_yaml_2(self):
         d = {}
@@ -63,21 +57,18 @@ class SimpleONvsYAMLTestCase(unittest.TestCase):
         v = yaml.load(yaml_text, Loader=yaml.CLoader)
         dt_yaml = time.time() - t0
 
-        xon_text = xon.dumps([d], quote=True, pretty=False)
-        #print(xon_text)
+        axon_text = axon.dumps([d], pretty=False)
+        #print(axon_text)
         t0 = time.time()
-        v = xon.loads(xon_text)
-        dt_xon = time.time() - t0
+        v = axon.loads(axon_text)
+        dt_axon = time.time() - t0
 
-        print('\nxon:', dt_xon, 'yaml', dt_yaml)
+        print('axon:', dt_axon, 'yaml', dt_yaml)
 
-        self.assertTrue(dt_xon < dt_yaml)
-
-def suite():
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(SimpleONvsYAMLTestCase))
-    return suite
-
+def test_yaml():
+    inst = AXONvsYAML()
+    inst.test_vs_yaml_1()
+    inst.test_vs_yaml_2()
 
 
 
