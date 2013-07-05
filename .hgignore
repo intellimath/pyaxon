@@ -3,9 +3,9 @@ syntax: glob
 *.pyc
 *.pyo
 .DS_Store
-python/doc/_build
-python/build
-python/dist
+docs/_build
+build
+dist
 MANIFEST
 __pycache__
 *.egg-info
