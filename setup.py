@@ -59,7 +59,7 @@ for ext_mod in ext_modules:
 long_description = '''\
 A `MIT licensed <http://opensource.org/licenses/MIT>`_ Python library for `AXON <http://axon.intellimath.org>`_.
 
-An eXtended Object Notation (``AXON``) is simple text based format for interchanging
+An eXtended Object Notation (``AXON``) is a simple text based format for interchanging of
 objects, documents and data.
 '''
 
