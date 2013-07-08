@@ -20,14 +20,15 @@
 What is AXON
 ------------
 
-An eXtended Object Notation (``AXON``) is simple text based format for interchanging
+An eXtended Object Notation (``AXON``) is a simple text based format for interchanging of
 objects, documents and data.
-Simple language constructions mainly borrowed from ``JSON``,
-``TextFormat`` of ``Google Protocol Buffers`` and ``Python``'s indented statement syntax.
 
-``AXON`` is designed as text based language for streaming data exchange
-in first place.
-It was tried to learn lessons from the experience of
+Simple language constructions was mainly borrowed from ``JSON``, ``TextFormat`` of ``Google Protocol Buffers``
+and ``Python``'s indented statement syntax.
+
+``AXON`` is designed as text based language for data exchange in first place.
+
+It tried to learn lessons from the experience of
 ``XML``, ``JSON``, ``YAML`` and ``Google Protocol Buffers``.
 
 * ``AXON`` is easy to understand, read and write.
@@ -41,7 +42,7 @@ It was tried to learn lessons from the experience of
 
 Creation of ``AXON`` had following objectives:
 
-* Overcoming lack of support in ``JSON`` of date/time, decimal and binary data.
+* Overcoming lack of support of date/time, decimal and binary data in ``JSON``.
 
 * Overcoming inability to represent in ``JSON`` complex data
   with cross-references natively.
@@ -57,7 +58,7 @@ Creation of ``AXON`` had following objectives:
 ``AXON`` is designed as text based format that has compact form and
 formatted form in both `C` and `Python` style for ease of developers.
 
-Expression form::
+Here is an short example of AXON message in expression form::
 
     axon {
         name: "An eXtended Object Notation"
@@ -106,7 +107,7 @@ Expression form::
     }
 
 
-Statement form::
+and in statement form::
 
     axon:
         name: "An eXtended Object Notation"
@@ -173,7 +174,6 @@ API Reference
    :maxdepth: 2
 
    api
-
 
 .. raw:: html
 

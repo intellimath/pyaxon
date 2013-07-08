@@ -3,34 +3,53 @@
 from distutils.core import setup
 from distutils.extension import Extension
 
-from Cython.Distutils import build_ext
-#from Cython.Build import cythonize
+try:
+    from Cython.Distutils import build_ext
+except ImportError:
+    use_cython = False
+else:
+    use_cython = True
+
 from Cython.Compiler import Options
 Options.fast_fail = True
 Options.binding = False
 
 import os
 
-ext_modules = [
-    Extension(
-        "axon._objects",
-        ["lib/axon/_objects.py"]
-    ),
-    Extension(
-        "axon._loader",
-        ["lib/axon/_loader.py"]
-    ),
-    Extension(
-        "axon._dumper",
-        ["lib/axon/_dumper.py"]
-    ),
-]
+if use_cython:
+    ext_modules = [
+        Extension(
+            "axon._objects",
+            sources=["lib/axon/_objects.py"],
+            depends=["lib/axon/_objects.pxd"]
+        ),
+        Extension(
+            "axon._loader",
+            sources=["lib/axon/_loader.py"],
+            depends=["lib/axon/_loader.pxd"]
+        ),
+        Extension(
+            "axon._dumper",
+            sources=["lib/axon/_dumper.py"],
+            depends=["lib/axon/_dumper.pxd"]
+        ),
+    ]
+else:
+    ext_modules = [
+        Extension(
+            "axon._objects",
+            sources=["lib/axon/_objects.c"]
+        ),
+        Extension(
+            "axon._loader",
+            sources=["lib/axon/_loader.c"],
+        ),
+        Extension(
+            "axon._dumper",
+            sources=["lib/axon/_dumper.c"]
+        ),
+    ]
 
-
-#ext_modules = cythonize([
-#     'lib/axon/_objects.py',
-#     'lib/axon/_loader.py',
-#     'lib/axon/_dumper.py'])
 
 long_description = '''\
 Python library for `AXON <http://axon.intellimath.org>`_.
