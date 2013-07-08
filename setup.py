@@ -50,9 +50,14 @@ else:
         ),
     ]
 
+for ext_mod in ext_modules:
+    for i, f in enumerate(ext_mod.sources):
+        if not os.path.exists(f) and f.endswith('.py'):
+            ext_mod.sources[i] = ext_mod.sources[i].replace('.py', '.c')
+            ext_mod.depends = []
 
 long_description = '''\
-Python library for `AXON <http://axon.intellimath.org>`_.
+A `MIT licensed <http://opensource.org/licenses/MIT>`_ Python library for `AXON <http://axon.intellimath.org>`_.
 
 An eXtended Object Notation (``AXON``) is simple text based format for interchanging
 objects, documents and data.
@@ -60,18 +65,19 @@ objects, documents and data.
 
 setup(
     name = 'pyaxon',
-    version = '0.5',
+    version = '0.5.1',
     description = 'Python library for An eXtended Object Notation (AXON)',
     author = 'Zaur Shibzukhov',
     author_email="szport@gmail.com",
-    maintainer="Zaur Shibzukhov",
-    maintainer_email="szport@gmail.com",
+    #maintainer="Zaur Shibzukhov",
+    #maintainer_email="szport@gmail.com",
     license="MIT License",
     cmdclass = {'build_ext': build_ext},
     ext_modules = ext_modules,
     package_dir = {'': 'lib'},
     packages = ['axon', 'axon.test', 'axon.test.benchmark'],
     url = 'http://axon.intellimath.org',
+    download_url = 'https://bitbucket.org/intellimath/pyaxon',
     long_description = long_description,
     classifiers = [
         'Development Status :: 4 - Beta',
