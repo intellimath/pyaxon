@@ -153,7 +153,11 @@ cdef set simple_types
 
 @cython.locals(name=unicode, pos0=cython.int, pos=cython.int, text=unicode,
                ch=Py_UCS4, is_qname=cython.bint)
-cdef unicode _dump_name(object ob, bint quote)
+cdef unicode _dump_name(object ob)
+
+@cython.locals(name=unicode, pos0=cython.int, pos=cython.int, text=unicode,
+               ch=Py_UCS4, is_qname=cython.bint)
+cdef unicode _dump_key(object ob)
 
 #ctypedef unicode *SimpleDumperFunction(object)
 

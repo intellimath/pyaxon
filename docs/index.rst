@@ -159,12 +159,12 @@ Python pyaxon library
 
 There are introductory `IPython` notebooks:
 
-* `Tutorial <http://nbviewer.ipython.org/url/intellimath.bitbucket.org/axon/notebooks/axon_tutorial.ipynb>`_
-* `Examples <http://nbviewer.ipython.org/url/intellimath.bitbucket.org/axon/notebooks/axon_examples.ipynb>`_
-* `Patterns <http://nbviewer.ipython.org/url/intellimath.bitbucket.org/axon/notebooks/axon_patterns.ipynb>`_
-* `Syntax <http://nbviewer.ipython.org/url/intellimath.bitbucket.org/axon/notebooks/axon_syntax.ipynb>`_
-* `What & Why <http://nbviewer.ipython.org/url/intellimath.bitbucket.org/axon/notebooks/axon_what.ipynb>`_
-* `Benchmarks <http://nbviewer.ipython.org/url/intellimath.bitbucket.org/axon/notebooks/axon_bench.ipynb>`_
+* `Tutorial <http://nbviewer.ipython.org/url/bitbucket.org/intellimath/pyaxon/raw/default/docs/notebooks/axon_tutorial.ipynb>`_
+* `Examples <http://nbviewer.ipython.org/url/bitbucket.org/intellimath/pyaxon/raw/default/docs/notebooks/axon_examples.ipynb>`_
+* `Patterns <http://nbviewer.ipython.org/url/bitbucket.org/intellimath/pyaxon/raw/default/docs/notebooks/axon_patterns.ipynb>`_
+* `Syntax <http://nbviewer.ipython.org/url/bitbucket.org/intellimath/pyaxon/raw/default/docs/notebooks/axon_syntax.ipynb>`_
+* `What & Why <http://nbviewer.ipython.org/url/bitbucket.org/intellimath/pyaxon/raw/default/docs/notebooks/axon_what.ipynb>`_
+* `Benchmarks <http://nbviewer.ipython.org/url/bitbucket.org/intellimath/pyaxon/raw/default/docs/notebooks/axon_bench.ipynb>`_
 
 Repository for ``AXON`` and ``pyaxon`` is `here <https://bitbucket.org/intellimath/pyaxon>`_.
 

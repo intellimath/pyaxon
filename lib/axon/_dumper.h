@@ -17,7 +17,7 @@ struct SimpleDumpers {
   PyObject *mapping;
 };
 
-/* "axon/_dumper.pxd":161
+/* "axon/_dumper.pxd":165
  * 
  * @cython.final
  * cdef public class Dumper[object Dumper, type DumperType]:             # <<<<<<<<<<<<<<

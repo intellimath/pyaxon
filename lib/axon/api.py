@@ -36,7 +36,7 @@ def display(text, pretty=1, nsize=3, sorted=1):
     val = loads(text)
     print(dumps(val, pretty=pretty, crossref=True, nsize=nsize, sorted=1))
 
-def dumps(val, pretty=0, crossref=False, quote=False, nsize=0, sorted=1):
+def dumps(val, pretty=0, crossref=False, nsize=0, sorted=1):
     '''
     Dump value into unicode text.
 
@@ -74,13 +74,13 @@ def dumps(val, pretty=0, crossref=False, quote=False, nsize=0, sorted=1):
 
     fd = StringIO('')
 
-    dumper = Dumper(fd, crossref, quote, pretty, nsize, sorted)
+    dumper = Dumper(fd, crossref, pretty, nsize, sorted)
     dumper.dump(val)
     v = fd.getvalue()
     fd.close()
     return v
 
-def dump(fpath, val, encoding='utf-8', pretty=0, crossref=False, quote=False, nsize=0, sorted=1):
+def dump(fpath, val, encoding='utf-8', pretty=0, crossref=False, nsize=0, sorted=1):
     '''\
     Same as :py:func:`dumps` but for dumping into a file.
 
@@ -90,7 +90,7 @@ def dump(fpath, val, encoding='utf-8', pretty=0, crossref=False, quote=False, ns
     For other parameters see :py:func:`dumps`.
     '''
     fd = open(fpath, mode='wt', encoding=encoding)
-    dumper = Dumper(fd, crossref, quote, pretty, nsize, sorted)
+    dumper = Dumper(fd, crossref, pretty, nsize, sorted)
     dumper.dump(val, pretty)
     fd.close()
 

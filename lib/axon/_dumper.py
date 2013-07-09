@@ -321,12 +321,12 @@ def dump_as_str(tp=None):
 # Dumping
 #
 
-def _dump_name(ob, quote):
+def _dump_name(ob):
     name = ob
     pos0 = 0
     pos = 0
     text = None
-    is_qname = quote
+    is_qname = 0
 
     n = len(name)
     while pos < n:
@@ -358,6 +358,43 @@ def _dump_name(ob, quote):
     else:
         return text
 
+def _dump_key(ob):
+    name = ob
+    pos0 = 0
+    pos = 0
+    text = None
+    is_qname = 0
+
+    n = len(name)
+    while pos < n:
+        ch = name[pos]
+        if ch.isalnum() or ch == '_' or ch == '-':
+            pos += 1
+        elif ch == '"':
+            if pos != pos0:
+                if text is None:
+                    text = name[pos0, pos]
+                else:
+                    text += name[pos0: pos]
+            text += '"'
+            pos += 1
+            pos0 = pos
+            is_qname = 1
+        else:
+            pos += 1
+            is_qname = 1
+
+    if pos != pos0:
+        if text is None:
+            text = name[pos0: pos]
+        else:
+            text += name[pos0: pos]
+
+    if is_qname:
+        return '"' + text + '"'
+    else:
+        return text
+
 _simple_types = {
     types.unicode_type, types.str_type, types.int_type, types.long_type,
     types.float_type, types.decimal_type, types.bool_type,
@@ -372,7 +409,7 @@ class Dumper:
     Dumper class
     '''
     #
-    def __init__(self, fd, crossref=False, quote=False, pretty=0, nsize=1, sorted=1):
+    def __init__(self, fd, crossref=0, pretty=0, nsize=1, sorted=1):
 
         self.max_size = 65000
         self.size = 0
@@ -381,8 +418,6 @@ class Dumper:
         self.crossref_set = None
         self.crossref_set2 = None
         self.crossref_dict = None
-
-        self.quote = 1 if quote else 0
 
         self.pretty = pretty
         #self.offset = '  '
@@ -529,7 +564,7 @@ class Dumper:
                 self.write(' ')
 
             text = c_as_unicode(k)
-            self.write(_dump_name(text, self.quote))
+            self.write(_dump_key(text))
             self.size += len(text)
 
             self.write(':')
@@ -549,7 +584,7 @@ class Dumper:
                 self.write(' ')
 
             text = c_as_unicode(k)
-            self.write(_dump_name(text, self.quote))
+            self.write(_dump_name(text))
             self.size += len(text)
 
             self.write(':')
@@ -622,7 +657,7 @@ class Dumper:
                 use_offset = 1
 
             text = c_as_unicode(k)
-            self.write(_dump_name(text, self.quote))
+            self.write(_dump_key(text))
             self.write(': ')
             self._pretty_dump(v, w, 0)
     #
@@ -642,7 +677,7 @@ class Dumper:
                 use_offset = 1
 
             text = c_as_unicode(k)
-            self.write(_dump_name(text, self.quote))
+            self.write(_dump_name(text))
             self.write(': ')
             self._pretty_dump(v, w, 0)
     #
@@ -755,7 +790,7 @@ class Dumper:
         else:
             is_collection = 0
 
-        self.write(_dump_name(name, self.quote))
+        self.write(_dump_name(name))
         self.size += len(name)
 
         if is_collection:
@@ -864,7 +899,7 @@ class Dumper:
         else:
             is_collection = 0
 
-        self.write(_dump_name(name, self.quote))
+        self.write(_dump_name(name))
 
         if is_collection:
             self.write('*')
