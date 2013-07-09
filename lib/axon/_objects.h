@@ -58,7 +58,7 @@ struct Attribute {
   PyObject *value;
 };
 
-/* "axon/_objects.pxd":156
+/* "axon/_objects.pxd":157
  * #
  * @cython.final
  * cdef public class Empty[type EmptyType, object EmptyObject]:             # <<<<<<<<<<<<<<
@@ -70,7 +70,7 @@ struct EmptyObject {
   PyObject *name;
 };
 
-/* "axon/_objects.pxd":163
+/* "axon/_objects.pxd":164
  * #
  * @cython.final
  * cdef public class Sequence[object SequenceObject, type SequenceType]:             # <<<<<<<<<<<<<<
@@ -83,7 +83,7 @@ struct SequenceObject {
   PyObject *sequence;
 };
 
-/* "axon/_objects.pxd":172
+/* "axon/_objects.pxd":173
  * #
  * @cython.final
  * cdef public class Collection[object CollectionObject, type CollectionType]:             # <<<<<<<<<<<<<<
@@ -96,7 +96,7 @@ struct CollectionObject {
   PyObject *sequence;
 };
 
-/* "axon/_objects.pxd":181
+/* "axon/_objects.pxd":182
  * #
  * @cython.final
  * cdef public class Mapping[object MappingObject, type MappingType]:             # <<<<<<<<<<<<<<
@@ -109,7 +109,7 @@ struct MappingObject {
   PyObject *mapping;
 };
 
-/* "axon/_objects.pxd":190
+/* "axon/_objects.pxd":191
  * #
  * @cython.final
  * cdef public class Element[object ElementObject, type ElementType]:             # <<<<<<<<<<<<<<
@@ -123,7 +123,7 @@ struct ElementObject {
   PyObject *sequence;
 };
 
-/* "axon/_objects.pxd":199
+/* "axon/_objects.pxd":200
  * #
  * @cython.final
  * cdef public class Instance[object InstanceObject, type InstanceType]:             # <<<<<<<<<<<<<<

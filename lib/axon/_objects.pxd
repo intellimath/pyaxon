@@ -147,6 +147,7 @@ cdef class Attrs(object):
     #
     cdef public dict mapping
 
+@cython.locals(attrs=Attrs)
 cdef object new_attrs(dict o)
 
 #

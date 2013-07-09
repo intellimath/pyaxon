@@ -229,8 +229,8 @@ class Attrs(object):
     def __getattr__(self, name):
         return self.mapping[name]
     #
-    def __setattr__(self, name, value):
-        self.mapping[name] = value
+    #def __setattr__(self, name, value):
+    #    self.mapping[name] = value
     #
     def __repr__(self):
         return repr(self.mapping)
