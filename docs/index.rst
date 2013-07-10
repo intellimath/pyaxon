@@ -23,13 +23,11 @@ What is AXON
 An eXtended Object Notation (``AXON``) is a simple text based format for interchanging of
 objects, documents and data.
 
-Simple language constructions was mainly borrowed from ``JSON``, ``TextFormat`` of ``Google Protocol Buffers``
-and ``Python``'s indented statement syntax.
+It tries to combine the best of `JSON <http://www.json.org>`_,
+`XML <http://www.w3.org/XML/>`_ and `YAML <http://www.yaml.org>`_.
+
 
 ``AXON`` is designed as text based language for data exchange in first place.
-
-It tried to learn lessons from the experience of
-``XML``, ``JSON``, ``YAML`` and ``Google Protocol Buffers``.
 
 * ``AXON`` is easy to understand, read and write.
 

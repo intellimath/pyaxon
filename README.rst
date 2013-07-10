@@ -5,6 +5,9 @@ pyaxon
 ``pyaxon`` is a python library for `AXON <http://axon.intellimath.org>`_ -
 An eXtended Object Notation - simple text based format for interchanging
 objects, documents and data.
+It tries to combine the best of `JSON <http://www.json.org>`_,
+`XML <http://www.w3.org/XML/>`_ and `YAML <http://www.yaml.org>`_.
+
 
 Features
 --------
