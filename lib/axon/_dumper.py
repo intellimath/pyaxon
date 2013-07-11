@@ -331,7 +331,7 @@ def _dump_name(ob):
     n = len(name)
     while pos < n:
         ch = name[pos]
-        if ch.isalnum() or ch == '_' or ch == '-':
+        if ch.isalnum() or ch == '_':
             pos += 1
         elif ch == "'":
             if pos != pos0:
@@ -368,7 +368,7 @@ def _dump_key(ob):
     n = len(name)
     while pos < n:
         ch = name[pos]
-        if ch.isalnum() or ch == '_' or ch == '-':
+        if ch.isalnum() or ch == '_':
             pos += 1
         elif ch == '"':
             if pos != pos0:
@@ -376,7 +376,7 @@ def _dump_key(ob):
                     text = name[pos0, pos]
                 else:
                     text += name[pos0: pos]
-            text += '"'
+            text += '\\"'
             pos += 1
             pos0 = pos
             is_qname = 1
