@@ -517,17 +517,17 @@ class Dumper:
                     return 0
 
             if otype is list:
-                if len(o) <= self.nsize and all([is_simple_type(self, v) for v in o]):
+                if self.nsize and len(o) <= self.nsize and all([is_simple_type(self, v) for v in o]):
                     self.dump_list(o)
                 else:
                     self.pretty_dump_list(o, new_offset, not use_offset)
             elif otype is dict:
-                if len(o) <= self.nsize and all([is_simple_type(self, v) for v in o]):
+                if self.nsize and len(o) <= self.nsize and all([is_simple_type(self, v) for v in o]):
                     self.dump_dict(o)
                 else:
                     self.pretty_dump_dict(o, new_offset, not use_offset)
             elif otype is tuple:
-                if len(o) <= self.nsize and all([is_simple_type(self, v) for v in o]):
+                if self.nsize and len(o) <= self.nsize and all([is_simple_type(self, v) for v in o]):
                     self.dump_tuple(o)
                 else:
                     self.pretty_dump_tuple(o, new_offset, not use_offset)
@@ -824,26 +824,26 @@ class Dumper:
 
             tp = type(item)
             if tp is dict:
-                if len(item) <= self.nsize and all(is_simple_type(self, x) for x in item.values()):
+                if self.nsize and len(item) <= self.nsize and all(is_simple_type(self, x) for x in item.values()):
                     self.write("\n")
                     self.write(offset1)
                     self._dump_attr_sequence(item)
                 else:
                     self._pretty_dump_attr_sequence(item, offset1, use_offset)
-            elif tp is tuple:
-                if len(item) <= self.nsize and all(is_simple_type(self, x) for x in item):
-                    self.write("\n")
-                    self.write(offset1)
-                    self._dump_tuple_sequence(item)
-                else:
-                    self._pretty_dump_tuple_sequence(item, offset1, use_offset)
             elif tp is list:
-                if len(item) <= self.nsize and all(is_simple_type(self, x) for x in item):
+                if self.nsize and len(item) <= self.nsize and all(is_simple_type(self, x) for x in item):
                     self.write("\n")
                     self.write(offset1)
                     self._dump_list_sequence(item)
                 else:
                     self._pretty_dump_list_sequence(item, offset1, use_offset)
+            elif tp is tuple:
+                if self.nsize and len(item) <= self.nsize and all(is_simple_type(self, x) for x in item):
+                    self.write("\n")
+                    self.write(offset1)
+                    self._dump_tuple_sequence(item)
+                else:
+                    self._pretty_dump_tuple_sequence(item, offset1, use_offset)
             else:
                 for v in item:
                     self.write('\n')
