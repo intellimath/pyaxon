@@ -1,8 +1,11 @@
 include setup.py
+include README.rst
 include test_all.py
+include test_benchmark.py
 include lib/axon/*.py
-exclude lib/axon/_*.py
-include lib/axon/__init__.py
+exclude lib/axon/_objects.py
+exclude lib/axon/_loader.py
+exclude lib/axon/_dumper.py
 include lib/axon/*.c
 include lib/axon/*.h
 include lib/axon/test/*.py

@@ -21,6 +21,13 @@ Features
 Releases
 --------
 
+0.5.2
+~~~~~
+
+1. Refactor setup.py so that .py sources of extensions dosn't installed.
+2. Ensuire that non-identifier attribute names and keys dumps as `"{name}"` and `"{key}"`.
+3. Add explicit flag (use_cython) in order to decide when to use cython compiler.
+
 0.5.1
 ~~~~~
 

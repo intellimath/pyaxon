@@ -1,40 +1,46 @@
 # coding: utf-8
 
 from distutils.core import setup
-from distutils.extension import Extension
 
-try:
-    from Cython.Distutils import build_ext
-except ImportError:
-    use_cython = False
-else:
-    use_cython = True
+from distutils.command.build_py import build_py as _build_py
 
-from Cython.Compiler import Options
-Options.fast_fail = True
-Options.binding = False
+class build_py(_build_py):
+    def find_package_modules(self, package, package_dir):
+        modules = _build_py.find_package_modules(self, package, package_dir)
+        py_ext_modules = []
+        for ext in self.distribution.ext_modules:
+            for src in ext.sources:
+                if src.endswith('.py'):
+                    py_ext_modules.append(src)
+        if py_ext_modules:
+            modules = [m for m in modules if m[2] not in py_ext_modules]
+        return modules
 
-import os
+use_cython = 1
 
 if use_cython:
+    from Cython.Distutils import Extension, build_ext
+    from Cython.Compiler import Options
+    Options.fast_fail = True
+    Options.binding = False
+
     ext_modules = [
         Extension(
             "axon._objects",
-            sources=["lib/axon/_objects.py"],
-            depends=["lib/axon/_objects.pxd"]
+            ["lib/axon/_objects.py"]
         ),
         Extension(
             "axon._loader",
-            sources=["lib/axon/_loader.py"],
-            depends=["lib/axon/_loader.pxd"]
+            ["lib/axon/_loader.py"]
         ),
         Extension(
             "axon._dumper",
-            sources=["lib/axon/_dumper.py"],
-            depends=["lib/axon/_dumper.pxd"]
+            ["lib/axon/_dumper.py"]
         ),
     ]
 else:
+    from distutils.command.build_ext import build_ext
+    from distutils.extension import Extension
     ext_modules = [
         Extension(
             "axon._objects",
@@ -50,29 +56,18 @@ else:
         ),
     ]
 
-for ext_mod in ext_modules:
-    for i, f in enumerate(ext_mod.sources):
-        if not os.path.exists(f) and f.endswith('.py'):
-            ext_mod.sources[i] = ext_mod.sources[i].replace('.py', '.c')
-            ext_mod.depends = []
-
-long_description = '''\
-A `MIT licensed <http://opensource.org/licenses/MIT>`_ Python library for `AXON <http://axon.intellimath.org>`_.
-
-An eXtended Object Notation (``AXON``) is a simple text based format for interchanging of
-objects, documents and data.
-'''
+long_description = open('README.rst').read()
 
 setup(
     name = 'pyaxon',
-    version = '0.5.1',
+    version = '0.5.2',
     description = 'Python library for An eXtended Object Notation (AXON)',
     author = 'Zaur Shibzukhov',
     author_email="szport@gmail.com",
     #maintainer="Zaur Shibzukhov",
     #maintainer_email="szport@gmail.com",
     license="MIT License",
-    cmdclass = {'build_ext': build_ext},
+    cmdclass = {'build_ext': build_ext, 'build_py': build_py},
     ext_modules = ext_modules,
     package_dir = {'': 'lib'},
     packages = ['axon', 'axon.test', 'axon.test.benchmark'],
