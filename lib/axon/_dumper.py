@@ -326,26 +326,22 @@ def _dump_name(ob):
     pos0 = 0
     pos = 0
     text = None
-    is_qname = 0
 
     n = len(name)
+    if n == 0:
+        raise ValueError('Empty name')
+
+    ch = name[pos]
+    if ch.isalpha() or ch == '_':
+        pos += 1
+    else:
+        raise ValueError('Invalid name')
     while pos < n:
         ch = name[pos]
-        if ch.isalnum() or ch == '_':
+        if ch.isalnum() or ch == '_' or ch == '-':
             pos += 1
-        elif ch == "'":
-            if pos != pos0:
-                if text is None:
-                    text = name[pos0, pos]
-                else:
-                    text += name[pos0: pos]
-            text += "\\'"
-            pos += 1
-            pos0 = pos
-            is_qname = 1
         else:
-            pos += 1
-            is_qname = 1
+            raise ValueError('Invalid name')
 
     if pos != pos0:
         if text is None:
@@ -353,10 +349,7 @@ def _dump_name(ob):
         else:
             text += name[pos0: pos]
 
-    if is_qname:
-        return "'" + text + "'"
-    else:
-        return text
+    return text
 
 def _dump_key(ob):
     name = ob

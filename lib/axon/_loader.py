@@ -758,11 +758,10 @@ class Loader:
     def get_name(self):
         pos0 = self.pos
         ch = next_char(self)
-        while ch.isalnum() or ch == '_':
+        while ch.isalnum() or ch == '_' or ch == '-':
             ch = next_char(self)
 
         name0 = get_token(self, pos0)
-        #name = name_cache.get(name0, None)
         name = dict_get(name_cache, name0, None)
         if name is None:
             name_cache[name0] = name0
@@ -773,7 +772,7 @@ class Loader:
     def get_key(self):
         pos0 = self.pos
         ch = next_char(self)
-        while ch.isalnum() or ch == '_':
+        while ch.isalpha() or ch == '_':
             ch = next_char(self)
 
         return get_token(self, pos0)
@@ -782,8 +781,6 @@ class Loader:
         ch = current_char(self)
         if ch.isalpha() or ch == '_':
             return self.get_name()
-        elif ch == "'":
-            return self.get_string(ch)
         else:
             return None
     #
@@ -791,8 +788,6 @@ class Loader:
         ch = current_char(self)
         if ch.isalpha() or ch == '_':
             return self.get_key()
-        #elif ch == "'":
-        #    return self.get_string(ch)
         elif ch == '"':
             return self.get_string(ch)
         else:
@@ -802,7 +797,7 @@ class Loader:
         pos0 = self.pos
         ch = current_char(self)
 
-        while ch.isalnum() or ch == '_':
+        while ch.isalnum() or ch == '_' or ch == '-':
             ch = next_char(self)
 
         if self.pos == pos0:
