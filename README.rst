@@ -2,7 +2,7 @@
 pyaxon
 ======
 
-``pyaxon`` is a python library for `AXON <http://axon.intellimath.org>`_ -
+``pyaxon`` is an `MIT Licensed <http://opensource.org/licenses/MIT>`_ python library for `AXON <http://axon.intellimath.org>`_ -
 An eXtended Object Notation - simple text based format for interchanging
 objects, documents and data.
 It tries to combine the best of `JSON <http://www.json.org>`_,
