@@ -41,4 +41,4 @@ Releases
 0.5
 ~~~
 
-Initial release of ``pyaxon`` after 2 years of internal developement
+  Initial release of ``pyaxon`` after 2 years of internal developement
