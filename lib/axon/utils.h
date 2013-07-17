@@ -21,12 +21,16 @@
     #define c_int_fromlong(val) PyLong_FromLong(val)
     #define c_int_fromint(val) PyLong_FromLong((long)val)
 
+    #define c_object_to_unicode(o) PyObject_Str(o)
+
 #else
 
     #define c_int_fromstring(text) PyInt_FromString(text, NULL, 10)
 
     #define c_int_fromlong(val) PyInt_FromLong(val)
     #define c_int_fromint(val) PyInt_FromLong((long)val)
+
+    #define c_object_to_unicode(o) PyObject_Unicode(o)
 
 #endif
 

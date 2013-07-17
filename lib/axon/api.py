@@ -2,7 +2,7 @@
 
 from __future__ import unicode_literals
 from axon._loader import Loader
-from axon._dumper import Dumper
+from axon._dumper import Dumper, StringWriter
 from axon.types import unicode_type, str_type
 from axon._objects import as_unicode, StringReader
 
@@ -67,12 +67,12 @@ def dumps(val, pretty=0, crossref=False, nsize=0, sorted=1):
     :returns:
         unicode string of AXON representation of `val`.
     '''
-    try:
-        from io import StringIO
-    except ImportError:
-        from cStringIO import StringIO
+    #try:
+    #    from io import StringIO
+    #except ImportError:
+    #    from cStringIO import StringIO
 
-    fd = StringIO('')
+    fd = StringWriter()
 
     dumper = Dumper(fd, crossref, pretty, nsize, sorted)
     dumper.dump(val)

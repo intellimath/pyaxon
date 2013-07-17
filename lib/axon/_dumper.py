@@ -8,8 +8,8 @@
 # {{LICENCE}}
 
 import axon.types as types
-#from axon.types import unicode_type, str_type, int_type, long_type
-#from axon.types import bool_type, float_type, bytes_type
+from axon.types import unicode_type, str_type, int_type, long_type
+from axon.types import bool_type, float_type, bytes_type, bytearray_type
 
 try:
     import cdecimal as _decimal
@@ -93,6 +93,33 @@ c_reduce_dict = _c_type_reducers.copy()
 
 #
 
+class StringWriter:
+
+    def __init__(self):
+        self.blocks = []
+        self.items = []
+        self.n = 0
+
+    def write(self, item):
+        if self.n > 512:
+            self.blocks.append(''.join(self.items))
+            self.items = []
+            self.n = 0
+        self.items.append(item)
+        self.n += 1
+
+    def getvalue(self):
+        if self.items:
+            self.blocks.append(''.join(self.items))
+            self.items = []
+            self.n = 0
+        return ''.join(self.blocks)
+
+    def close(self):
+        self.items = []
+        self.blocks = []
+
+
 def reset_reduce():
     c_reduce_dict = _c_type_reducers.copy()
 
@@ -133,9 +160,10 @@ def _dump_unicode(ob):
 
     n = len(line)
     while pos < n:
-        if line[pos] == '"':
+        ch = c_unicode_char(line, pos)
+        if ch == '"':
             if pos != pos0:
-                text += line[pos0: pos]
+                text += c_unicode_substr(line, pos0, pos)
             text += '\\"'
             pos += 1
             pos0 = pos
@@ -143,11 +171,11 @@ def _dump_unicode(ob):
             pos += 1
 
     if pos != pos0:
-        text += line[pos0: pos]
+        text += c_unicode_substr(line, pos0, pos)
     return text + '"'
 
 def _dump_str(line):
-    return _dump_unicode(c_as_unicode(line))
+    return _dump_unicode(PyUnicode_FromEncodedObject(line, 'latin1', 'strict'))
 
 def _dump_bool(o):
     #return '⊤' if o else '⊥'
@@ -158,7 +186,7 @@ def _dump_date(o):
     return d
 
 def _dump_tzinfo(o):
-    return str(o)
+    return c_object_to_unicode(o)
 
 def _dump_time(o):
     #cdef object t
@@ -198,20 +226,23 @@ def _dump_none(o):
     return 'null'
 
 def _dump_int(o):
-    return unicode(o)
+    return c_object_to_unicode(o)
 
 def _dump_bytes(o):
-    #print('###', encodebytes(o), '###')
-    text = unicode(encodebytes(o), 'ascii')
-    return '|' + text
+    text = PyUnicode_FromEncodedObject(encodebytes(o), 'ascii', 'strict')
+    return c_as_unicode('|' + text)
+
+def _dump_bytearray(o):
+    text = PyUnicode_FromEncodedObject(encodebytes(o), 'ascii', 'strict')
+    return c_as_unicode('|' + text)
 
 def _dump_long(o):
-    return unicode(o)
+    return c_object_to_unicode(o)
 
 def _dump_float(o):
     d = PyFloat_AS_DOUBLE(o)
     if isfinite(d):
-        return unicode(o)
+        return c_object_to_unicode(o)
 
     if isnan(d):
         return '?'
@@ -230,7 +261,7 @@ def _dump_float(o):
 def _dump_decimal(d):
     #cdef unicode val
     if d.is_finite():
-        val  = c_as_unicode(_decimal2str(d))
+        val  = c_object_to_unicode(_decimal2str(d))
 
     elif d.is_nan():
         val = '?'
@@ -265,17 +296,15 @@ def _dump_undef(o):
 #     dumper._pertty_dump(attr.c_value, offset, 0)
 
 def dump_default(v):
-    return unicode(v)
+    return c_object_to_unicode(v)
 
 c_simple_dumpers = {
     types.int_type: c_new_pyptr(_dump_int),
     types.long_type: c_new_pyptr(_dump_long),
     types.float_type: c_new_pyptr(_dump_float),
 
-    types.str_type: c_new_pyptr(_dump_str),
-    types.unicode_type: c_new_pyptr(_dump_unicode),
+    types.bytearray_type: c_new_pyptr(_dump_bytearray),
 
-    types.bytes_type: c_new_pyptr(_dump_bytes),
     types.bool_type: c_new_pyptr(_dump_bool),
 
     _decimal.Decimal: c_new_pyptr(_dump_decimal),
@@ -286,6 +315,13 @@ c_simple_dumpers = {
     Undefined: c_new_pyptr(_dump_undef),
     type(None): c_new_pyptr(_dump_none),
 }
+
+c_simple_dumpers[types.unicode_type] = c_new_pyptr(_dump_unicode)
+if types.str_type is not types.unicode_type:
+    c_simple_dumpers[types.str_type] = c_new_pyptr(_dump_str)
+
+if types.bytes_type is not types.str_type:
+    c_simple_dumpers[types.bytes_type] = c_new_pyptr(_dump_bytes)
 
 simple_types = set(c_simple_dumpers.keys())
 
@@ -421,7 +457,14 @@ class Dumper:
         self.c_simple_dumpers = c_simple_dumpers
         self.c_type_reducers = c_reduce_dict
 
-        self.write = fd.write
+        self.fd = fd
+    #
+    def write(self, sval):
+        if type(self.fd) is StringWriter:
+            sfd = self.fd
+            sfd.write(sval)
+        else:
+            self.fd.write(sval)
     #
     def _pretty_dump_crossref(self, o):
         o_id = id(o)
@@ -465,12 +508,8 @@ class Dumper:
     #
     def _dump(self, o):
 
-        if self.size > self.max_size:
-            self.write('\n')
-            self.size = 0
-
         otype = type(o)
-        dumper = self.c_simple_dumpers.get(otype, None)
+        dumper = dict_get(self.c_simple_dumpers, otype, None)
         if dumper is None:
             if self.crossref:
                 if self._dump_label(o) == 1:
@@ -492,6 +531,11 @@ class Dumper:
                     self._dump_with_reducer(reducer, o)
         else:
             self._dump_value(o, dumper)
+
+        if self.size > self.max_size:
+            self.write('\n')
+            self.size = 0
+
     #
     def _pretty_dump(self, o, offset, use_offset):
         this_offset = offset
@@ -536,13 +580,13 @@ class Dumper:
             self._dump_value(o, dumper)
     #
     def _dump_value(self, o, dumper):
-            if type(dumper) is PyPointer:
-                ptr = dumper
-                text = ptr.ptr(o)
-            else:
-                text = dumper(o)
-            self.size += len(text)
-            self.write(text)
+        if type(dumper) is PyPointer:
+            ptr = dumper
+            text = ptr.ptr(o)
+        else:
+            text = dumper(o)
+        self.size += len(text)
+        self.write(text)
     #
     def _dump_dict_sequence(self, d):
         i = 0

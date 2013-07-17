@@ -1,41 +1,31 @@
 # coding: utf-8
 
-from __future__ import unicode_literals
+from __future__ import unicode_literals, print_function
 import unittest
 from axon import loads, dumps
+from axon.types import str_type, unicode_type
+
+import sys
 
 try:
-    import builtins
-except ImportError:
-    import __builtin__ as builtins
-
-try:
-    _builtins_unicode = builtins.unicode
-    _builtins_str = builtins.str
     _chr = unichr
-except AttributeError:
-    _builtins_unicode = builtins.str
-    _builtins_str = builtins.str
+except NameError:
     _chr = chr
 
 class Base64TestCase(unittest.TestCase):
 
     def setUp(self):
         pass
-
-    def test_1(self):
-        from random import randint
-        for i in range(10):
-            text = ''.join([_chr(randint(1,255)) for i in range(256)])
-            if type(text) is _builtins_unicode:
-                btext = text.encode('latin1')
-            else:
-                btext = bytes(text)
-            text1= dumps([btext])
-            print('***', btext, '***')
-            print('***', text1, '***')
-            btext1 = loads(text1)[0]
-            self.assertEqual(btext, btext1)
+    if sys.version_info.major == 3:
+        def test_1(self):
+            from random import randint
+            for i in range(10):
+                btext = bytes([randint(1,255) for i in range(256)])
+                text1= dumps([btext])
+                print('***', btext, '***')
+                print('***', text1, '***')
+                btext1 = loads(text1)[0]
+                self.assertEqual(btext, btext1)
     #
 
 def suite():

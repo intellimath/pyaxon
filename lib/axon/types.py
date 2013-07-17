@@ -28,7 +28,8 @@ except AttributeError:
 
 float_type = builtins.float
 bool_type = builtins.bool
-bytes_type = type('a'.encode('ascii'))
+bytes_type = builtins.bytes
+bytearray_type = builtins.bytearray
 date_type = datetime.date
 time_type = datetime.time
 datetime_type = datetime.datetime

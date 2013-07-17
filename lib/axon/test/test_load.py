@@ -207,7 +207,7 @@ json_string = """
     web_app: [
         servlet {
             name:"cofaxCDS"
-            class:'org.cofax.cds.CDSServlet'
+            class:"org.cofax.cds.CDSServlet"
             init_param {
                 configGlossary : {
                     installationAt:"Philadelphia PA"
@@ -236,8 +236,8 @@ json_string = """
                 cachePagesDirtyRead:10
                 searchEngineListTemplate:"forSearchEnginesList.htm"
                 searchEngineFileTemplate:"forSearchEngines.htm"
-                dataStoreDriver:'com.microsoft.jdbc.sqlserver.SQLServerDriver'
-                dataStoreUrl:'jdbc:microsoft:sqlserver://LOCALHOST:1433;DatabaseName:goon'
+                dataStoreDriver:"com.microsoft.jdbc.sqlserver.SQLServerDriver"
+                dataStoreUrl:"jdbc:microsoft:sqlserver://LOCALHOST:1433;DatabaseName:goon"
                 dataStoreUser:"sa"
                 dataStorePassword:"dataStoreTestQuery"
                 dataStoreTestQuery:"SET NOCOUNT ON;select test='test';"
@@ -347,7 +347,7 @@ def main():
         3]''')
     #test("'nn'{1 2 3 *}")
     test('nn {1 2 3}')
-    test("'name example123'{}")
+    #test("'name example123'{}")
     test('{ a:22 b:32}')
     test('{a:22 b:32}')
     test('''aaa{a:22
@@ -425,13 +425,13 @@ image: { type:"svg"}
 #     ]
 #     ''')
     test('''[tr{} tr{} tr{}]''')
-    test('''_{name:'nemo' tr{} tr{} tr{}}''')
-    test('''aaa{name:'nemo' age:32 tr{} tr{} tr{}}''')
+    test('''_{name:"nemo" tr{} tr{} tr{}}''')
+    test('''aaa{name:"nemo" age:32 tr{} tr{} tr{}}''')
     test('aaa{}')
     test('aaa{a:1}')
     test(task_config)
     test(json_string)
-    test_binary()
+    #test_binary()
 
     test2()
     test_random()

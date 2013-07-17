@@ -18,6 +18,19 @@ cdef extern from "floatobject.h":
 cdef extern from "utils.h":
     inline int c_unicode_length(unicode text)
     inline unicode c_unicode_substr(unicode text, int start, int end)
+    inline Py_UCS4 c_unicode_char(unicode text, int index)
+    inline unicode c_object_to_unicode(object o)
+
+from cpython.object cimport PyObject
+from cpython.dict cimport PyDict_SetItem, PyDict_GetItem
+from cpython.unicode cimport PyUnicode_FromEncodedObject
+
+cdef inline object dict_get(object op, object key, object default):
+    cdef PyObject* val = <PyObject*>PyDict_GetItem(op, key)
+    if val == NULL:
+        return default
+    else:
+        return <object>val
 
 
 from axon._objects cimport Empty, Mapping, Element, Sequence, Instance, Collection, Undefined
@@ -50,6 +63,17 @@ from axon._objects cimport name_cache, empty_name, c_as_unicode, c_as_name
 #         uname = n
 #     return uname
 
+cdef class StringWriter:
+
+    cdef list blocks
+    cdef list items
+    cdef int n
+
+    cpdef write(StringWriter self, item)
+
+    cpdef object getvalue(StringWriter self)
+
+    cpdef close(StringWriter self)
 
 cdef class PyInt:
     cdef long val
@@ -107,7 +131,7 @@ cdef public class SimpleDumpers[type SimpleDumpersType, object SimpleDumpers]:
     @cython.locals(sd=SimpleDumpers)
     cdef void update(self, object o)
 
-@cython.locals(line=unicode, pos0=int, pos=cython.uint, text=unicode)
+@cython.locals(line=unicode, pos0=int, pos=int, text=unicode, n=int)
 cdef unicode _dump_unicode(object ob)
 
 cdef unicode _dump_str(object line)
@@ -131,6 +155,9 @@ cdef unicode _dump_int(object o)
 
 @cython.locals(text=unicode)
 cdef unicode _dump_bytes(object o)
+
+@cython.locals(text=unicode)
+cdef unicode _dump_bytearray(object o)
 
 cdef unicode _dump_long(object o)
 
@@ -169,9 +196,9 @@ cdef public class Dumper[object Dumper, type DumperType]:
     #
     cdef dict c_simple_dumpers
     cdef dict c_type_reducers
-    cdef object write
     cdef long size, max_size
     cdef int nsize
+    cdef object fd
 
     cdef int pretty
     cdef int sorted
@@ -183,6 +210,9 @@ cdef public class Dumper[object Dumper, type DumperType]:
 
     cdef bint quote
     #
+    @cython.locals(sfd=StringWriter)
+    cdef inline void write(Dumper self, o)
+    #
     cdef void _pretty_dump_crossref(Dumper self, o)
     #
     cdef void _dump_crossref(Dumper self, o)
@@ -192,7 +222,7 @@ cdef public class Dumper[object Dumper, type DumperType]:
     cdef int _dump(Dumper self, o) except -1
     #
     @cython.locals(text=unicode, ptr=PyPointer)
-    cdef void _dump_value(Dumper self, o, dumper)
+    cdef int _dump_value(Dumper self, o, dumper) except -1
     #
     @cython.locals(i=int, text=unicode)
     cdef int _dump_dict_sequence(Dumper self, dict d) except -1

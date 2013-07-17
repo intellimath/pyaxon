@@ -9,7 +9,7 @@
 
 import cython
 
-from cpython.object cimport PyObject
+from cpython.object cimport PyObject, PyObject_Unicode
 #from cpython.dict cimport PyDict_GetItem, PyDict_SetItem
 #from cpython.float cimport PyFloat_FromString
 from cpython.unicode cimport PyUnicode_AsASCIIString
@@ -22,6 +22,7 @@ cdef object _decimal2str
 cdef extern from "utils.h":
     inline Py_UCS4 c_unicode_char(unicode text, int pos)
     inline unicode c_unicode_substr(unicode text, int start, int end)
+    inline unicode c_object_to_unicode(object o)
 
 
 #cdef inline object dict_get(object op, object key, object default):
@@ -59,10 +60,10 @@ cdef inline unicode c_as_unicode(object ob):
     tp = type(ob)
     if tp is unicode:
         return <unicode>ob
-    elif tp == c_str_type:
-        return unicode(ob)
+    elif tp is c_str_type:
+        return c_object_to_unicode(ob)
     elif ob is None:
-        return unicode('')
+        return c_object_to_unicode('')
     else:
         raise TypeError('This object %r is not unicode compatible' % ob)
 
