@@ -21,15 +21,17 @@ Features
 Releases
 --------
 
-0.5.2
-~~~~~
+**0.5.3**
+
+1. Dumping is now faster.
+
+**0.5.2**
 
 1. Refactor setup.py so that .py sources of extensions dosn't installed.
 2. Ensuire that attribute names and keys loads and dumps correctly.
 3. Add explicit flag (use_cython) in order to decide when to use cython compiler.
 
-0.5.1
-~~~~~
+**0.5.1**
 
 1. Add notebook with performance comparisons with ``JSON`` and ``YAML``.
 2. Refactor setup.py so that project could be installed with/without ``Cython`` installation.
@@ -38,7 +40,6 @@ Releases
 
 
 
-0.5
-~~~
+**0.5**
 
   Initial release of ``pyaxon`` after 2 years of internal developement
