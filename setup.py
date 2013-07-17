@@ -16,7 +16,7 @@ class build_py(_build_py):
             modules = [m for m in modules if m[2] not in py_ext_modules]
         return modules
 
-use_cython = 1
+use_cython = 0
 
 if use_cython:
     from Cython.Distutils import Extension, build_ext
@@ -60,7 +60,7 @@ long_description = open('README.rst').read()
 
 setup(
     name = 'pyaxon',
-    version = '0.5.2',
+    version = '0.5.3',
     description = 'Python library for An eXtended Object Notation (AXON)',
     author = 'Zaur Shibzukhov',
     author_email="szport@gmail.com",

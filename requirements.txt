@@ -1,2 +1,2 @@
 pyaxon
-Cython>=19.0
+Cython>=19.1

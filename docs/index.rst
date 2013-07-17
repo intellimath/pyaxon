@@ -67,8 +67,8 @@ Here is an short example of AXON message in expression form::
             float: [3.1428 1.5e-17]
             decimal: [10$ 1000.35$ -1.25e6$]
             bool: [true false]
-            'unicode string': "abc абв 中文本"
-            'unicode multiline string': "one
+            string: "abc абв 中文本"
+            multiline_string: "one
     two
     three"
             date: 2012-12-31
@@ -116,8 +116,8 @@ and in statement form::
             float: [3.1428 1.5e-17]
             decimal: [10$ 1000.35$ -1.25e6$]
             bool: [true false]
-            'unicode string': "abc абв 中文本"
-            'unicode multiline string': "one
+            string: "abc абв 中文本"
+            multiline_string: "one
     two
     three"
             date: 2012-12-31
