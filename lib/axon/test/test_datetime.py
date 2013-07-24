@@ -89,7 +89,7 @@ class DateTimeTestCase(unittest.TestCase):
         self.assertEqual(type(v), time)
         self.assertIsInstance(v.tzinfo, tzinfo)
         s = dumps([v])
-        self.assertEqual(s, '23:59:59-01')
+        self.assertEqual(s, '23:59:59+23')
         self.assertEqual(v.utcoffset().seconds/60, 23*60)
     #
     def test_time9(self):
@@ -97,7 +97,7 @@ class DateTimeTestCase(unittest.TestCase):
         self.assertEqual(type(v), time)
         self.assertIsInstance(v.tzinfo, tzinfo)
         s = dumps([v])
-        self.assertEqual(s, '23:59:59+01')
+        self.assertEqual(s, '23:59:59-23')
         self.assertEqual(v.utcoffset().seconds/60, 60)
     #
     def test_time10(self):
@@ -174,7 +174,7 @@ class DateTimeTestCase(unittest.TestCase):
         self.assertEqual(type(v), datetime)
         self.assertIsInstance(v.tzinfo, tzinfo)
         s = dumps([v])
-        self.assertEqual(s, '2010-01-01T23:59:59-01')
+        self.assertEqual(s, '2010-01-01T23:59:59+23')
         self.assertEqual(v.utcoffset().seconds/60, 23*60)
     #
     def test_datetime9(self):
@@ -182,7 +182,7 @@ class DateTimeTestCase(unittest.TestCase):
         self.assertEqual(type(v), datetime)
         self.assertIsInstance(v.tzinfo, tzinfo)
         s = dumps([v])
-        self.assertEqual(s, '2010-01-01T23:59:59+01')
+        self.assertEqual(s, '2010-01-01T23:59:59-23')
         self.assertEqual(v.utcoffset().seconds/60, 60)
     #
     def test_datetime10(self):

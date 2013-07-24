@@ -168,13 +168,6 @@ cdef Builder mixed_builder()
 
 cdef dict tz_dict = {}
 
-cdef public class FixedOffsetTZ(tzinfo)[object FixedOffsetTZObject, type FixedOffsetTZType]:
-    """Fixed offset in minutes east from UTC."""
-
-    cdef public object minutes
-
-    cdef void _init(FixedOffsetTZ self, object minutes)
-
 cdef object tzinfo_fromargs(int minutes)
 
 @cython.final

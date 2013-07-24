@@ -10,6 +10,7 @@
 import axon.types as types
 from axon.types import unicode_type, str_type, int_type, long_type
 from axon.types import bool_type, float_type, bytes_type, bytearray_type
+from axon.types import builtins
 
 try:
     import cdecimal as _decimal
@@ -186,7 +187,22 @@ def _dump_date(o):
     return d
 
 def _dump_tzinfo(o):
-    return c_object_to_unicode(o)
+    offset = o.utcoffset(None)
+    seconds = offset.seconds + offset.days * 86400 # 24 * 60 * 60
+
+    if seconds < 0:
+        seconds = -seconds
+        sign = '-'
+    else:
+        sign = '+'
+
+    minutes, seconds = builtins.divmod(seconds, 60)
+    hours, minutes = builtins.divmod(minutes, 60)
+
+    if minutes:
+        return '%s%02d:%02d' % (sign, hours, minutes)
+    else:
+        return '%s%02d' % (sign, hours)
 
 def _dump_time(o):
     #cdef object t

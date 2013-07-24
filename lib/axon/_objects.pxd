@@ -17,6 +17,8 @@ from cpython.bytes cimport PyBytes_AsString
 from cpython.long cimport PyLong_FromString
 #from cpython.dict cimport PyDict_SetItem, PyDict_GetItem
 
+from cpython.datetime cimport import_datetime, tzinfo
+
 cdef object _decimal2str
 
 cdef extern from "utils.h":
@@ -236,3 +238,9 @@ cdef class StringReader:
     cpdef unicode readline(StringReader self)
 
     cpdef close(StringReader self)
+
+cdef public class timezone(tzinfo)[object TimeZoneUTCObject, type TimeZoneUTCType]:
+    """Fixed offset in minutes east from UTC."""
+
+    cdef public object offset
+    cdef public object name

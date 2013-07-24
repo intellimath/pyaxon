@@ -140,7 +140,7 @@ cdef unicode _dump_bool(object o)
 
 cdef unicode _dump_date(object o)
 
-@cython.locals(sign=cython.bint)
+###@cython.locals(sign=cython.bint)
 cdef object _dump_tzinfo(object o)
 
 @cython.locals(t=object)

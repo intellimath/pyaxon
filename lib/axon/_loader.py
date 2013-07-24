@@ -18,8 +18,13 @@ except:
 import axon.errors as errors
 
 import datetime as pydatetime
-
 import_datetime()
+
+try:
+    from datetime import timezone
+except:
+    from axon._objects import timezone
+
 
 ###
 ### Exceptions
@@ -192,45 +197,11 @@ class Builder:
 
 tz_dict = {}
 
-class FixedOffsetTZ(tzinfo):
-    """Fixed offset in minutes east from UTC."""
-
-    def __init__(self, minutes):
-        self._init(minutes)
-
-    def _init(self, minutes):
-        self.minutes = minutes
-
-    def utcoffset(self, dt):
-        return pydatetime.timedelta(minutes=self.minutes)
-
-    def tzname(self, dt):
-        if self.minutes > 720:
-            minutes = 1440 - self.minutes
-            sign = '-'
-        else:
-            minutes = self.minutes
-            sign = '+'
-        h, m = divmod(minutes, 60)
-        if m:
-            return '%s%02d:%02d' % (sign, h, m)
-        else:
-            return '%s%02d' % (sign, h)
-
-    def dst(self, dt):
-        return None
-
-    def __str__(self):
-        return self.tzname(None)
-
-    def __repr__(self):
-        return "<tz:%s>" % self.tzname(None)
-
 def tzinfo_fromargs(minutes):
     o_minutes = minutes
     tzinfo = tz_dict.get(o_minutes, None)
     if tzinfo is None:
-        tzinfo = FixedOffsetTZ(o_minutes)
+        tzinfo = timezone(pydatetime.timedelta(minutes=o_minutes))
         tz_dict[o_minutes] = tzinfo
     return tzinfo
 
@@ -677,7 +648,7 @@ class Loader:
             errors.error_invalid_time(self)
 
         if sign:
-            minutes = 1440 - minutes
+            minutes = -minutes
 
         tzinfo = self.sbuilder.create_tzinfo(minutes)
 

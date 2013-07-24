@@ -22,8 +22,8 @@ class Base64TestCase(unittest.TestCase):
             for i in range(10):
                 btext = bytes([randint(1,255) for i in range(256)])
                 text1= dumps([btext])
-                print('***', btext, '***')
-                print('***', text1, '***')
+                #print('***', btext, '***')
+                #print('***', text1, '***')
                 btext1 = loads(text1)[0]
                 self.assertEqual(btext, btext1)
     #

@@ -21,6 +21,10 @@ Features
 Releases
 --------
 
+**0.5.4**
+
+1. Make our timezone object for python2.7 compatible to timezone object in python3.2 and higher.
+
 **0.5.3**
 
 1. Dumping is now faster.
@@ -42,4 +46,4 @@ Releases
 
 **0.5**
 
-  Initial release of ``pyaxon`` after 2 years of internal developement
+   First public release of ``pyaxon``.

@@ -15,7 +15,12 @@
 from axon.errors import error
 import axon.errors as errors
 
+from axon.types import builtins
+
 from axon.types import str_type
+
+import datetime as pydatetime
+import_datetime()
 
 c_str_type = str_type
 
@@ -889,3 +894,42 @@ class StringReader:
     def close(self):
         self.pos = self.n
 
+
+class timezone(tzinfo):
+    """Fixed offset in minutes east from UTC."""
+
+    def __init__(self, offset, name=None):
+        self.offset = offset
+        self.name = name
+
+    def utcoffset(self, dt):
+        return self.offset
+
+    def tzname(self, dt):
+        seconds = self.offset.seconds + self.offset.days * 24 * 60 * 60
+
+        if seconds < 0:
+            seconds = -seconds
+            sign = '-'
+        else:
+            sign = '+'
+
+        minutes, seconds = builtins.divmod(seconds, 60)
+        hours, minutes = builtins.divmod(minutes, 60)
+
+        if minutes:
+            return 'UTC%s%02d:%02d' % (sign, hours, minutes)
+        else:
+            return 'UTC%s%02d' % (sign, hours)
+
+    def dst(self, dt):
+        return None
+
+    def __str__(self):
+        return self.tzname(None)
+
+    def __repr__(self):
+        if self.name:
+            return "timezone(%s, %s)" % (self.offset, self.name)
+        else:
+            return "timezone(%s)" % (self.offset,)
