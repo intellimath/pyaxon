@@ -835,6 +835,158 @@ def empty(name):
     return c_new_empty(c_as_name(name))
 #
 
+c_factory_dict = {}
+
+def reset_factory():
+    c_factory_dict = {}
+
+def factory(name, factory_func=None):
+    name = c_as_unicode(name)
+    if factory_func is None:
+        def _factory(factory_func):
+            c_factory_dict[c_as_name(name)] = factory_func
+            return factory_func
+        return _factory
+    else:
+        c_factory_dict[c_as_name(name)] = factory_func
+
+class Builder:
+    def create_sequence(self, name, sequence):
+        return None
+    #
+    def create_collection(self, name, sequence):
+        return None
+
+    def create_mapping(self, name, mapping):
+        return None
+    #
+    def create_element(self, name, mapping, sequence):
+        return None
+    #
+    def create_instance(self, name, args, mapping):
+        return None
+
+    def create_empty(self, name):
+        return None
+
+class SafeBuilder(Builder):
+    #
+    def create_sequence(self, name, sequence):
+        s = Sequence.__new__(Sequence)
+        s.name = name
+        s.sequence = sequence
+        return s
+    #
+    def create_collection(self, name, sequence):
+        s = Collection.__new__(Collection)
+        s.name = name
+        s.sequence = sequence
+        return s
+
+    def create_mapping(self, name, mapping):
+        o = Mapping.__new__(Mapping)
+        o.name = name
+        o.mapping = mapping
+        return o
+    #
+    def create_element(self, name, mapping, sequence):
+        e = Element.__new__(Element)
+        e.name = name
+        e.mapping = mapping
+        e.sequence = sequence
+        return e
+    #
+    def create_instance(self, name, args, mapping):
+        e = Instance.__new__(Instance)
+        e.name = name
+        e.sequence = args
+        e.mapping = mapping
+        return e
+
+    def create_empty(self, name):
+        e = Empty.__new__(Empty)
+        e.name = name
+        return e
+
+class StrictBuilder(Builder):
+
+    def __init__(self):
+        self.builder = SafeBuilder()
+
+    def create_mapping(self, name, mapping):
+        handler = c_factory_dict.get(name)
+        if handler is None:
+            return c_undefined
+        else:
+            return handler(mapping)
+    #
+    def create_sequence(self, name, sequence):
+        handler = c_factory_dict.get(name)
+        if handler is None:
+            return c_undefined
+        else:
+            return handler(sequence)
+    #
+    def create_element(self, name, mapping, sequence):
+        handler = c_factory_dict.get(name)
+        if handler is None:
+            return c_undefined
+        else:
+            return handler(mapping, sequence)
+    #
+    def create_instance(self, name, sequence, mapping):
+        handler = c_factory_dict.get(name)
+        if handler is None:
+            return c_undefined
+        else:
+            return handler(sequence, mapping)
+    #
+    def create_empty(self, name):
+        handler = c_factory_dict.get(name)
+        if handler is None:
+            return c_undefined
+        else:
+            return handler()
+
+class MixedBuilder(Builder):
+
+    def __init__(self):
+        self.builder = SafeBuilder()
+
+    def create_mapping(self, name, mapping):
+        handler = c_factory_dict.get(name)
+        if handler is None:
+            return c_new_mapping(name, mapping)
+        else:
+            return handler(mapping)
+    #
+    def create_sequence(self, name, sequence):
+        handler = c_factory_dict.get(name)
+        if handler is None:
+            return c_new_sequence(name, sequence)
+        else:
+            return handler(sequence)
+    #
+    def create_element(self, name, mapping, sequence):
+        handler = c_factory_dict.get(name)
+        if handler is None:
+            return c_new_element(name, mapping, sequence)
+        else:
+            return handler(mapping, sequence)
+    #
+    def create_instance(self, name, sequence, mapping):
+        handler = c_factory_dict.get(name)
+        if handler is None:
+            return c_new_instance(name, sequence, mapping)
+        else:
+            return handler(sequence, mapping)
+    #
+    def create_empty(self, name):
+        handler = c_factory_dict.get(name)
+        if handler is None:
+            return c_new_empty(name)
+        else:
+            return handler()
 
 
 class StringReader:
@@ -924,6 +1076,23 @@ class timezone(tzinfo):
 
     def dst(self, dt):
         return None
+
+    def __richcmp__(self, other, op):
+        if not isinstance(other, tzinfo):
+            raise TypeError('Invalid type: expected `tzinfo` instance')
+
+        if op == 0:
+            return self.offset < other.offset
+        elif op == 1:
+            return self.offset <= other.offset
+        elif op == 2:
+            return self.offset == other.offset
+        elif op == 3:
+            return self.offset != other.offset
+        elif op == 4:
+            return self.offset > other.offset
+        else:
+            return self.offset >= other.offset
 
     def __str__(self):
         return self.tzname(None)

@@ -30,20 +30,6 @@ except:
 ### Exceptions
 ###
 
-c_factory_dict = {}
-
-def reset_factory():
-    c_factory_dict = {}
-
-def factory(name, factory_func=None):
-    name = c_as_unicode(name)
-    if factory_func is None:
-        def _factory(factory_func):
-            c_factory_dict[c_as_name(name)] = factory_func
-            return factory_func
-        return _factory
-    else:
-        c_factory_dict[c_as_name(name)] = factory_func
 
 c_constants = {
     c_as_name(c_as_unicode('true')): True,
@@ -119,81 +105,10 @@ def float_ninf():
 def float_nan():
     return _nan
 
-def c_new_mapping_mixed(name, mapping):
-    handler = c_factory_dict.get(name)
-    if handler is None:
-        return c_new_mapping(name, mapping)
-    else:
-        return handler(mapping)
-#
-def c_new_sequence_mixed(name, sequence):
-    handler = c_factory_dict.get(name)
-    if handler is None:
-        return c_new_sequence(name, sequence)
-    else:
-        return handler(sequence)
-#
-def c_new_element_mixed(name, mapping, sequence):
-    handler = c_factory_dict.get(name)
-    if handler is None:
-        return c_new_element(name, mapping, sequence)
-    else:
-        return handler(mapping, sequence)
-#
-def c_new_instance_mixed(name, sequence, mapping):
-    handler = c_factory_dict.get(name)
-    if handler is None:
-        return c_new_instance(name, sequence, mapping)
-    else:
-        return handler(sequence, mapping)
-#
-def c_new_empty_mixed(name):
-    handler = c_factory_dict.get(name)
-    if handler is None:
-        return c_new_empty(name)
-    else:
-        return handler()
 #
 #######################################################################
 #
 
-def c_new_mapping_strict(name, mapping):
-    handler = c_factory_dict.get(name)
-    if handler is None:
-        return c_undefined
-    else:
-        return handler(mapping)
-#
-def c_new_sequence_strict(name, sequence):
-    handler = c_factory_dict.get(name)
-    if handler is None:
-        return c_undefined
-    else:
-        return handler(sequence)
-#
-def c_new_element_strict(name, mapping, sequence):
-    handler = c_factory_dict.get(name)
-    if handler is None:
-        return c_undefined
-    else:
-        return handler(mapping, sequence)
-#
-def c_new_instance_strict(name, sequence, mapping):
-    handler = c_factory_dict.get(name)
-    if handler is None:
-        return c_undefined
-    else:
-        return handler(sequence, mapping)
-#
-def c_new_empty_strict(name):
-    handler = c_factory_dict.get(name)
-    if handler is None:
-        return c_undefined
-    else:
-        return handler()
-
-class Builder:
-    pass
 
 tz_dict = {}
 
@@ -218,36 +133,6 @@ class SimpleBuilder:
         self.create_inf = float_inf
         self.create_ninf = float_ninf
         self.create_nan = float_nan
-
-def safe_builder():
-    builder = Builder()
-
-    builder.create_sequence = c_new_sequence
-    builder.create_instance = c_new_instance
-    builder.create_mapping = c_new_mapping
-    builder.create_element = c_new_element
-    builder.create_empty = c_new_empty
-    return builder
-
-def strict_builder():
-    builder = Builder()
-
-    builder.create_sequence = c_new_sequence_strict
-    builder.create_instance = c_new_instance_strict
-    builder.create_mapping = c_new_mapping_strict
-    builder.create_element = c_new_element_strict
-    builder.create_empty = c_new_empty_strict
-    return builder
-
-def mixed_builder():
-    builder = Builder()
-
-    builder.create_sequence = c_new_sequence_mixed
-    builder.create_instance = c_new_instance_mixed
-    builder.create_mapping = c_new_mapping_mixed
-    builder.create_element = c_new_element_mixed
-    builder.create_empty = c_new_empty_mixed
-    return builder
 
 #
 # Loader
@@ -304,11 +189,11 @@ class Loader:
             self.json = 0
 
         if mode == "safe":
-            self.builder = safe_builder()
+            self.builder = SafeBuilder()
         elif mode == "strict":
-            self.builder = strict_builder()
+            self.builder = StrictBuilder()
         elif mode == "mixed":
-            self.builder = mixed_builder()
+            self.builder = MixedBuilder()
         else:
             raise ValueError("Invalid mode: %s", mode)
 

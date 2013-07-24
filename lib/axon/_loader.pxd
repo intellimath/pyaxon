@@ -50,11 +50,13 @@ from axon._objects cimport c_as_tuple
 from axon._objects cimport c_new_instance, c_new_mapping, c_new_sequence, \
                                c_new_collection, c_new_element, c_new_empty
 
+from axon._objects cimport Builder, SafeBuilder, StrictBuilder, MixedBuilder
+
 cdef object unicode_type, str_type, int_type, long_type
 cdef object bool_type, float_type, bytes_type
 
 cdef dict c_constants
-cdef dict c_factory_dict
+#cdef dict c_factory_dict
 
 cdef inline object dict_get(object op, object key, object default):
     cdef PyObject* val = <PyObject*>PyDict_GetItem(op, key)
@@ -126,24 +128,18 @@ cdef object float_ninf()
 cdef object float_nan()
 
 
-cdef object c_new_mapping_mixed(object name, dict mapping)
-cdef object c_new_sequence_mixed(object name, list sequence)
-cdef object c_new_element_mixed(object name, dict mapping, list sequence)
-cdef object c_new_instance_mixed(object name, tuple sequence, dict mapping)
-cdef object c_new_empty_mixed(object name)
+# cdef object c_new_mapping_mixed(object name, dict mapping)
+# cdef object c_new_sequence_mixed(object name, list sequence)
+# cdef object c_new_element_mixed(object name, dict mapping, list sequence)
+# cdef object c_new_instance_mixed(object name, tuple sequence, dict mapping)
+# cdef object c_new_empty_mixed(object name)
+#
+# cdef object c_new_mapping_strict(object name, dict mapping)
+# cdef object c_new_sequence_strict(object name, list sequence)
+# cdef object c_new_element_strict(object name, dict mapping, list sequence)
+# cdef object c_new_instance_strict(object name, tuple sequence, dict mapping)
+# cdef object c_new_empty_strict(object name)
 
-cdef object c_new_mapping_strict(object name, dict mapping)
-cdef object c_new_sequence_strict(object name, list sequence)
-cdef object c_new_element_strict(object name, dict mapping, list sequence)
-cdef object c_new_instance_strict(object name, tuple sequence, dict mapping)
-cdef object c_new_empty_strict(object name)
-
-cdef public class Builder[type BuilderType, object Builder]:
-    cdef object (*create_mapping)(object, dict)
-    cdef object (*create_element)(object, dict, list)
-    cdef object (*create_sequence)(object, list)
-    cdef object (*create_instance)(object, tuple, dict)
-    cdef object (*create_empty)(object)
 
 cdef public class SimpleBuilder[type SimpleBuilderType, object SimpleBuilder]:
     cdef object (*create_int)(unicode)
@@ -156,15 +152,6 @@ cdef public class SimpleBuilder[type SimpleBuilderType, object SimpleBuilder]:
     cdef object (*create_inf)()
     cdef object (*create_ninf)()
     cdef object (*create_nan)()
-
-@cython.locals(builder=Builder)
-cdef Builder safe_builder()
-
-@cython.locals(builder=Builder)
-cdef Builder strict_builder()
-
-@cython.locals(builder=Builder)
-cdef Builder mixed_builder()
 
 cdef dict tz_dict = {}
 

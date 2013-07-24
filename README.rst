@@ -23,7 +23,8 @@ Releases
 
 **0.5.4**
 
-1. Make our timezone object for python2.7 compatible to timezone object in python3.2 and higher.
+1. Make internal timezone class (for python2.7) compatible with datetime.timezone class (for python3.2 and higher).
+2. Make creation of custom object builders (both safe and unsafe) easier.
 
 **0.5.3**
 
