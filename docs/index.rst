@@ -102,6 +102,7 @@ Here is an short example of AXON message in expression form::
                     12 2003-12-01 12:00
                     T: 12.1 R:0.5 W:5 D:"W"}
             }
+        }
     }
 
 
@@ -165,6 +166,7 @@ There are introductory `IPython` notebooks:
 * `Benchmarks <http://nbviewer.ipython.org/url/bitbucket.org/intellimath/pyaxon/raw/default/docs/notebooks/axon_bench.ipynb>`_
 
 Repository for ``AXON`` and ``pyaxon`` is `here <https://bitbucket.org/intellimath/pyaxon>`_.
+Here is also `mirror <https://github.com/intellimath/pyaxon>`_.
 
 API Reference
 -------------
