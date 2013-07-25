@@ -8,6 +8,8 @@ objects, documents and data.
 It tries to combine the best of `JSON <http://www.json.org>`_,
 `XML <http://www.w3.org/XML/>`_ and `YAML <http://www.yaml.org>`_.
 
+Main repository for ``pyaxon`` is on `bitbucket <https://bitbucket.org/intellimath/pyaxon>`_.
+There is an mirror on `github <https://github.com/intellimath/pyaxon>`_
 
 Features
 --------
