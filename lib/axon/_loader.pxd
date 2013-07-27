@@ -51,6 +51,7 @@ from axon._objects cimport c_new_instance, c_new_mapping, c_new_sequence, \
                                c_new_collection, c_new_element, c_new_empty
 
 from axon._objects cimport Builder, SafeBuilder, StrictBuilder, MixedBuilder
+from axon._objects cimport get_builder
 
 cdef object unicode_type, str_type, int_type, long_type
 cdef object bool_type, float_type, bytes_type
@@ -176,8 +177,8 @@ cdef class Loader:
 
     cdef bint json
 
-    cdef Builder builder
-    cdef SimpleBuilder sbuilder
+    cdef public Builder builder
+    cdef public SimpleBuilder sbuilder
 
     cdef dict c_constants
     cdef dict labeled_objects

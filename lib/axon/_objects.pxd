@@ -224,32 +224,39 @@ cdef public object c_new_instance(object name, tuple args, dict mapping)
 @cython.locals(e=Empty)
 cdef public object c_new_empty(object name)
 
-cdef dict c_factory_dict
+cdef public dict c_factory_dict
 
 cdef class Builder:
-    cdef object create_mapping(self, object, dict)
-    cdef object create_element(self, object, dict, list)
-    cdef object create_sequence(self, object, list)
-    cdef object create_instance(self, object, tuple, dict)
-    cdef object create_empty(self, object)
+    cdef public object create_mapping(self, object, dict)
+    cdef public object create_element(self, object, dict, list)
+    cdef public object create_sequence(self, object, list)
+    cdef public object create_instance(self, object, tuple, dict)
+    cdef public object create_empty(self, object)
 
 cdef class SafeBuilder(Builder):
-    cdef object create_mapping(self, object, dict)
-    cdef object create_element(self, object, dict, list)
-    cdef object create_sequence(self, object, list)
-    cdef object create_instance(self, object, tuple, dict)
-    cdef object create_empty(self, object)
+    cdef public object create_mapping(self, object, dict)
+    cdef public object create_element(self, object, dict, list)
+    cdef public object create_sequence(self, object, list)
+    cdef public object create_instance(self, object, tuple, dict)
+    cdef public object create_empty(self, object)
 
 cdef class StrictBuilder(Builder):
-    cdef public SafeBuilder builder
-    cdef object create_mapping(self, object, dict)
-    cdef object create_element(self, object, dict, list)
-    cdef object create_sequence(self, object, list)
-    cdef object create_instance(self, object, tuple, dict)
-    cdef object create_empty(self, object)
+    #cdef public SafeBuilder builder
+    cdef public object create_mapping(self, object, dict)
+    cdef public object create_element(self, object, dict, list)
+    cdef public object create_sequence(self, object, list)
+    cdef public object create_instance(self, object, tuple, dict)
+    cdef public object create_empty(self, object)
 
 cdef class MixedBuilder(Builder):
     cdef public SafeBuilder builder
+    cdef public object create_mapping(self, object, dict)
+    cdef public object create_element(self, object, dict, list)
+    cdef public object create_sequence(self, object, list)
+    cdef public object create_instance(self, object, tuple, dict)
+    cdef public object create_empty(self, object)
+
+cdef public class GenericBuilder(Builder)[object GenericBuilderObject, type GenericBuilderType]:
     cdef object create_mapping(self, object, dict)
     cdef object create_element(self, object, dict, list)
     cdef object create_sequence(self, object, list)
@@ -259,6 +266,14 @@ cdef class MixedBuilder(Builder):
 #cdef Builder safe_builder = SafeBuilder()
 #cdef Builder strict_builder = StrictBuilder()
 #cdef Builder mixed_builder = MixedBuilder()
+
+cdef dict c_builder_dict
+
+cdef inline Builder c_get_builder(object mode):
+    return <Builder>c_builder_dict.get(mode, None)
+
+cpdef Builder get_builder(object)
+
 
 ####################################################################
 

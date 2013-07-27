@@ -188,13 +188,8 @@ class Loader:
         else:
             self.json = 0
 
-        if mode == "safe":
-            self.builder = SafeBuilder()
-        elif mode == "strict":
-            self.builder = StrictBuilder()
-        elif mode == "mixed":
-            self.builder = MixedBuilder()
-        else:
+        self.builder = get_builder(mode)
+        if self.builder is None:
             raise ValueError("Invalid mode: %s", mode)
 
         self.sbuilder = SimpleBuilder()

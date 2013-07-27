@@ -843,12 +843,12 @@ def reset_factory():
 def factory(name, factory_func=None):
     name = c_as_unicode(name)
     if factory_func is None:
-        def _factory(factory_func):
-            c_factory_dict[c_as_name(name)] = factory_func
+        def _factory(factory_func, name=name):
+            c_factory_dict[name] = factory_func
             return factory_func
         return _factory
     else:
-        c_factory_dict[c_as_name(name)] = factory_func
+        c_factory_dict[name] = factory_func
 
 class Builder:
     def create_sequence(self, name, sequence):
@@ -910,8 +910,8 @@ class SafeBuilder(Builder):
 
 class StrictBuilder(Builder):
 
-    def __init__(self):
-        self.builder = SafeBuilder()
+    #def __init__(self):
+    #    self.builder = SafeBuilder()
 
     def create_mapping(self, name, mapping):
         handler = c_factory_dict.get(name)
@@ -987,6 +987,35 @@ class MixedBuilder(Builder):
             return c_new_empty(name)
         else:
             return handler()
+
+class GenericBuilder(Builder):
+
+    def create_mapping(self, name, mapping):
+        return self.mapping(name, c_as_dict(mapping))
+    #
+    def create_sequence(self, name, sequence):
+        return self.sequence(name, c_as_list(sequence))
+    #
+    def create_element(self, name, mapping, sequence):
+        return self.element(name, c_as_dict(mapping), c_as_list(sequence))
+    #
+    def create_instance(self, name, sequence, mapping):
+        return self.instance(name, c_as_list(sequence), c_as_dict(mapping))
+    #
+    def create_empty(self, name):
+        return self.empty(name)
+
+c_builder_dict = {
+    'safe': SafeBuilder(),
+    'strict': StrictBuilder(),
+    'mixed': MixedBuilder()
+}
+
+def register_builder(mode, builder):
+    c_builder_dict[mode] = builder
+
+def get_builder(mode):
+    return c_get_builder(mode)
 
 
 class StringReader:
