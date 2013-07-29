@@ -18,6 +18,7 @@ from cpython.long cimport PyLong_FromString
 #from cpython.dict cimport PyDict_SetItem, PyDict_GetItem
 
 from cpython.datetime cimport import_datetime, tzinfo
+from cpython.datetime cimport time_new, timedelta_new, date_new, datetime_new
 
 cdef object _decimal2str
 
@@ -25,6 +26,17 @@ cdef extern from "utils.h":
     inline Py_UCS4 c_unicode_char(unicode text, int pos)
     inline unicode c_unicode_substr(unicode text, int start, int end)
     inline unicode c_object_to_unicode(object o)
+
+    inline object c_float_fromstring(object text)
+    inline object c_int_fromstring(char *text)
+    inline object c_int_fromlong(long val)
+    inline object c_int_fromint(int val)
+
+
+cdef extern from "bytesobject.h":
+    inline bytes PyBytes_FromStringAndSize(char* p, int n)
+    #inline char* PyBytes_AS_STRING(object b)
+    #inline int PyBytes_GET_SIZE(object b)
 
 
 #cdef inline object dict_get(object op, object key, object default):
@@ -234,10 +246,15 @@ cdef class Builder:
     cdef public object create_empty(self, object)
 
 cdef class SafeBuilder(Builder):
+    @cython.locals(o=Mapping)
     cdef public object create_mapping(self, object, dict)
+    @cython.locals(e=Element)
     cdef public object create_element(self, object, dict, list)
+    @cython.locals(s=Sequence)
     cdef public object create_sequence(self, object, list)
+    @cython.locals(s=Instance)
     cdef public object create_instance(self, object, tuple, dict)
+    @cython.locals(e=Empty)
     cdef public object create_empty(self, object)
 
 cdef class StrictBuilder(Builder):
@@ -263,10 +280,6 @@ cdef public class GenericBuilder(Builder)[object GenericBuilderObject, type Gene
     cdef object create_instance(self, object, tuple, dict)
     cdef object create_empty(self, object)
 
-#cdef Builder safe_builder = SafeBuilder()
-#cdef Builder strict_builder = StrictBuilder()
-#cdef Builder mixed_builder = MixedBuilder()
-
 cdef dict c_builder_dict
 
 cdef inline Builder c_get_builder(object mode):
@@ -274,10 +287,35 @@ cdef inline Builder c_get_builder(object mode):
 
 cpdef Builder get_builder(object)
 
+cdef object _str2decimal
+
+cdef object _inf
+cdef object _ninf
+cdef object _nan
+
+cdef dict tz_dict = {}
+
+cdef public class SimpleBuilder[type SimpleBuilderType, object SimpleBuilder]:
+
+    @cython.locals(n=int, i=int, buf=cython.p_char, num_buffer=bytes)
+    cdef inline object create_int(self, unicode text)
+    @cython.locals(n=int, i=int, buf=cython.p_char, num_buffer=bytes)
+    cdef inline object create_float(self, unicode text)
+    cdef inline object create_decimal(self, unicode text)
+    cdef inline object create_time(self, int h, int m, int s, int ms, object tz)
+    cdef inline object create_timedelta(self, int d, int s, int ms)
+    cdef inline object create_date(self, int y, int m, int d)
+    cdef inline object create_datetime(self, int y, int M, int d, int h, int m, int s, int ms, object tz)
+    cdef inline object create_tzinfo(self, int minutes)
+    cdef inline object create_inf(self)
+    cdef inline object create_ninf(self)
+    cdef inline object create_nan(self)
+    cdef inline object create_binary(self, unicode text)
+
 
 ####################################################################
 
-cdef unicode NAME_IS_EMPTY
+#cdef unicode NAME_EMPTY
 
 cdef class StringReader:
     cdef unicode buffer
@@ -289,6 +327,20 @@ cdef class StringReader:
     cpdef unicode readline(StringReader self)
 
     cpdef close(StringReader self)
+
+cdef class StringWriter:
+
+    cdef list blocks
+    cdef list items
+    cdef int n
+
+    cpdef write(StringWriter self, item)
+
+    cpdef object getvalue(StringWriter self)
+
+    cpdef close(StringWriter self)
+
+cdef object timezone_cls
 
 cdef public class timezone(tzinfo)[object TimeZoneUTCObject, type TimeZoneUTCType]:
     """Fixed offset in minutes east from UTC."""

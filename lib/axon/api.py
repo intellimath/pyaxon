@@ -2,9 +2,9 @@
 
 from __future__ import unicode_literals
 from axon._loader import Loader
-from axon._dumper import Dumper, StringWriter
+from axon._dumper import Dumper
 from axon.types import unicode_type, str_type
-from axon._objects import as_unicode, StringReader
+from axon._objects import as_unicode, StringReader, StringWriter
 
 try:
     from io import StringIO

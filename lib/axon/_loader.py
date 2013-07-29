@@ -10,20 +10,7 @@
 
 import sys
 
-try:
-    from base64 import decodebytes
-except:
-    from base64 import decodestring as decodebytes
-
 import axon.errors as errors
-
-import datetime as pydatetime
-import_datetime()
-
-try:
-    from datetime import timezone
-except:
-    from axon._objects import timezone
 
 
 ###
@@ -44,95 +31,10 @@ def as_name(name):
 
 import cython
 
-try:
-    import cdecimal as _decimal
-except:
-    import decimal as _decimal
-
-default_decimal_context = _decimal.getcontext()
-_str2decimal = default_decimal_context.create_decimal
-_decimal2str = default_decimal_context.to_eng_string
-
-def str2float(text):
-    n = len(text)
-    num_buffer = PyBytes_FromStringAndSize(cython.NULL, n)
-
-    buf = num_buffer
-
-    for i in range(n):
-        buf[i] = c_unicode_char(text, i)
-
-    return c_float_fromstring(num_buffer)
-
-def str2decimal(text):
-    return _str2decimal(text)
-
-def str2int(text):
-
-    n = len(text)
-    num_buffer = PyBytes_FromStringAndSize(cython.NULL, n+1)
-
-    buf = num_buffer
-
-    for i in range(n):
-        buf[i] = c_unicode_char(text, i)
-    buf[n] = 0
-
-    return c_int_fromstring(buf)
-
-def time_fromargs(h, m, s, ms, tz):
-    return time_new(h, m, s, ms, tz)
-
-def timedelta_fromargs(d, s, ms):
-    return timedelta_new(d, s, ms)
-
-def date_fromargs(y, m, d):
-    return date_new(y, m, d)
-
-def datetime_fromargs(y, M, d, h, m, s, ms, tz):
-    return datetime_new(y, M, d, h, m, s, ms, tz)
-
-_inf = float('inf')
-_ninf = float('-inf')
-_nan = float('nan')
-
-def float_inf():
-    return _inf
-
-def float_ninf():
-    return _ninf
-
-def float_nan():
-    return _nan
-
 #
 #######################################################################
 #
 
-
-tz_dict = {}
-
-def tzinfo_fromargs(minutes):
-    o_minutes = minutes
-    tzinfo = tz_dict.get(o_minutes, None)
-    if tzinfo is None:
-        tzinfo = timezone(pydatetime.timedelta(minutes=o_minutes))
-        tz_dict[o_minutes] = tzinfo
-    return tzinfo
-
-class SimpleBuilder:
-
-    def __init__(self):
-        self.create_int = str2int
-        self.create_float = str2float
-        self.create_decimal = str2decimal
-        self.create_time = time_fromargs
-        self.create_date = date_fromargs
-        self.create_datetime = datetime_fromargs
-        self.create_tzinfo = tzinfo_fromargs
-        self.create_inf = float_inf
-        self.create_ninf = float_ninf
-        self.create_nan = float_nan
 
 #
 # Loader
@@ -788,7 +690,7 @@ class Loader:
                     text = get_token(self, pos0)
                 else:
                     text += get_token(self, pos0)
-                return decodebytes(text.encode('ascii'))
+                return self.sbuilder.create_binary(text)
             else:
                 raise errors.error(self, 'Invalid character %r in MIME Base64 string' % ch)
     #

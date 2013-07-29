@@ -10,18 +10,10 @@ from cpython.dict cimport PyDict_SetItem, PyDict_GetItem
 from cpython.long cimport PyLong_FromString
 #from cpython.bytes cimport PyBytes_FromStringAndSize, PyBytes_AS_STRING
 
-from cpython.datetime cimport import_datetime, tzinfo
-from cpython.datetime cimport time_new, timedelta_new, date_new, datetime_new
-
 cimport cpython.array as array
 
 cdef extern from "unicodeobject.h":
     unicode PyUnicode_FromOrdinal(int ordinal)
-
-cdef extern from "bytesobject.h":
-    inline bytes PyBytes_FromStringAndSize(char* p, int n)
-    #inline char* PyBytes_AS_STRING(object b)
-    #inline int PyBytes_GET_SIZE(object b)
 
 cdef extern from "utils.h":
     inline object c_float_fromstring(object text)
@@ -48,10 +40,11 @@ from axon._objects cimport c_undefined, empty_name
 from axon._objects cimport name_cache, c_as_unicode, c_as_name, py_as_name
 from axon._objects cimport c_as_tuple
 from axon._objects cimport c_new_instance, c_new_mapping, c_new_sequence, \
-                               c_new_collection, c_new_element, c_new_empty
+                           c_new_collection, c_new_element, c_new_empty
 
 from axon._objects cimport Builder, SafeBuilder, StrictBuilder, MixedBuilder
 from axon._objects cimport get_builder
+from axon._objects cimport SimpleBuilder
 
 cdef object unicode_type, str_type, int_type, long_type
 cdef object bool_type, float_type, bytes_type
@@ -107,56 +100,6 @@ cdef inline object dict_get(object op, object key, object default):
 #     else:
 #         raise TypeError('This object %r is not unicode compatible' % ob)
 
-cdef object _str2decimal
-
-@cython.locals(n=int, i=int, buf=cython.p_char, num_buffer=bytes)
-cdef inline object str2float(unicode text)
-cdef inline object str2decimal(unicode text)
-@cython.locals(n=int, i=int, buf=cython.p_char, num_buffer=bytes)
-cdef inline object str2int(unicode text)
-
-cdef object time_fromargs(int, int, int, int, object tzinfo)
-cdef object timedelta_fromargs(int, int, int)
-cdef object date_fromargs(int, int, int)
-cdef object datetime_fromargs(int, int, int, int, int, int, int, object tzinfo)
-
-cdef object _inf
-cdef object _ninf
-cdef object _nan
-
-cdef object float_inf()
-cdef object float_ninf()
-cdef object float_nan()
-
-
-# cdef object c_new_mapping_mixed(object name, dict mapping)
-# cdef object c_new_sequence_mixed(object name, list sequence)
-# cdef object c_new_element_mixed(object name, dict mapping, list sequence)
-# cdef object c_new_instance_mixed(object name, tuple sequence, dict mapping)
-# cdef object c_new_empty_mixed(object name)
-#
-# cdef object c_new_mapping_strict(object name, dict mapping)
-# cdef object c_new_sequence_strict(object name, list sequence)
-# cdef object c_new_element_strict(object name, dict mapping, list sequence)
-# cdef object c_new_instance_strict(object name, tuple sequence, dict mapping)
-# cdef object c_new_empty_strict(object name)
-
-
-cdef public class SimpleBuilder[type SimpleBuilderType, object SimpleBuilder]:
-    cdef object (*create_int)(unicode)
-    cdef object (*create_float)(unicode)
-    cdef object (*create_decimal)(unicode)
-    cdef object (*create_time)(int, int, int, int, object)
-    cdef object (*create_date)(int, int, int)
-    cdef object (*create_datetime)(int, int, int, int, int, int, int, object)
-    cdef object (*create_tzinfo)(int)
-    cdef object (*create_inf)()
-    cdef object (*create_ninf)()
-    cdef object (*create_nan)()
-
-cdef dict tz_dict = {}
-
-cdef object tzinfo_fromargs(int minutes)
 
 @cython.final
 cdef class Loader:

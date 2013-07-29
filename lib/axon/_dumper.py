@@ -94,33 +94,6 @@ c_reduce_dict = _c_type_reducers.copy()
 
 #
 
-class StringWriter:
-
-    def __init__(self):
-        self.blocks = []
-        self.items = []
-        self.n = 0
-
-    def write(self, item):
-        if self.n > 512:
-            self.blocks.append(''.join(self.items))
-            self.items = []
-            self.n = 0
-        self.items.append(item)
-        self.n += 1
-
-    def getvalue(self):
-        if self.items:
-            self.blocks.append(''.join(self.items))
-            self.items = []
-            self.n = 0
-        return ''.join(self.blocks)
-
-    def close(self):
-        self.items = []
-        self.blocks = []
-
-
 def reset_reduce():
     c_reduce_dict = _c_type_reducers.copy()
 

@@ -39,6 +39,7 @@ from axon._objects cimport Empty, Mapping, Element, Sequence, Instance, Collecti
 #from axon._objects cimport SimpleDumpers, PyPointer
 from axon._objects cimport c_undefined
 from axon._objects cimport name_cache, empty_name, c_as_unicode, c_as_name
+from axon._objects cimport StringWriter
 
 # cdef inline unicode c_as_unicode(object ob):
 #     if type(ob) is unicode:
@@ -62,18 +63,6 @@ from axon._objects cimport name_cache, empty_name, c_as_unicode, c_as_name
 #     else:
 #         uname = n
 #     return uname
-
-cdef class StringWriter:
-
-    cdef list blocks
-    cdef list items
-    cdef int n
-
-    cpdef write(StringWriter self, item)
-
-    cpdef object getvalue(StringWriter self)
-
-    cpdef close(StringWriter self)
 
 cdef class PyInt:
     cdef long val

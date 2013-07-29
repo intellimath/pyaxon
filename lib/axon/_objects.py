@@ -12,6 +12,8 @@
 # Datatypes
 # ----------------------------------------
 
+import cython
+
 from axon.errors import error
 import axon.errors as errors
 
@@ -19,8 +21,28 @@ from axon.types import builtins
 
 from axon.types import str_type
 
-import datetime as pydatetime
+import datetime
 import_datetime()
+
+try:
+    from datetime import timezone as timezone_cls
+except:
+    timezone_cls = timezone
+
+try:
+    from base64 import decodebytes
+except:
+    from base64 import decodestring as decodebytes
+
+try:
+    import cdecimal as _decimal
+except:
+    import decimal as _decimal
+
+default_decimal_context = _decimal.getcontext()
+_str2decimal = default_decimal_context.create_decimal
+_decimal2str = default_decimal_context.to_eng_string
+
 
 c_str_type = str_type
 
@@ -739,7 +761,7 @@ def c_new_empty(name):
 
 #####################################################################################
 
-NAME_IS_EMPTY = 'Name is empty'
+#NAME_IS_EMPTY = 'Name is empty'
 
 def sequence(name, sequence=None):
     '''
@@ -1017,6 +1039,71 @@ def register_builder(mode, builder):
 def get_builder(mode):
     return c_get_builder(mode)
 
+_inf = float('inf')
+_ninf = float('-inf')
+_nan = float('nan')
+
+tz_dict = {}
+
+class SimpleBuilder:
+
+    def create_int(self, text):
+        n = len(text)
+        num_buffer = PyBytes_FromStringAndSize(cython.NULL, n+1)
+
+        buf = num_buffer
+
+        for i in range(n):
+            buf[i] = c_unicode_char(text, i)
+        buf[n] = 0
+
+        return c_int_fromstring(buf)
+
+    def create_float(self, text):
+        n = len(text)
+        num_buffer = PyBytes_FromStringAndSize(cython.NULL, n)
+
+        buf = num_buffer
+
+        for i in range(n):
+            buf[i] = c_unicode_char(text, i)
+
+        return c_float_fromstring(num_buffer)
+
+    def create_decimal(self, text):
+        return _str2decimal(text)
+
+    def create_time(self, h, m, s, ms, tz):
+        return time_new(h, m, s, ms, tz)
+
+    def create_timedelta(self, d, s, ms):
+        return timedelta_new(d, s, ms)
+
+    def create_date(self, y, m, d):
+        return date_new(y, m, d)
+
+    def create_datetime(self, y, M, d, h, m, s, ms, tz):
+        return datetime_new(y, M, d, h, m, s, ms, tz)
+
+    def create_tzinfo(self, minutes):
+        o_minutes = minutes
+        tzinfo = tz_dict.get(o_minutes, None)
+        if tzinfo is None:
+            tzinfo = timezone_cls(datetime.timedelta(minutes=o_minutes))
+            tz_dict[o_minutes] = tzinfo
+        return tzinfo
+
+    def create_inf(self):
+        return _inf
+
+    def create_ninf(self):
+        return _ninf
+
+    def create_nan(self):
+        return _nan
+
+    def create_binary(self, text):
+        return decodebytes(text.encode('ascii'))
 
 class StringReader:
 
@@ -1074,6 +1161,34 @@ class StringReader:
 
     def close(self):
         self.pos = self.n
+
+
+class StringWriter:
+
+    def __init__(self):
+        self.blocks = []
+        self.items = []
+        self.n = 0
+
+    def write(self, item):
+        if self.n > 512:
+            self.blocks.append(''.join(self.items))
+            self.items = []
+            self.n = 0
+        self.items.append(item)
+        self.n += 1
+
+    def getvalue(self):
+        if self.items:
+            self.blocks.append(''.join(self.items))
+            self.items = []
+            self.n = 0
+        return ''.join(self.blocks)
+
+    def close(self):
+        self.items = []
+        self.blocks = []
+
 
 
 class timezone(tzinfo):

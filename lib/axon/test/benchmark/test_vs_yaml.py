@@ -14,7 +14,7 @@ class AXONvsYAML:
 
     def test_vs_yaml_1(self):
         lst = []
-        for i in range(1000):
+        for i in range(2000):
             lst.append({
                 random_string(8): random.random(),
                 random_string(8): random.randint(1,99999),
