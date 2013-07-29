@@ -324,8 +324,6 @@ class SimpleDumpers:
         self.mapping[tp] = c_new_pyptr(ptr)
 
     def update(self, o):
-        #cdef SimpleDumpers sd
-
         if type(o) is dict:
             self.mapping.update(o)
         elif type(o) is SimpleDumpers:
