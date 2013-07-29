@@ -23,10 +23,16 @@ Features
 Releases
 --------
 
+**0.5.5**
+
+1. Make creation of custom builders of atomic values easier too (in ``cython`` only).
+2. Make creation of custom object builders easier (both in ``cython`` and ``python``).
+This allows you to implement custom import/export for data in ``XML`` and ``YAML`` representation.
+
 **0.5.4**
 
-1. Make internal timezone class (for python2.7) compatible with datetime.timezone class (for python3.2 and higher).
-2. Make creation of custom object builders (both safe and unsafe) easier.
+1. Make internal timezone class (for ``python2.7``) compatible with datetime.timezone class (for ``python3.2`` and higher).
+2. Make creation of custom object builders (both safe and unsafe) easier (in ``cython`` only).
 
 **0.5.3**
 
@@ -36,7 +42,7 @@ Releases
 
 1. Refactor setup.py so that .py sources of extensions dosn't installed.
 2. Ensuire that attribute names and keys loads and dumps correctly.
-3. Add explicit flag (use_cython) in order to decide when to use cython compiler.
+3. Add explicit flag (``use_cython``) in order to decide when to use cython compiler.
 
 **0.5.1**
 
