@@ -28,6 +28,7 @@ Releases
 1. Make creation of custom builders of atomic values easier too (in ``cython`` only).
 2. Make creation of custom object builders easier (both in ``cython`` and ``python``).
 This allows you to implement custom import/export for data in ``XML`` and ``YAML`` representation.
+3. Add plotting of results to simple benchmark script.
 
 **0.5.4**
 
