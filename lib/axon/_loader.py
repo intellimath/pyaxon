@@ -35,6 +35,17 @@ import cython
 #######################################################################
 #
 
+ATOMIC_VALUE = 1
+DICT = 2
+LIST = 3
+TUPLE = 4
+COMPLEX_VALUE = 5
+COLLECTION = 6
+END = 7
+REFERENCE = 8
+LABEL = 9
+ATTRIBUTE = 10
+
 
 #
 # Loader
@@ -821,12 +832,12 @@ class Loader:
                     val = c_undefined
                 else:
                     val = self.sbuilder.create_nan()
-            elif ch == '⊤': # \U22A4
-                skip_char(self)
-                val = True
-            elif ch == '⊥': # \U22A5
-                skip_char(self)
-                val = False
+#             elif ch == '⊤': # \U22A4
+#                 skip_char(self)
+#                 val = True
+#             elif ch == '⊥': # \U22A5
+#                 skip_char(self)
+#                 val = False
             elif ch == '*':
                 skip_char(self)
                 label = self.try_get_label()
@@ -1270,4 +1281,200 @@ class Loader:
                 else:
                     val = self.get_value(idn)
                     sequence.append(val)
-
+    #
+#     def iter_values(self, idn):
+#
+#         ch = current_char(self)
+#         if (ch <= '9' and ch >= '0') or ch == '.':
+#             val = self.get_number()
+#             yield (VALUE, val)
+#
+#         if ch == '-':
+#             ch = self.line[self.pos+1]
+#             if ch.isdigit():
+#                 yield (ATOMIC_VALUE, self.get_number())
+#             else:
+#                 skip_char(self)
+#                 yield (ATOMIC_VALUE, self.get_negative_constant())
+#         elif ch == '"':
+#             yield (ATOMIC_VALUE, self.get_string(ch))
+#         elif ch == '{':
+#             self.bc += 1
+#             skip_char(self)
+#             yield (DICT, self.get_dict_value())
+#         elif ch == '[':
+#             self.bs += 1
+#             skip_char(self)
+#             yield (LIST, self.get_list_value())
+#         elif ch == '(':
+#             self.bq += 1
+#             skip_char(self)
+#             yield (TUPLE, self.get_tuple_value())
+#         else:
+#             name = self.try_get_name()
+#             if name is not None:
+#                 ch = current_char(self)
+#
+#                 if ch == '*':
+#                     ch = next_char(self)
+#                     is_multi = 1
+#                 else:
+#                     is_multi = 0
+#
+#                 ch = self.skip_spaces()
+#                 if ch == '{':
+#                     self.bc += 1
+#                     skip_char(self)
+#                     self.moveto_next_token()
+#
+#                     if is_multi:
+#                         yield (COLLECTION, name)
+#                         yield from self.iter_collection(0)
+#                     else:
+#                         yield (COMPLEX_VALUE, name)
+#                         yield from self.iter_complex_value(0)
+#                 elif ch == ':':
+#                     skip_char(self)
+#                     ch = self.moveto_next_token()
+#
+#                     if ch == '.':
+#                         if self.get_dots():
+#                             yield (COMPLEX_VALUE, name)
+#                             yield (END, 0)
+#                         else:
+#                             errors.invalid_value(self)
+#
+#                     if self.is_nl:
+#                         if self.pos > idn:
+#                             if is_multi:
+#                                 yield (COLLECTION, name)
+#                                 yield from self.iter_collection(self.pos)
+#                             else:
+#                                 yield (COMPLEX_VALUE, name)
+#                                 yield from self.iter_complex_value(self.pos)
+#                         else:
+#                             errors.error_indentation(self, idn)
+#                     else:
+#                         errors.error_unexpected_attribute(self, name)
+#                 else:
+#                     yield (ATOMIC_VALUE, self.get_constant_or_string(name))
+#             elif ch == '|':
+#                 yield (ATOMIC_VALUE, self.get_base64())
+#             elif ch == '∞': # \U221E
+#                 skip_char(self)
+#                 yield (ATOMIC_VALUE, self.sbuilder.create_inf())
+#             elif ch == '?':
+#                 skip_char(self)
+#                 if current_char(self) == '?':
+#                     skip_char(self)
+#                     yield (ATOMIC_VALUE, c_undefined)
+#                 else:
+#                     yield (ATOMIC_VALUE,  self.sbuilder.create_nan())
+# #             elif ch == '⊤': # \U22A4
+# #                 skip_char(self)
+# #                 yield (ATOMIC_VALUE, True)
+# #             elif ch == '⊥': # \U22A5
+# #                 skip_char(self)
+# #                 yield (ATOMIC_VALUE, False)
+#             elif ch == '*':
+#                 skip_char(self)
+#                 label = self.try_get_label()
+#                 yield (REFERENCE, label)
+#                 if self.eof:
+#                     errors.error_unexpected_end(self)
+#             elif ch == '&':
+#                 pos0 = self.pos
+#                 skip_char(self)
+#                 label = self.try_get_label()
+#                 yield (LABEL, label)
+#
+#                 self.moveto_next_token()
+#
+#                 yield from self.iter_values(pos0)
+#             elif ch == '#':
+#                 self.skip_comments()
+#                 if self.eof:
+#                     errors.error_unexpected_end(self)
+#                 yield from self.iter_values(idn)
+#             else:
+#                 errors.error_unexpected_value(self, 'expected named complex value')
+#
+#         #if not valid_end_item(self):
+#         #    errors.error_end_item(self)
+#     #
+#     def iter_complex_value(self, idn):
+#         ch = current_char(self)
+#         if ch == '#':
+#             self.skip_comments()
+#
+#         ch = current_char(self)
+#         if ch == '.':
+#             if self.get_dots():
+#                 yield (COMPLEX_VALUE, name)
+#                 yield (END, 0)
+#             else:
+#                 errors.invalid_value(self)
+#
+#         aname = self.try_get_name()
+#
+#         if aname is not None:
+#
+#             ch = current_char(self)
+#             if ch == '*':
+#                 ch = next_char(self)
+#                 is_multi = 1
+#             else:
+#                 is_multi = 0
+#
+#             ch = self.moveto_next_token()
+#
+#             if ch == ':':
+#                 skip_char(self)
+#                 self.moveto_next_token()
+#
+#                 if self.is_nl:
+#                     if self.pos > idn:
+#                         if is_multi:
+#                             yield (COLLECTION, name)
+#                             yield from self.iter_collection(self.pos)
+#                         else:
+#                             yield (COMPLEX_VALUE, name)
+#                             yield from self.iter_complex_value(self.pos)
+#
+#                         yield from self.iter_sequence_mapping(idn)
+#                     else:
+#                         errors.error_indentation(self, idn)
+#                 else:
+#                     yield (ATTRIBUTE, aname)
+#                     yield from self.iter_values(idn)
+#                     yield from self.iter_mapping_sequence(idn)
+#             elif ch == '{':
+#                 self.bc += 1
+#                 skip_char(self)
+#
+#                 ch = self.moveto_next_token()
+#
+#                 if is_multi:
+#                     yield (COLLECTION, aname)
+#                     yield from self.iter_collection(aname, 0)
+#                 else:
+#                     yield (COMPLEX_VALUE, aname)
+#                     yield from self.iter_complex_value(aname, 0)
+#
+#                 yield from self.iter_sequence_mapping(name, sequence, idn)
+#             else:
+#                 yield (ATOMIC_VALUE, self.get_constant_or_string(aname))
+#                 yield from self.get_sequence_mapping(idn)
+#
+#         else:
+#             ch = self.moveto_next_token()
+#
+#             if ch == '}':
+#                 self.bc -= 1
+#                 skip_char(self)
+#
+#                 yield (END, None)
+#             else:
+#                 yield from self.iter_values(idn)
+#                 yield from self.iter_sequence_mapping(idn)
+#

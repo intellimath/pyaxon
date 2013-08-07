@@ -1,5 +1,6 @@
 include setup.py
 include README.rst
+include LICENSE.txt
 include test_all.py
 include test_benchmark.py
 include lib/axon/*.py

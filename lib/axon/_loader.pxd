@@ -100,6 +100,16 @@ cdef inline object dict_get(object op, object key, object default):
 #     else:
 #         raise TypeError('This object %r is not unicode compatible' % ob)
 
+cdef object ATOMIC_VALUE
+cdef object DICT
+cdef object LIST
+cdef object TUPLE
+cdef object COMPLEX_VALUE
+cdef object COLLECTION
+cdef object END
+cdef object REFERENCE
+cdef object LABEL
+
 
 @cython.final
 cdef class Loader:

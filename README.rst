@@ -14,11 +14,11 @@ There is an mirror on `github <https://github.com/intellimath/pyaxon>`_
 Features
 --------
 
-1. Provide a simple API for loading and dumping of objects.
-2. Provide a safe loading and dumping by default.
+1. Provide simple API for loading and dumping of objects.
+2. Provide safe loading and dumping by default.
 3. Provide unsafe loading and dumping of objects on the base of registration of factory/reduce callables.
 4. Provide a way for fully controlled by application/framework/library unsafe loading and dumping.
-5. It's reasonable fast.
+5. It's fast enough to be useful.
 
 Releases
 --------
