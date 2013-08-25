@@ -1,0 +1,16 @@
+# first leaf with label 1
+&1 {
+  id: 1
+  value: "A"
+}
+# second leaf with label 2
+&2 {
+  id: 2
+  value: "B"
+}
+# node with childrens
+{
+  id: 3
+  children: [*1 *2]
+}
+

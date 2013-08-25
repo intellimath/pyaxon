@@ -1287,7 +1287,7 @@ class Loader:
 #         ch = current_char(self)
 #         if (ch <= '9' and ch >= '0') or ch == '.':
 #             val = self.get_number()
-#             yield (VALUE, val)
+#             yield (ATOMIC_VALUE, val)
 #
 #         if ch == '-':
 #             ch = self.line[self.pos+1]
@@ -1477,4 +1477,4 @@ class Loader:
 #             else:
 #                 yield from self.iter_values(idn)
 #                 yield from self.iter_sequence_mapping(idn)
-#
+
