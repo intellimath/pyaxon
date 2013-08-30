@@ -806,7 +806,7 @@ class Loader:
                         if self.get_dots():
                             return self.builder.create_empty(name)
                         else:
-                            errors.invalid_value(self)z
+                            errors.invalid_value(self)
 
                     if self.is_nl:
                         if self.pos > idn:
