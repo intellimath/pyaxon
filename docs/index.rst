@@ -158,12 +158,12 @@ Python pyaxon library
 
 There are introductory `IPython` notebooks:
 
-* `Tutorial <http://nbviewer.ipython.org/url/bitbucket.org/intellimath/pyaxon/raw/default/docs/notebooks/axon_tutorial.ipynb>`_
-* `Examples <http://nbviewer.ipython.org/url/bitbucket.org/intellimath/pyaxon/raw/default/docs/notebooks/axon_examples.ipynb>`_
-* `Patterns <http://nbviewer.ipython.org/url/bitbucket.org/intellimath/pyaxon/raw/default/docs/notebooks/axon_patterns.ipynb>`_
-* `Syntax <http://nbviewer.ipython.org/url/bitbucket.org/intellimath/pyaxon/raw/default/docs/notebooks/axon_syntax.ipynb>`_
-* `What & Why <http://nbviewer.ipython.org/url/bitbucket.org/intellimath/pyaxon/raw/default/docs/notebooks/axon_what.ipynb>`_
-* `Benchmarks <http://nbviewer.ipython.org/url/bitbucket.org/intellimath/pyaxon/raw/default/docs/notebooks/axon_bench.ipynb>`_
+* `Tutorial <notebooks/axon_tutorial.html>`_
+* `Examples <notebooks/axon_examples.html>`_
+* `Patterns <notebooks/axon_patterns.html>`_
+* `Syntax <notebooks/axon_syntax.html>`_
+* `What & Why <notebooks/axon_what.html>`_
+* `Benchmarks <notebooks/axon_bench.html>`_
 
 Repository for ``AXON`` and ``pyaxon`` is `here <https://bitbucket.org/intellimath/pyaxon>`_.
 Here is also `mirror <https://github.com/intellimath/pyaxon>`_.
