@@ -61,7 +61,7 @@ Here is an short example of AXON message:
 .. raw:: html
 
     <table>
-    <tr><td>expression form</td><td>statement form</td></tr>
+    <tr><td><b>formatted expression form</b></td><td><b>statement form</b></td></tr>
     <tr><td><pre>
     axon {
         name: "An eXtended Object Notation"
@@ -78,7 +78,7 @@ Here is an short example of AXON message:
     three"
             date: 2012-12-31
             time: [12:00 12:30:34 12:35:12.000120 12:35+03]
-            datetime: [2012-12-31T12:30:34 2012-12-31T12:35+03]
+            datetime: [2012-12-31T12:30 2012-12-31T12:35+03]
             binary: |UTcJFhV3cl97ZEk+BA0hWggDUj8lbE0bQH5r
     Uy0nNjwmZDpANClsAj4WeDsfCWkcW2Bdc0VNQ
     CQVZCBhXxFGJBpSLGs3HGlcbSdgdH4ab34UBT
@@ -128,7 +128,7 @@ Here is an short example of AXON message:
     three"
             date: 2012-12-31
             time: [12:00 12:30:34 12:35:12.000120 12:35+03]
-            datetime: [2012-12-31T12:30:34 2012-12-31T12:35+03]
+            datetime: [2012-12-31T12:30 2012-12-31T12:35+03]
             binary: |UTcJFhV3cl97ZEk+BA0hWggDUj8lbE0bQH5r
     Uy0nNjwmZDpANClsAj4WeDsfCWkcW2Bdc0VNQ
     CQVZCBhXxFGJBpSLGs3HGlcbSdgdH4ab34UBT
@@ -155,7 +155,22 @@ Here is an short example of AXON message:
                 instance: row:
                     12 2003-12-01 12:00
                     T: 12.1 R:0.5 W:5 D:"W"
-    </pre></td></tr>       
+    </pre></td></tr>
+    <tr><td colspan=2><b>compact expression form</b></td></tr>
+    <tr><td colspan=2><pre>
+    axon{name:"An eXtended Object Notation" python_library:"pyaxon" short_name:"AXON"
+    atomic_values{binary:|UTcJFhV3cl97ZEk+BA0hWggDUj8lbE0bQH5rUy0nNjwmZDpANClsAj4We
+    DsfCWkcW2Bdc0VNQCQVZCBhXxFGJBpSLGs3HGlcbSdgdH4ab34UBTwndTs2MXdSOxIGBgdYclFQYnlDH
+    3NfUSI1LEcHDARDeFcDCBwiPTAZODU=
+    bool:[true false] date:2012-12-31 datetime:[2012-12-31T12:30 2012-12-31T12:35+03]
+    decimal:[10$ 1000.35$ -1.25E+6$] float:[3.1428 1.5e-17] int:[0 -1 17] multiline_string:"one
+    two
+    three" string:"abc абв 中文本" time:[12:00 12:30:34 12:35:12.000120 12:35+03]}
+    complex_values{anonymous{dict:{one:1 three:3 two:2} list:["one" "two" "three"]
+    tuple:("nodes" "edges")} named{element:node{id:1 node{class:"A" id:2} node{class:"B" id:3}}
+    instance:row{12 2003-12-01 12:00 D:"W" R:0.5 T:12.1 W:5} mapping:rgb{blue:64 green:32 red:16}
+    sequence:primes{2 3 5 7 11 13 17 19 23 29 31}}}}
+    </pre></td></tr>
     </table>                    
 
 

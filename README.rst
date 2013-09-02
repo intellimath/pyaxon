@@ -1,5 +1,5 @@
 ======
-pyaxon
+PYAXON
 ======
 
 ``pyaxon`` is an `MIT Licensed <http://opensource.org/licenses/MIT>`_ python library for `AXON <http://axon.intellimath.org>`_ -
@@ -18,7 +18,7 @@ Features
 2. Provide safe loading and dumping by default.
 3. Provide unsafe loading and dumping of objects on the base of registration of factory/reduce callables.
 4. Provide a way for fully controlled by application/framework/library unsafe loading and dumping.
-5. It's fast enough to be useful.
+5. It's sufficiently fast so as to be useful.
 
 History
 -------
