@@ -56,8 +56,13 @@ Creation of ``AXON`` had following objectives:
 ``AXON`` is designed as text based format that has compact form and
 formatted form in both `C` and `Python` style for ease of developers.
 
-Here is an short example of AXON message in expression form::
+Here is an short example of AXON message:
 
+.. raw:: html
+
+    <table>
+    <tr><td>expression form</td><td>statement form</td></tr>
+    <tr><td><pre>
     axon {
         name: "An eXtended Object Notation"
         short_name: "AXON"
@@ -74,9 +79,11 @@ Here is an short example of AXON message in expression form::
             date: 2012-12-31
             time: [12:00 12:30:34 12:35:12.000120 12:35+03]
             datetime: [2012-12-31T12:30:34 2012-12-31T12:35+03]
-            binary: |UTcJFhV3cl97ZEk+BA0hWggDUj8lbE0bQH5rUy0nNjwmZDpANClsAj4WeDsfCW
-    kcW2Bdc0VNQCQVZCBhXxFGJBpSLGs3HGlcbSdgdH4ab34UBTwndTs2MXdSOxIGB
-    gdYclFQYnlDH3NfUSI1LEcHDARDeFcDCBwiPTAZODU=
+            binary: |UTcJFhV3cl97ZEk+BA0hWggDUj8lbE0bQH5r
+    Uy0nNjwmZDpANClsAj4WeDsfCWkcW2Bdc0VNQ
+    CQVZCBhXxFGJBpSLGs3HGlcbSdgdH4ab34UBT
+    wndTs2MXdSOxIGBgdYclFQYnlDH3NfUSI1LEc
+    HDARDeFcDCBwiPTAZODU=
         }
         complex_values {
             anonymous {
@@ -104,10 +111,8 @@ Here is an short example of AXON message in expression form::
             }
         }
     }
-
-
-and in statement form::
-
+    </pre></td>
+    <td><pre>
     axon:
         name: "An eXtended Object Notation"
         short_name: "AXON"
@@ -124,9 +129,11 @@ and in statement form::
             date: 2012-12-31
             time: [12:00 12:30:34 12:35:12.000120 12:35+03]
             datetime: [2012-12-31T12:30:34 2012-12-31T12:35+03]
-            binary: |UTcJFhV3cl97ZEk+BA0hWggDUj8lbE0bQH5rUy0nNjwmZDpANClsAj4WeDsfCW
-    kcW2Bdc0VNQCQVZCBhXxFGJBpSLGs3HGlcbSdgdH4ab34UBTwndTs2MXdSOxIGB
-    gdYclFQYnlDH3NfUSI1LEcHDARDeFcDCBwiPTAZODU=
+            binary: |UTcJFhV3cl97ZEk+BA0hWggDUj8lbE0bQH5r
+    Uy0nNjwmZDpANClsAj4WeDsfCWkcW2Bdc0VNQ
+    CQVZCBhXxFGJBpSLGs3HGlcbSdgdH4ab34UBT
+    wndTs2MXdSOxIGBgdYclFQYnlDH3NfUSI1LEc
+    HDARDeFcDCBwiPTAZODU=
         complex_values:
             anonymous:
                 list: ["one" "two" "three"]
@@ -148,6 +155,8 @@ and in statement form::
                 instance: row:
                     12 2003-12-01 12:00
                     T: 12.1 R:0.5 W:5 D:"W"
+    </pre></td></tr>       
+    </table>                    
 
 
 Python pyaxon library

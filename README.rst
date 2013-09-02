@@ -20,8 +20,14 @@ Features
 4. Provide a way for fully controlled by application/framework/library unsafe loading and dumping.
 5. It's fast enough to be useful.
 
-Releases
---------
+History
+-------
+
+**0.5.6**
+
+1. Fix support for decimal ``Infinity`` and ``NaN``.
+2. Fix support for ``base64`` in ``python2.7``.
+3. Update tutorial notebooks.
 
 **0.5.5**
 

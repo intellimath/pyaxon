@@ -108,8 +108,8 @@ class Loader:
         self.sbuilder = SimpleBuilder()
 
         self.c_constants = c_constants.copy()
-        self.c_constants[c_as_name(c_as_unicode('NaN'))] = self.sbuilder.create_nan()
-        self.c_constants[c_as_name(c_as_unicode('Infinity'))] = self.sbuilder.create_inf()
+        #self.c_constants[c_as_name(c_as_unicode('NaN'))] = self.sbuilder.create_nan()
+        #self.c_constants[c_as_name(c_as_unicode('Infinity'))] = self.sbuilder.create_inf()
 
         if errto is None:
             self.errto = sys.stderr
@@ -511,7 +511,7 @@ class Loader:
         text = get_token(self, pos0)
 
         if ch == '$':
-            next_char(self)
+            skip_char(self)
             return self.sbuilder.create_decimal(text)
 
         if numtype == 1:
@@ -728,6 +728,21 @@ class Loader:
                 break
     #
     def get_constant_or_string(self, name):
+        if name == 'Infinity':
+            ch = current_char(self)
+            if ch == '$':
+                skip_char(self)
+                return self.sbuilder.create_decimal_inf()
+            else:
+                return self.sbuilder.create_inf()
+        elif name == 'NaN':
+            ch = current_char(self)
+            if ch == '$':
+                skip_char(self)
+                return self.sbuilder.create_decimal_nan()
+            else:
+                return self.sbuilder.create_nan()
+            
         name2 = self.c_constants.get(name, c_undefined)
         if name2 is c_undefined:
             return name
@@ -740,12 +755,21 @@ class Loader:
         if ch.isalpha():
             name = self.get_name()
             if name == 'Infinity':
-                return self.sbuilder.create_ninf()
+                ch = current_char(self)
+                if ch == '$':
+                    skip_char(self)
+                    return self.sbuilder.create_decimal_ninf()
+                else:
+                    return self.sbuilder.create_ninf()
             else:
                 errors.error_invalid_value_with_prefix(self, '-')
         elif ch == '∞':
-            skip_char(self)
-            return self.sbuilder.create_ninf()
+            ch = next_char(self)
+            if ch == '$':
+                skip_char(self)
+                return self.sbuilder.create_decimal_ninf()
+            else:
+                return self.sbuilder.create_ninf()
         else:
             errors.error_invalid_value_with_prefix(self, '-')
     #
@@ -823,13 +847,20 @@ class Loader:
             elif ch == '|':
                 val = self.get_base64()
             elif ch == '∞': # \U221E
-                skip_char(self)
-                val = self.sbuilder.create_inf()
+                ch = next_char(self)
+                if ch == '$':
+                    skip_char(self)
+                    val = self.sbuilder.create_decimal_inf()
+                else:
+                    val = self.sbuilder.create_inf()
             elif ch == '?':
-                skip_char(self)
-                if current_char(self) == '?':
+                ch = next_char(self)
+                if ch == '?':
                     skip_char(self)
                     val = c_undefined
+                elif ch == '$':
+                    skip_char(self)
+                    val = self.sbuilder.create_decimal_nan()
                 else:
                     val = self.sbuilder.create_nan()
 #             elif ch == '⊤': # \U22A4

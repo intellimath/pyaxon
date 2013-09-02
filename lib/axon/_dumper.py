@@ -148,9 +148,6 @@ def _dump_unicode(ob):
         text += c_unicode_substr(line, pos0, pos)
     return text + '"'
 
-def _dump_str(line):
-    return _dump_unicode(PyUnicode_FromEncodedObject(line, 'latin1', 'strict'))
-
 def _dump_bool(o):
     #return '⊤' if o else '⊥'
     return 'true' if o else 'false'
@@ -219,6 +216,11 @@ def _dump_int(o):
 
 def _dump_bytes(o):
     text = PyUnicode_FromEncodedObject(encodebytes(o), 'ascii', 'strict')
+    return c_as_unicode('|' + text)
+
+def _dump_str(line):
+    #return _dump_unicode(PyUnicode_FromEncodedObject(line, 'latin1', 'strict'))
+    text = PyUnicode_FromEncodedObject(encodebytes(line), 'ascii', 'strict')
     return c_as_unicode('|' + text)
 
 def _dump_bytearray(o):

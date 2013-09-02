@@ -1042,6 +1042,9 @@ def get_builder(mode):
 _inf = float('inf')
 _ninf = float('-inf')
 _nan = float('nan')
+_decimal_inf = _str2decimal('Infinity')
+_decimal_ninf = _str2decimal('-Infinity')
+_decimal_nan = _str2decimal('NaN')
 
 tz_dict = {}
 
@@ -1101,6 +1104,15 @@ class SimpleBuilder:
 
     def create_nan(self):
         return _nan
+
+    def create_decimal_inf(self):
+        return _decimal_inf
+
+    def create_decimal_ninf(self):
+        return _decimal_ninf
+
+    def create_decimal_nan(self):
+        return _decimal_nan
 
     def create_binary(self, text):
         return decodebytes(text.encode('ascii'))

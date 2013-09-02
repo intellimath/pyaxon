@@ -292,6 +292,9 @@ cdef object _str2decimal
 cdef object _inf
 cdef object _ninf
 cdef object _nan
+cdef object _decimal_inf
+cdef object _decimal_ninf
+cdef object _decimal_nan
 
 cdef dict tz_dict = {}
 
@@ -310,6 +313,9 @@ cdef public class SimpleBuilder[type SimpleBuilderType, object SimpleBuilder]:
     cdef inline object create_inf(self)
     cdef inline object create_ninf(self)
     cdef inline object create_nan(self)
+    cdef inline object create_decimal_inf(self)
+    cdef inline object create_decimal_ninf(self)
+    cdef inline object create_decimal_nan(self)
     cdef inline object create_binary(self, unicode text)
 
 
