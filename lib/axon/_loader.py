@@ -524,6 +524,11 @@ class Loader:
         ch = next_char(self)
         while ch.isalnum() or ch == '_' or ch == '-':
             ch = next_char(self)
+            
+        if ch == '.':
+            ch = next_char(self)
+            while ch.isalnum() or ch == '_' or ch == '-':
+                ch = next_char(self)
 
         name0 = get_token(self, pos0)
         name = dict_get(name_cache, name0, None)

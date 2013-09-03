@@ -77,7 +77,7 @@ Here is an short example of AXON message:
     two
     three"
             date: 2012-12-31
-            time: [12:00 12:30:34 12:35:12.000120 12:35+03]
+            time: [12:30:34 12:35:12.000120 12:35+03]
             datetime: [2012-12-31T12:30 2012-12-31T12:35+03]
             binary: |UTcJFhV3cl97ZEk+BA0hWggDUj8lbE0bQH5r
     Uy0nNjwmZDpANClsAj4WeDsfCWkcW2Bdc0VNQ
@@ -127,7 +127,7 @@ Here is an short example of AXON message:
     two
     three"
             date: 2012-12-31
-            time: [12:00 12:30:34 12:35:12.000120 12:35+03]
+            time: [12:30:34 12:35:12.000120 12:35+03]
             datetime: [2012-12-31T12:30 2012-12-31T12:35+03]
             binary: |UTcJFhV3cl97ZEk+BA0hWggDUj8lbE0bQH5r
     Uy0nNjwmZDpANClsAj4WeDsfCWkcW2Bdc0VNQ
@@ -165,7 +165,7 @@ Here is an short example of AXON message:
     bool:[true false] date:2012-12-31 datetime:[2012-12-31T12:30 2012-12-31T12:35+03]
     decimal:[10$ 1000.35$ -1.25E+6$] float:[3.1428 1.5e-17] int:[0 -1 17] multiline_string:"one
     two
-    three" string:"abc абв 中文本" time:[12:00 12:30:34 12:35:12.000120 12:35+03]}
+    three" string:"abc абв 中文本" time:[12:30:34 12:35:12.000120 12:35+03]}
     complex_values{anonymous{dict:{one:1 three:3 two:2} list:["one" "two" "three"]
     tuple:("nodes" "edges")} named{element:node{id:1 node{class:"A" id:2} node{class:"B" id:3}}
     instance:row{12 2003-12-01 12:00 D:"W" R:0.5 T:12.1 W:5} mapping:rgb{blue:64 green:32 red:16}

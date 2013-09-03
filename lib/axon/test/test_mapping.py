@@ -117,6 +117,12 @@ aaa:
   d:
     4''')
     #
+    def test_mapping_dotted_names(self):
+        l = {'en.a':1, 'ru.a':2}
+        v = mapping('example.aaa', l)
+        self.assertEqual(v.mapping, {'en.a':1, 'ru.a':2})
+        self.assertEqual(v.name, 'example.aaa')
+    #
 
 def suite():
     suite = unittest.TestSuite()
