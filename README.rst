@@ -28,7 +28,6 @@ History
 1. Fix support for decimal ``Infinity`` and ``NaN``.
 2. Fix support for ``base64`` in ``python2.7``.
 3. Add support for complex names like ``a.b.c.d``.
-4. Update tutorial notebooks.
 
 **0.5.5**
 
