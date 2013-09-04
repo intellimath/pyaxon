@@ -88,12 +88,12 @@ by several rules of composition:
 
     <tr><td>dictionary</td><td>{ <b>K</b>:<b>V</b> … <b>K</b>:<b>V</b> }</td>
     <td><pre>
-    {"alpha":1 "beta":2 "gamma":3}
+    {alpha:1 beta:2 gamma:3 "other chars":4}
     </pre></td></tr>
    
-    <tr><td>mapping</td><td><b>N</b> { <b>K</b>:<b>V</b> … <b>K</b>:<b>V</b> }</td>
+    <tr><td>mapping</td><td><b>N</b> { <b>N</b>:<b>V</b> … <b>N</b>:<b>V</b> }</td>
     <td><pre>
-    greek {"alpha":123 "beta":212 "gamma":322}
+    greek {alpha:123 beta:212 gamma:322}
     </pre></td></tr>
 
     <tr><td>sequence</td><td><b>N</b> { <b>V</b> … <b>V</b> }</td>
@@ -101,14 +101,19 @@ by several rules of composition:
     primes {2 3 5 7 11 13 17 19 23}
     </pre></td></tr>
 
-    <tr><td>element</td><td><b>N</b> { <b>K</b>:<b>V</b> … <b>K</b>:<b>V</b> <b>V</b> … <b>V</b> }</td>
+    <tr><td>element</td><td><b>N</b> { <b>N</b>:<b>V</b> … <b>N</b>:<b>V</b> <b>V</b> … <b>V</b> }</td>
     <td><pre>
     node {id:1 node{id:2 "AAA"} node{id:3 "BBB"}}
     </pre></td></tr>
    
-    <tr><td>instance</td><td><b>N</b> { <b>V</b> … <b>V</b> <b>K</b>:<b>V</b> … <b>K</b>:<b>V</b> }</td>
+    <tr><td>instance</td><td><b>N</b> { <b>V</b> … <b>V</b> <b>N</b>:<b>V</b> … <b>N</b>:<b>V</b> }</td>
     <td><pre>
     datarow { 1 2003-12-01T12:30 T:12.5 R:0.95 W:11 D:"NW"}
+    </pre></td></tr>
+
+    <tr><td>empty</td><td><b>N</b> { }</td>
+    <td><pre>
+    empty { }
     </pre></td></tr>
     </table>
 
