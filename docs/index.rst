@@ -56,7 +56,52 @@ Creation of ``AXON`` had following objectives:
 ``AXON`` is designed as text based format that has compact form and
 formatted form in both `C` and `Python` style for ease of developers.
 
-Here is an short example of AXON message:
+AXON is an object notation for data, which are composed from atomic values
+by several rules of composition of values:
+
+.. raw:: html
+
+    <table>
+    <thead><th>Name</th><th>Rule</th><th>Example</th></thead>
+    <tr><td>list</td><td>[ <b>V</b> … <b>V</b> ]</td>
+    <td><pre>
+    [1 3.14 3.25$ -∞ ?]
+    </pre></td></tr>
+
+    <tr><td>tuple</td><td>( <b>V</b> … <b>V</b> )</td>
+    <td><pre>
+    (true 12:00 2001-12-31 2001-12-31T12:00)
+    </pre></td></tr>
+
+    <tr><td>dictionary</td><td>{ <b>K</b>:<b>V</b> … <b>K</b>:<b>V</b> }</td>
+    <td><pre>
+    {"alpha":1 "beta":2 "gamma":3}
+    </pre></td></tr>
+   
+    <tr><td>mapping</td><td><b>N</b> { <b>K</b>:<b>V</b> … <b>K</b>:<b>V</b> }</td>
+    <td><pre>
+    greek {"alpha":123 "beta":212 "gamma":322}
+    </pre></td></tr>
+
+    <tr><td>sequence</td><td><b>N</b> { <b>V</b> … <b>V</b> }</td>
+    <td><pre>
+    primes {2 3 5 7 11 13 17 19 23}
+    </pre></td></tr>
+
+    <tr><td>element</td><td><b>N</b> { <b>K</b>:<b>V</b> … <b>K</b>:<b>V</b> <b>V</b> … <b>V</b> }</td>
+    <td><pre>
+    node {id:1 node{id:2 "AAA"} node{id:3 "BBB"}}
+    </pre></td></tr>
+   
+    <tr><td>instance</td><td><b>N</b> { <b>V</b> … <b>V</b> <b>K</b>:<b>V</b> … <b>K</b>:<b>V</b> }</td>
+    <td><pre>
+    datarow { 1 2003-12-01T12:30 T:12.5 R:0.95 W:11 D:"NW"}
+    </pre></td></tr>
+    </table>
+
+where **N** denotes a *name*, **K** denotes a *key*, **V** denotes a *value*.
+
+Here is an example of ``AXON`` message:
 
 .. raw:: html
 
