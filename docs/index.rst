@@ -56,12 +56,25 @@ Creation of ``AXON`` had following objectives:
 ``AXON`` is designed as text based format that has compact form and
 formatted form in both `C` and `Python` style for ease of developers.
 
-AXON is an object notation for data, which are composed from atomic values
-by several rules of composition of values:
+``AXON`` is an object notation for data, which are composed from atomic values
+by several rules of composition:
 
 .. raw:: html
 
     <table>
+    <style type="text/css">
+    table {
+     /*border: 1px solid black;*/
+    }
+    td, th {
+     padding: 5px;
+    }
+    th {
+     text-align: left;
+     background: black;
+     color: white;
+    }
+    </style>
     <thead><th>Name</th><th>Rule</th><th>Example</th></thead>
     <tr><td>list</td><td>[ <b>V</b> … <b>V</b> ]</td>
     <td><pre>
@@ -106,7 +119,7 @@ Here is an example of ``AXON`` message:
 .. raw:: html
 
     <table>
-    <tr><td><b>formatted expression form</b></td><td><b>statement form</b></td></tr>
+    <tr><th>formatted expression form</th><th>statement form</th></tr>
     <tr><td><pre>
     axon {
         name: "An eXtended Object Notation"
@@ -201,7 +214,7 @@ Here is an example of ``AXON`` message:
                     12 2003-12-01 12:00
                     T: 12.1 R:0.5 W:5 D:"W"
     </pre></td></tr>
-    <tr><td colspan=2><b>compact expression form</b></td></tr>
+    <tr><th colspan=2>compact expression form</th></tr>
     <tr><td colspan=2><pre>
     axon{name:"An eXtended Object Notation" python_library:"pyaxon" short_name:"AXON"
     atomic_values{binary:|UTcJFhV3cl97ZEk+BA0hWggDUj8lbE0bQH5rUy0nNjwmZDpANClsAj4We
