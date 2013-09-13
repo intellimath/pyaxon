@@ -23,6 +23,10 @@ Features
 History
 -------
 
+**0.5.7**
+
+1. Refine indentation control when loading complex objects in indented form.
+
 **0.5.6**
 
 1. Fix support for decimal ``Infinity`` and ``NaN``.
