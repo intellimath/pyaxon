@@ -140,7 +140,7 @@ class Loader:
             if self.errto != sys.stderr:
                 self.errto.close()
             raise StopIteration
-        return self.get_value(0)
+        return self.get_value(0, 0)
     #
     def _check_pairs(self):
         if self.bc > 0:
@@ -171,7 +171,7 @@ class Loader:
                     self.errto.close()
                 break
 
-            val = self.get_value(0)
+            val = self.get_value(0, 0)
             sequence.append(val)
 
         return sequence
@@ -778,8 +778,12 @@ class Loader:
         else:
             errors.error_invalid_value_with_prefix(self, '-')
     #
-    def get_value(self, idn):
+    def get_value(self, idn, prev_idn):
 
+        #if idn:
+        #    if (self.is_nl and self.pos != idn) or self.pos < idn:
+        #        errors.error_indentation(self, idn)
+            
         ch = current_char(self)
         if (ch <= '9' and ch >= '0') or ch == '.':
             val = self.get_number()
@@ -824,9 +828,9 @@ class Loader:
                     self.moveto_next_token()
 
                     if is_multi:
-                        val = self.get_collection(name, 0)
+                        val = self.get_collection(name, 0, idn)
                     else:
-                        val = self.get_complex_value(name, 0)
+                        val = self.get_complex_value(name, 0, idn)
                 elif ch == ':':
                     skip_char(self)
                     ch = self.moveto_next_token()
@@ -840,9 +844,9 @@ class Loader:
                     if self.is_nl:
                         if self.pos > idn:
                             if is_multi:
-                                val = self.get_collection(name, self.pos)
+                                val = self.get_collection(name, self.pos, idn)
                             else:
-                                val = self.get_complex_value(name, self.pos)
+                                val = self.get_complex_value(name, self.pos, idn)
                         else:
                             errors.error_indentation(self, idn)
                     else:
@@ -890,13 +894,13 @@ class Loader:
 
                 self.moveto_next_token()
 
-                val = self.get_value(pos0)
+                val = self.get_value(pos0, idn)
                 self.labeled_objects[label] = val
             elif ch == '#':
                 self.skip_comments()
                 if self.eof:
                     errors.error_unexpected_end(self)
-                val = self.get_value(idn)
+                val = self.get_value(idn, prev_idn)
             else:
                 errors.error_unexpected_value(self, 'expected named complex value')
 
@@ -905,7 +909,7 @@ class Loader:
 
         return val
     #
-    def get_collection(self, name, idn):
+    def get_collection(self, name, idn, prev_idn):
         values = []
         while 1:
             ch = current_char(self)
@@ -921,17 +925,17 @@ class Loader:
             if idn:
                 if self.pos == idn:
                     pass
-                elif self.pos < idn or self.eof or ch == '}' or ch == ']' or ch == ')':
+                elif self.pos <= prev_idn or self.eof or ch == '}' or ch == ']' or ch == ')':
                     return c_new_collection(name, values)
-                #elif self.pos > idn and self.is_nl:
-                #    errors.error_indentation(self, idn)
+                elif self.is_nl:
+                    errors.error_indentation(self, idn)
 
             if ch == '{':
                 self.bc += 1
                 skip_char(self)
                 self.moveto_next_token()
 
-                val = self.get_complex_value(name, 0)
+                val = self.get_complex_value(name, 0, idn)
 
                 if label:
                     self.labeled_objects[label] = val
@@ -949,8 +953,8 @@ class Loader:
 
                 if self.is_nl:
                     if self.pos > idn:
-                        pos0 = self.pos
-                        val = self.get_complex_value(name, pos0)
+                        #pos0 = self.pos
+                        val = self.get_complex_value(name, self.pos, idn)
                     else:
                         errors.error_indentation(self, idn)
                 else:
@@ -972,7 +976,7 @@ class Loader:
             ch = self.skip_spaces()
 
     #
-    def get_complex_value(self, name, idn):
+    def get_complex_value(self, name, idn, prev_idn):
         ch = current_char(self)
         if ch == '#':
             self.skip_comments()
@@ -1004,16 +1008,16 @@ class Loader:
                 if self.is_nl:
                     if self.pos > idn:
                         if is_multi:
-                            sequence =  [self.get_collection(aname, self.pos)]
+                            sequence =  [self.get_collection(aname, self.pos, idn)]
                         else:
-                            sequence = [self.get_complex_value(aname, self.pos)]
+                            sequence = [self.get_complex_value(aname, self.pos, idn)]
 
-                        val = self.get_sequence_mapping(name, sequence, idn)
+                        val = self.get_sequence_mapping(name, sequence, idn, prev_idn)
                     else:
                         errors.error_indentation(self, idn)
                 else:
-                    mapping = {aname: self.get_value(idn)}
-                    val = self.get_mapping_sequence(name, mapping, idn)
+                    mapping = {aname: self.get_value(idn, prev_idn)}
+                    val = self.get_mapping_sequence(name, mapping, idn, prev_idn)
             elif ch == '{':
                 self.bc += 1
                 skip_char(self)
@@ -1021,14 +1025,14 @@ class Loader:
                 ch = self.moveto_next_token()
 
                 if is_multi:
-                    sequence = [self.get_collection(aname, 0)]
+                    sequence = [self.get_collection(aname, 0, idn)]
                 else:
-                    sequence = [self.get_complex_value(aname, 0)]
+                    sequence = [self.get_complex_value(aname, 0, idn)]
 
-                val = self.get_sequence_mapping(name, sequence, idn)
+                val = self.get_sequence_mapping(name, sequence, idn, prev_idn)
             else:
                 sequence = [self.get_constant_or_string(aname)]
-                val = self.get_sequence_mapping(name, sequence, idn)
+                val = self.get_sequence_mapping(name, sequence, idn, prev_idn)
 
         else:
             ch = self.moveto_next_token()
@@ -1039,16 +1043,16 @@ class Loader:
 
                 val = self.builder.create_empty(name)
             else:
-                sequence = [self.get_value(idn)]
-                val = self.get_sequence_mapping(name, sequence, idn)
+                sequence = [self.get_value(idn, prev_idn)]
+                val = self.get_sequence_mapping(name, sequence, idn, prev_idn)
 
         return val
     #
-    def get_sequence_mapping(self, name, sequence, idn):
+    def get_sequence_mapping(self, name, sequence, idn, prev_idn):
         mapping = {}
-        v = self.get_sequence_part(sequence, mapping, idn)
+        v = self.get_sequence_part(sequence, mapping, idn, prev_idn)
         if v:
-            v = self.get_mapping_part(mapping, None, idn)
+            v = self.get_mapping_part(mapping, None, idn, prev_idn)
             if v:
                 errors.error_unexpected_value(self, 'in named sequence-like structure')
 
@@ -1058,9 +1062,9 @@ class Loader:
 
         return val
     #
-    def get_empty_sequence(self, name, sequence, idn):
+    def get_empty_sequence(self, name, sequence, idn, prev_idn):
         mapping = {}
-        v = self.get_mapping_part(mapping, None, idn)
+        v = self.get_mapping_part(mapping, None, idn, prev_idn)
         if v:
             errors.error_unexpected_value(self, 'in named element-like structure')
 
@@ -1068,11 +1072,11 @@ class Loader:
 
         return val
     #
-    def get_mapping_sequence(self, name, mapping, idn):
+    def get_mapping_sequence(self, name, mapping, idn, prev_idn):
         sequence = []
-        v = self.get_mapping_part(mapping, sequence, idn)
+        v = self.get_mapping_part(mapping, sequence, idn, prev_idn)
         if v:
-            v = self.get_sequence_part(sequence, None, idn)
+            v = self.get_sequence_part(sequence, None, idn, prev_idn)
             if v:
                 errors.error_unexpected_value(self, 'in named mapping-like structure')
 
@@ -1082,9 +1086,9 @@ class Loader:
 
         return val
     #
-    def get_empty_mapping(self, name, mapping, idn):
+    def get_empty_mapping(self, name, mapping, idn, prev_idn):
         sequence = []
-        v = self.get_sequence_part(sequence, None, idn)
+        v = self.get_sequence_part(sequence, None, idn, prev_idn)
         if v:
             errors.error_unexpected_value(self, 'in named instance-like structure')
 
@@ -1096,25 +1100,25 @@ class Loader:
 
         sequence = []
 
-        self.moveto_next_token()
+        ch = self.moveto_next_token()
 
         while 1:
-            ch = current_char(self)
+            #ch = current_char(self)
             if ch == ']':
                 skip_char(self)
                 self.bs -= 1
                 return sequence
 
-            val = self.get_value(0)
+            val = self.get_value(0, 0)
             sequence.append(val)
 
-            self.moveto_next_token()
+            ch = self.moveto_next_token()
 
             if self.json:
                 ch = current_char(self)
                 if ch == ',':
                     skip_char(self)
-                    self.moveto_next_token()
+                    ch = self.moveto_next_token()
     #
     def get_tuple_value(self):
 
@@ -1130,7 +1134,7 @@ class Loader:
                 self.bq -= 1
                 return tuple(sequence)
 
-            val = self.get_value(0)
+            val = self.get_value(0, 0)
             sequence.append(val)
 
             ch = self.moveto_next_token()
@@ -1151,7 +1155,7 @@ class Loader:
                     skip_char(self)
                     self.moveto_next_token()
 
-                    val = self.get_value(0)
+                    val = self.get_value(0, 0)
                     mapping[key] = val
                 else:
                     errors.error_dict_value(self)
@@ -1171,7 +1175,7 @@ class Loader:
                     skip_char(self)
                     self.moveto_next_token()
     #
-    def get_mapping_part(self, mapping, sequence, idn):
+    def get_mapping_part(self, mapping, sequence, idn, prev_idn):
 
         while 1:
             ch = self.skip_spaces()
@@ -1179,10 +1183,10 @@ class Loader:
             if idn:
                 if self.pos == idn:
                     pass
-                elif self.pos < idn or self.eof or ch == '}' or ch == ']':
+                elif self.pos <= prev_idn or self.eof or ch == '}' or ch == ']':
                     return 0
-                #elif self.pos > idn and self.is_nl:
-                #    errors.error_indentation(self, idn)
+                else: # self.is_nl:
+                    errors.error_indentation(self, idn)
             elif self.eof:
                 errors.error_unexpected_end(self)
 
@@ -1207,14 +1211,14 @@ class Loader:
                     if self.is_nl and self.pos > idn:
                         if sequence is not None:
                             if is_multi:
-                                val =  self.get_collection(name, self.pos)
+                                val =  self.get_collection(name, self.pos, idn)
                             else:
-                                val = self.get_complex_value(name, self.pos)
+                                val = self.get_complex_value(name, self.pos, idn)
 
                             sequence.append(val)
                         return 1
 
-                    val = self.get_value(idn)
+                    val = self.get_value(idn, prev_idn)
                     mapping[name] = val
                 elif ch == '{':
                     self.bc += 1
@@ -1224,9 +1228,9 @@ class Loader:
 
                     if sequence is not None:
                         if is_multi:
-                            val = self.get_collection(name, 0)
+                            val = self.get_collection(name, 0, idn)
                         else:
-                            val = self.get_complex_value(name, 0)
+                            val = self.get_complex_value(name, 0, idn)
                         sequence.append(val)
 
                     return 1
@@ -1243,11 +1247,11 @@ class Loader:
                     return 0
                 else:
                     if sequence is not None:
-                        val = self.get_value(idn)
+                        val = self.get_value(idn, prev_idn)
                         sequence.append(val)
                     return 1
     #
-    def get_sequence_part(self, sequence, mapping, idn):
+    def get_sequence_part(self, sequence, mapping, idn, prev_idn):
 
         while 1:
             ch = self.skip_spaces()
@@ -1255,9 +1259,9 @@ class Loader:
             if idn:
                 if self.pos == idn:
                     pass
-                elif self.pos < idn or self.eof or ch == '}' or ch == ']':
+                elif self.pos <= prev_idn or self.eof or ch == '}' or ch == ']':
                     return 0
-                elif self.pos > idn and self.is_nl:
+                elif self.is_nl: # self.pos > idn:
                     errors.error_indentation(self, idn)
             elif self.eof:
                 errors.error_unexpected_end(self)
@@ -1282,15 +1286,15 @@ class Loader:
 
                     if self.is_nl and self.pos > idn:
                         if is_multi:
-                            val =  self.get_collection(name, self.pos)
+                            val =  self.get_collection(name, self.pos, idn)
                         else:
-                            val = self.get_complex_value(name, self.pos)
+                            val = self.get_complex_value(name, self.pos, idn)
 
                         sequence.append(val)
                         continue
 
                     if mapping is not None:
-                        val = self.get_value(idn)
+                        val = self.get_value(idn, prev_idn)
                         mapping[name] = val
                     return 1
                 elif ch == '{':
@@ -1300,9 +1304,9 @@ class Loader:
                     self.moveto_next_token()
 
                     if is_multi:
-                        val = self.get_collection(name, 0)
+                        val = self.get_collection(name, 0, idn)
                     else:
-                        val = self.get_complex_value(name, 0)
+                        val = self.get_complex_value(name, 0, idn)
 
                     sequence.append(val)
                 else:
@@ -1315,7 +1319,7 @@ class Loader:
                     self.bc -= 1
                     return 0
                 else:
-                    val = self.get_value(idn)
+                    val = self.get_value(idn, prev_idn)
                     sequence.append(val)
     #
 #     def iter_values(self, idn):

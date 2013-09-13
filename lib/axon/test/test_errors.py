@@ -117,6 +117,111 @@ class LoaderErrorTestCase(unittest.TestCase):
         except LoaderError:
             pass
 
+    def test_invalid_indent_1(self):
+        text = \
+'''
+aaa:
+    a:1
+      b: 2
+'''
+        try:
+            vs = loads(text)
+        except LoaderError:
+            pass
+
+    def test_invalid_indent_2(self):
+        text = \
+'''
+aaa:
+    100
+  200
+'''
+        try:
+            vs = loads(text)
+        except LoaderError:
+            pass
+
+    def test_invalid_indent_3(self):
+        text = \
+'''
+aaa:
+    a:1
+  b: 2
+'''
+        try:
+            vs = loads(text)
+        except LoaderError:
+            pass
+
+    def test_invalid_indent_4(self):
+        text = \
+'''
+aaa:
+    100
+      200
+'''
+        try:
+            vs = loads(text)
+        except LoaderError:
+            pass
+
+#
+#
+#
+
+    def test_invalid_indent_11(self):
+        text = \
+'''
+aaa:
+    bbb:
+        a:1
+          b: 2
+'''
+        try:
+            vs = loads(text)
+        except LoaderError:
+            pass
+
+    def test_invalid_indent_12(self):
+        text = \
+'''
+aaa:
+    bbb:
+        100
+      200
+'''
+        try:
+            vs = loads(text)
+        except LoaderError:
+            pass
+
+    def test_invalid_indent_13(self):
+        text = \
+'''
+aaa:
+    bbb:
+        a:1
+      b: 2
+'''
+        try:
+            vs = loads(text)
+        except LoaderError:
+            pass
+
+    def test_invalid_indent_14(self):
+        text = \
+'''
+aaa:
+    bbb:
+        100
+          200
+'''
+        try:
+            vs = loads(text)
+        except LoaderError:
+            pass
+
+
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(LoaderErrorTestCase))
