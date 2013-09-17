@@ -815,11 +815,11 @@ class Loader:
             if name is not None:
                 ch = current_char(self)
 
-                if ch == '*':
-                    ch = next_char(self)
-                    is_multi = 1
-                else:
-                    is_multi = 0
+                #if ch == '*':
+                #    ch = next_char(self)
+                #    is_multi = 1
+                #else:
+                #    is_multi = 0
 
                 ch = self.skip_spaces()
                 if ch == '{':
@@ -827,10 +827,10 @@ class Loader:
                     skip_char(self)
                     self.moveto_next_token()
 
-                    if is_multi:
-                        val = self.get_collection(name, 0, idn)
-                    else:
-                        val = self.get_complex_value(name, 0, idn)
+                    #if is_multi:
+                    #    val = self.get_collection(name, 0, idn)
+                    #else:
+                    val = self.get_complex_value(name, 0, idn)
                 elif ch == ':':
                     skip_char(self)
                     ch = self.moveto_next_token()
@@ -843,10 +843,10 @@ class Loader:
 
                     if self.is_nl:
                         if self.pos > idn:
-                            if is_multi:
-                                val = self.get_collection(name, self.pos, idn)
-                            else:
-                                val = self.get_complex_value(name, self.pos, idn)
+                            #if is_multi:
+                            #    val = self.get_collection(name, self.pos, idn)
+                            #else:
+                            val = self.get_complex_value(name, self.pos, idn)
                         else:
                             errors.error_indentation(self, idn)
                     else:
@@ -909,72 +909,71 @@ class Loader:
 
         return val
     #
-    def get_collection(self, name, idn, prev_idn):
-        values = []
-        while 1:
-            ch = current_char(self)
-
-            label = None
-            if ch == '&':
-                skip_char(self)
-
-                label = self.try_get_label()
-
-                ch = self.moveto_next_token()
-
-            if idn:
-                if self.pos == idn:
-                    pass
-                elif self.pos <= prev_idn or self.eof or ch == '}' or ch == ']' or ch == ')':
-                    return c_new_collection(name, values)
-                elif self.is_nl:
-                    errors.error_indentation(self, idn)
-
-            if ch == '{':
-                self.bc += 1
-                skip_char(self)
-                self.moveto_next_token()
-
-                val = self.get_complex_value(name, 0, idn)
-
-                if label:
-                    self.labeled_objects[label] = val
-
-                values.append(val)
-            elif ch == ':':
-                skip_char(self)
-                ch = self.moveto_next_token()
-
-                if ch == '.':
-                    if self.get_dots():
-                        return self.builder.create_empty(name)
-                    else:
-                        errors.invalid_value(self)
-
-                if self.is_nl:
-                    if self.pos > idn:
-                        #pos0 = self.pos
-                        val = self.get_complex_value(name, self.pos, idn)
-                    else:
-                        errors.error_indentation(self, idn)
-                else:
-                    errors.error_unexpected_attribute(self, name)
-
-                if label:
-                    self.labeled_objects[label] = val
-
-                values.append(val)
-            elif ch == '}':
-                self.bc -= 1
-                skip_char(self)
-
-                return c_new_collection(name, values)
-
-            else:
-                errors.error(self, "Expected '{' or ':' here")
-
-            ch = self.skip_spaces()
-
+#     def get_collection(self, name, idn, prev_idn):
+#         values = []
+#         while 1:
+#             ch = current_char(self)
+# 
+#             label = None
+#             if ch == '&':
+#                 skip_char(self)
+# 
+#                 label = self.try_get_label()
+# 
+#                 ch = self.moveto_next_token()
+# 
+#             if idn:
+#                 if self.pos == idn:
+#                     pass
+#                 elif self.pos <= prev_idn or self.eof or ch == '}' or ch == ']' or ch == ')':
+#                     return c_new_collection(name, values)
+#                 elif self.is_nl:
+#                     errors.error_indentation(self, idn)
+# 
+#             if ch == '{':
+#                 self.bc += 1
+#                 skip_char(self)
+#                 self.moveto_next_token()
+# 
+#                 val = self.get_complex_value(name, 0, idn)
+# 
+#                 if label:
+#                     self.labeled_objects[label] = val
+# 
+#                 values.append(val)
+#             elif ch == ':':
+#                 skip_char(self)
+#                 ch = self.moveto_next_token()
+# 
+#                 if ch == '.':
+#                     if self.get_dots():
+#                         return self.builder.create_empty(name)
+#                     else:
+#                         errors.invalid_value(self)
+# 
+#                 if self.is_nl:
+#                     if self.pos > idn:
+#                         #pos0 = self.pos
+#                         val = self.get_complex_value(name, self.pos, idn)
+#                     else:
+#                         errors.error_indentation(self, idn)
+#                 else:
+#                     errors.error_unexpected_attribute(self, name)
+# 
+#                 if label:
+#                     self.labeled_objects[label] = val
+# 
+#                 values.append(val)
+#             elif ch == '}':
+#                 self.bc -= 1
+#                 skip_char(self)
+# 
+#                 return c_new_collection(name, values)
+# 
+#             else:
+#                 errors.error(self, "Expected '{' or ':' here")
+# 
+#             ch = self.skip_spaces()
     #
     def get_complex_value(self, name, idn, prev_idn):
         ch = current_char(self)
@@ -992,12 +991,12 @@ class Loader:
 
         if aname is not None:
 
-            ch = current_char(self)
-            if ch == '*':
-                ch = next_char(self)
-                is_multi = 1
-            else:
-                is_multi = 0
+            #ch = current_char(self)
+            #if ch == '*':
+            #    ch = next_char(self)
+            #    is_multi = 1
+            #else:
+            #    is_multi = 0
 
             ch = self.moveto_next_token()
 
@@ -1007,11 +1006,10 @@ class Loader:
 
                 if self.is_nl:
                     if self.pos > idn:
-                        if is_multi:
-                            sequence =  [self.get_collection(aname, self.pos, idn)]
-                        else:
-                            sequence = [self.get_complex_value(aname, self.pos, idn)]
-
+                        #if is_multi:
+                        #    sequence =  [self.get_collection(aname, self.pos, idn)]
+                        #else:
+                        sequence = [self.get_complex_value(aname, self.pos, idn)]
                         val = self.get_sequence_mapping(name, sequence, idn, prev_idn)
                     else:
                         errors.error_indentation(self, idn)
@@ -1024,11 +1022,10 @@ class Loader:
 
                 ch = self.moveto_next_token()
 
-                if is_multi:
-                    sequence = [self.get_collection(aname, 0, idn)]
-                else:
-                    sequence = [self.get_complex_value(aname, 0, idn)]
-
+                #if is_multi:
+                #    sequence = [self.get_collection(aname, 0, idn)]
+                #else:
+                sequence = [self.get_complex_value(aname, 0, idn)]
                 val = self.get_sequence_mapping(name, sequence, idn, prev_idn)
             else:
                 sequence = [self.get_constant_or_string(aname)]
@@ -1194,12 +1191,12 @@ class Loader:
 
             if name is not None:
 
-                ch = current_char(self)
-                if ch == '*':
-                    ch = next_char(self)
-                    is_multi = 1
-                else:
-                    is_multi = 0
+                #ch = current_char(self)
+                #if ch == '*':
+                #    ch = next_char(self)
+                #    is_multi = 1
+                #else:
+                #    is_multi = 0
 
                 ch = self.skip_spaces()
 
@@ -1210,11 +1207,10 @@ class Loader:
 
                     if self.is_nl and self.pos > idn:
                         if sequence is not None:
-                            if is_multi:
-                                val =  self.get_collection(name, self.pos, idn)
-                            else:
-                                val = self.get_complex_value(name, self.pos, idn)
-
+                            #if is_multi:
+                            #    val =  self.get_collection(name, self.pos, idn)
+                            #else:
+                            val = self.get_complex_value(name, self.pos, idn)
                             sequence.append(val)
                         return 1
 
@@ -1227,10 +1223,10 @@ class Loader:
                     self.moveto_next_token()
 
                     if sequence is not None:
-                        if is_multi:
-                            val = self.get_collection(name, 0, idn)
-                        else:
-                            val = self.get_complex_value(name, 0, idn)
+                        #if is_multi:
+                        #    val = self.get_collection(name, 0, idn)
+                        #else:
+                        val = self.get_complex_value(name, 0, idn)
                         sequence.append(val)
 
                     return 1
@@ -1270,12 +1266,12 @@ class Loader:
 
             if name is not None:
 
-                ch = current_char(self)
-                if ch == '*':
-                    skip_char(self)
-                    is_multi = 1
-                else:
-                    is_multi = 0
+                #ch = current_char(self)
+                #if ch == '*':
+                #    skip_char(self)
+                #    is_multi = 1
+                #else:
+                #    is_multi = 0
 
                 ch = self.skip_spaces()
 
@@ -1285,11 +1281,10 @@ class Loader:
                     self.moveto_next_token()
 
                     if self.is_nl and self.pos > idn:
-                        if is_multi:
-                            val =  self.get_collection(name, self.pos, idn)
-                        else:
-                            val = self.get_complex_value(name, self.pos, idn)
-
+                        #if is_multi:
+                        #    val =  self.get_collection(name, self.pos, idn)
+                        #else:
+                        val = self.get_complex_value(name, self.pos, idn)
                         sequence.append(val)
                         continue
 
@@ -1303,11 +1298,10 @@ class Loader:
 
                     self.moveto_next_token()
 
-                    if is_multi:
-                        val = self.get_collection(name, 0, idn)
-                    else:
-                        val = self.get_complex_value(name, 0, idn)
-
+                    #if is_multi:
+                    #    val = self.get_collection(name, 0, idn)
+                    #else:
+                    val = self.get_complex_value(name, 0, idn)
                     sequence.append(val)
                 else:
                     val = self.get_constant_or_string(name)

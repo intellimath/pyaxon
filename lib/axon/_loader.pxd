@@ -187,7 +187,7 @@ cdef class Loader:
                    sign=int, v=int, minutes=int)
     cdef object get_tzinfo(Loader self)
 
-    @cython.locals(ch=Py_UCS4, pos0=int, text=unicode, numtype=bint)
+    @cython.locals(ch=Py_UCS4, pos0=int, text=unicode, numtype=bint, v=bint)
     cdef object get_number(Loader self)
 
     @cython.locals(ch=Py_UCS4, pos0=int)
@@ -230,9 +230,9 @@ cdef class Loader:
     @cython.locals(ch=Py_UCS4, val=object, is_multi=bint)
     cdef object get_value(Loader self, int idn, int prev_idn)
 
-    @cython.locals(ch=Py_UCS4, val=object,
-                   sequence=list, mapping=dict, v=bint, values=list)
-    cdef object get_collection(Loader self, object name, int idn, int prev_idn)
+    #@cython.locals(ch=Py_UCS4, val=object,
+    #               sequence=list, mapping=dict, v=bint, values=list)
+    #cdef object get_collection(Loader self, object name, int idn, int prev_idn)
 
     @cython.locals(ch=Py_UCS4, val=object,
                    sequence=list, mapping=dict, v=bint, is_multi=bint)
