@@ -259,12 +259,13 @@ class Loader:
     #    ch = current_char(self)
     #    return ch <= ' ' or ch == '}' or ch == ']' or ch == ')' or ch == 0
     #
+    
     def get_dots(self):
-        ch = next_char(self)
         n = 1
+        ch = next_char(self)
         while ch == '.':
-            ch = next_char(self)
             n += 1
+            ch = next_char(self)
         return n == 3
     #
     def try_get_int(self, maxsize):
@@ -522,12 +523,12 @@ class Loader:
     def get_name(self):
         pos0 = self.pos
         ch = next_char(self)
-        while ch.isalnum() or ch == '_' or ch == '-':
+        while ch.isalnum() or ch == '_': # or ch == '-':
             ch = next_char(self)
             
         if ch == '.':
             ch = next_char(self)
-            while ch.isalnum() or ch == '_' or ch == '-':
+            while ch.isalnum() or ch == '_': # or ch == '-':
                 ch = next_char(self)
 
         name0 = get_token(self, pos0)

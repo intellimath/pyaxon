@@ -1183,7 +1183,7 @@ class StringWriter:
         self.n = 0
 
     def write(self, item):
-        if self.n > 512:
+        if self.n > 1024:
             self.blocks.append(''.join(self.items))
             self.items = []
             self.n = 0
