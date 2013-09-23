@@ -26,6 +26,7 @@ History
 **0.5.7**
 
 1. Refine indentation control when loading complex objects in indented form.
+2. Restore support of names as quoted strings a.k.a. ``'the name'``.
 
 **0.5.6**
 

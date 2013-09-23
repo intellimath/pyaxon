@@ -351,6 +351,7 @@ def _dump_name(ob):
     pos0 = 0
     pos = 0
     text = None
+    is_qname = 0
 
     n = len(name)
     if n == 0:
@@ -365,14 +366,21 @@ def _dump_name(ob):
         ch = name[pos]
         if ch.isalnum() or ch == '_': # or ch == '-':
             pos += 1
+        elif ch == "'":
+            pos += 1
+            pos0 = pos
+            text += r"\'"
         else:
-            raise ValueError('Invalid name')
+            pos += 1
+            is_qname = 1
 
     if pos != pos0:
         if text is None:
             text = name[pos0: pos]
         else:
             text += name[pos0: pos]
+        if is_qname:
+            text = "'" + text + "'"
 
     return text
 

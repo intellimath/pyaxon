@@ -551,6 +551,8 @@ class Loader:
         ch = current_char(self)
         if ch.isalpha() or ch == '_':
             return self.get_name()
+        elif ch == "'":
+            return self.get_string(ch)
         else:
             return None
     #
