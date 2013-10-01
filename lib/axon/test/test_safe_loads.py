@@ -92,6 +92,32 @@ aaa:
     ddd:
       ...''')
     #
+    def test_empty7(self):
+        v = loads('''
+aaa:
+  a: 1
+  b:2 c:  4
+  bbb:
+    ...
+  ccc:
+    c:1 d:  23
+    ddd:
+      ...
+''')[0]
+        s = dumps([v], pretty=2)
+        self.assertEqual(s, '''\
+aaa:
+  a: 1
+  b: 2
+  cc: 4
+  bbb:
+    ...
+  ccc:
+    c:1
+    d: 23
+    ddd:
+      ...''')
+    #
 
 
 def suite():

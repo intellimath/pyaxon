@@ -569,7 +569,7 @@ class Loader:
         pos0 = self.pos
         ch = current_char(self)
 
-        while ch.isalnum() or ch == '_' or ch == '-':
+        while ch.isalnum() or ch == '_':
             ch = next_char(self)
 
         if self.pos == pos0:
@@ -585,17 +585,14 @@ class Loader:
             ch = current_char(self)
             if ch >= '0' and ch <= '9':
                     ch0 = ch
-                    #dig = ch0 - 48
                     val = 16*val + (ch0 - 48)
                     skip_char(self)
             elif ch >= 'a' and ch <= 'f':
                     ch0 = ch
-                    #dig = ch0 - 97 + 10
                     val = 16*val + (ch0 - 87)
                     skip_char(self)
             elif ch >= 'A' and ch <= 'F':
                     ch0 = ch
-                    #dig = ch0 - 65 + 10
                     val = 16*val + (ch0 - 55)
                     skip_char(self)
             else:
@@ -605,7 +602,6 @@ class Loader:
             return PyUnicode_FromOrdinal(val)
         else:
             errors.error(self, 'Invalid unicode character %r' % self.line[self.pos-4:self.pos+1])
-    #
     #
     def get_string(self, endch):
         text = None
@@ -1185,7 +1181,7 @@ class Loader:
                     pass
                 elif self.pos <= prev_idn or self.eof or ch == '}' or ch == ']':
                     return 0
-                else: # self.is_nl:
+                elif self.is_nl:
                     errors.error_indentation(self, idn)
             elif self.eof:
                 errors.error_unexpected_end(self)

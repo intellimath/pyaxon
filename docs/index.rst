@@ -245,12 +245,12 @@ Python pyaxon library
 
 There are introductory `IPython` notebooks:
 
-* `Tutorial <notebooks/axon_tutorial.html>`_
-* `Examples <notebooks/axon_examples.html>`_
-* `Patterns <notebooks/axon_patterns.html>`_
-* `Syntax <notebooks/axon_syntax.html>`_
-* `What & Why <notebooks/axon_what.html>`_
-* `Benchmarks <notebooks/axon_bench.html>`_
+* `Tutorial <_static/axon_tutorial.html>`_
+* `Examples <_static/axon_examples.html>`_
+* `Patterns <_static/axon_patterns.html>`_
+* `Syntax <_static/axon_syntax.html>`_
+* `What & Why <_static/axon_what.html>`_
+* `Benchmarks <_static/axon_bench.html>`_
 
 Repository for ``AXON`` and ``pyaxon`` is `here <https://bitbucket.org/intellimath/pyaxon>`_.
 Here is also `mirror <https://github.com/intellimath/pyaxon>`_.
