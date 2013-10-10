@@ -1,10 +1,14 @@
 # {{LICENCE}}
 
-from __future__ import unicode_literals
+from __future__ import unicode_literals, print_function
 from axon._loader import Loader
 from axon._dumper import Dumper
 from axon.types import unicode_type, str_type
 from axon._objects import as_unicode, StringReader, StringWriter
+
+import sys
+_major_version = sys.version_info.major
+del sys
 
 try:
     from io import StringIO
@@ -17,8 +21,9 @@ class Reader(object):
         self.encoding = encoding
 
     def readline(self):
-        line = fd.readline()
-        return line.decode(encoding)
+        line = self.fd.readline()
+        line =  line.decode(self.encoding)
+        return line
 
     def close(self):
         self.fd.close()
@@ -94,7 +99,7 @@ def dump(fpath, val, encoding='utf-8', pretty=0, crossref=False, nsize=0, sorted
     dumper.dump(val, pretty)
     fd.close()
 
-def loads(text, mode="safe", errto=None, json=False):
+def loads(text, mode="safe", errto=None, json=0):
     '''\
     Load values from unicode text.
 
@@ -117,7 +122,7 @@ def loads(text, mode="safe", errto=None, json=False):
     loader = iloads(text, mode, errto, json)
     return loader.load()
 
-def iloads(text, mode="safe", errto=None, json=False):
+def iloads(text, mode="safe", errto=None, json=0):
     '''\
     Iterative loading values from unicode text.
 
@@ -143,7 +148,7 @@ def iloads(text, mode="safe", errto=None, json=False):
 
     return iload(fd, mode, errto, json=json)
 
-def load(fd, mode="safe", errto=None, encoding='utf-8', json=False):
+def load(fd, mode="safe", errto=None, encoding='utf-8', json=0):
     '''
     Load object from unicode text in AXON.
 
@@ -175,7 +180,7 @@ def load(fd, mode="safe", errto=None, encoding='utf-8', json=False):
     loader = iload(fd, mode, errto, encoding, json)
     return loader.load()
 
-def iload(fd, mode="safe", errto=None, encoding='utf-8', json=False):
+def iload(fd, mode="safe", errto=None, encoding='utf-8', json=0):
     '''\
     Iterative loading values from input file.
 
@@ -186,11 +191,11 @@ def iload(fd, mode="safe", errto=None, encoding='utf-8', json=False):
     '''
 
     if type(fd) in (str_type, unicode_type):
-        try:
-            from io import open
-            fd = open(fd, mode='rt', encoding=encoding)
-        except ImportError:
-            fd = open(fd, mode='rt')
+        import io
+        if _major_version >= 3:
+            fd = io.open(fd, mode='rt', encoding=encoding)
+        else:
+            fd = io.open(fd, mode='rt')
             fd = Reader(fd, encoding)
 
     loader = Loader(fd, mode, errto, json)

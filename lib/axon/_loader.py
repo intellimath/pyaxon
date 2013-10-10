@@ -1138,9 +1138,13 @@ class Loader:
     def get_dict_value(self):
         mapping = {}
 
-        self.moveto_next_token()
+        ch = self.moveto_next_token()
 
         while 1:
+        
+            if ch == '#':
+                self.skip_comments()
+                self.moveto_next_token()
 
             key = self.try_get_key()
 
@@ -1163,7 +1167,7 @@ class Loader:
                 else:
                     errors.error_dict_value(self)
 
-            self.moveto_next_token()
+            ch = self.moveto_next_token()
 
             if self.json:
                 ch = current_char(self)
