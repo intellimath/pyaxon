@@ -27,6 +27,7 @@ History
 
 1. Refine indentation control when loading complex objects in indented form.
 2. Restore support of names as quoted strings a.k.a. ``'the name'``.
+3. Make ``date/time/datetime`` creation code compatible with pure python mode.
 
 **0.5.6**
 
