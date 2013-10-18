@@ -109,11 +109,11 @@ aaa:
 aaa:
   a: 1
   b: 2
-  cc: 4
+  c: 4
   bbb:
     ...
   ccc:
-    c:1
+    c: 1
     d: 23
     ddd:
       ...''')

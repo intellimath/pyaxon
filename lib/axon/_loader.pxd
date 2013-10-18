@@ -136,9 +136,9 @@ cdef class Loader:
     cdef dict c_constants
     cdef dict labeled_objects
 
-    cdef list ta
-    cdef list da
-    cdef list to
+    cdef int[:] ta
+    cdef int[:] da
+    cdef int[:] to
 
     cdef bint is_nl
     cdef list idn_stack

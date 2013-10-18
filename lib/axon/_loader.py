@@ -11,6 +11,7 @@
 import sys
 
 import axon.errors as errors
+import array
 
 
 ###
@@ -46,6 +47,10 @@ REFERENCE = 8
 LABEL = 9
 ATTRIBUTE = 10
 
+if sys.version_info.major == 3:
+    int_mode = 'i'
+else:
+    int_mode = b'i'
 
 #
 # Loader
@@ -116,9 +121,9 @@ class Loader:
         else:
             self.errto = open(errto, 'wt')
 
-        self.da = [0,0,0]
-        self.ta = [0,0,0,0]
-        self.to = [0,0]
+        self.da = array.array(int_mode, (0,0,0))
+        self.ta = array.array(int_mode, (0,0,0,0))
+        self.to = array.array(int_mode, (0,0))
 
         self.is_nl = 0
 
@@ -907,6 +912,60 @@ class Loader:
         #    errors.error_end_item(self)
 
         return val
+    #
+#     def get_record_value(self, name):
+#         values = []
+#         while 1:
+#             ch = current_char(self)
+#             if ch == ')':
+#                 self.bq -= 1
+#                 return self.builder.create_record(name, values)
+#             if (ch <= '9' and ch >= '0') or ch == '.':
+#                 val = self.get_number()                
+#             elif ch == '-':
+#                 ch = self.line[self.pos+1]
+#                 if ch.isdigit():
+#                     val = self.get_number()
+#                 else:
+#                     skip_char(self)
+#                     val = self.get_negative_constant()
+#             elif ch == '"':
+#                 val = self.get_string(ch)
+#             elif ch == '|':
+#                 val = self.get_base64()
+#             elif ch == '∞': # \U221E
+#                 ch = next_char(self)
+#                 if ch == '$':
+#                     skip_char(self)
+#                     val = self.sbuilder.create_decimal_inf()
+#                 else:
+#                     val = self.sbuilder.create_inf()
+#             elif ch == '?':
+#                 ch = next_char(self)
+#                 if ch == '?':
+#                     skip_char(self)
+#                     val = c_undefined
+#                 elif ch == '$':
+#                     skip_char(self)
+#                     val = self.sbuilder.create_decimal_nan()
+#                 else:
+#                     val = self.sbuilder.create_nan()
+#             else:
+#                 name = self.try_get_name()
+#                 if name is not None:
+#                     ch = current_char(self)
+#                     ch = self.skip_spaces()
+#                     if ch == '(':
+#                         self.bq += 1
+#                         skip_char(self)
+#                         self.moveto_next_token()
+# 
+#                         val = self.get_record_value(name)
+#                     else:
+#                         val = self.get_constant_or_string(name)
+#                 else:
+#                     errors.error_invalid_value(self)
+#             values.append(val)
     #
 #     def get_collection(self, name, idn, prev_idn):
 #         values = []
