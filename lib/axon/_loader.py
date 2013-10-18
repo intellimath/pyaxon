@@ -843,7 +843,7 @@ class Loader:
                         if self.get_dots():
                             return self.builder.create_empty(name)
                         else:
-                            errors.invalid_value(self)
+                            errors.error_invalid_value(self)
 
                     if self.is_nl:
                         if self.pos > idn:
@@ -967,72 +967,6 @@ class Loader:
 #                     errors.error_invalid_value(self)
 #             values.append(val)
     #
-#     def get_collection(self, name, idn, prev_idn):
-#         values = []
-#         while 1:
-#             ch = current_char(self)
-# 
-#             label = None
-#             if ch == '&':
-#                 skip_char(self)
-# 
-#                 label = self.try_get_label()
-# 
-#                 ch = self.moveto_next_token()
-# 
-#             if idn:
-#                 if self.pos == idn:
-#                     pass
-#                 elif self.pos <= prev_idn or self.eof or ch == '}' or ch == ']' or ch == ')':
-#                     return c_new_collection(name, values)
-#                 elif self.is_nl:
-#                     errors.error_indentation(self, idn)
-# 
-#             if ch == '{':
-#                 self.bc += 1
-#                 skip_char(self)
-#                 self.moveto_next_token()
-# 
-#                 val = self.get_complex_value(name, 0, idn)
-# 
-#                 if label:
-#                     self.labeled_objects[label] = val
-# 
-#                 values.append(val)
-#             elif ch == ':':
-#                 skip_char(self)
-#                 ch = self.moveto_next_token()
-# 
-#                 if ch == '.':
-#                     if self.get_dots():
-#                         return self.builder.create_empty(name)
-#                     else:
-#                         errors.invalid_value(self)
-# 
-#                 if self.is_nl:
-#                     if self.pos > idn:
-#                         #pos0 = self.pos
-#                         val = self.get_complex_value(name, self.pos, idn)
-#                     else:
-#                         errors.error_indentation(self, idn)
-#                 else:
-#                     errors.error_unexpected_attribute(self, name)
-# 
-#                 if label:
-#                     self.labeled_objects[label] = val
-# 
-#                 values.append(val)
-#             elif ch == '}':
-#                 self.bc -= 1
-#                 skip_char(self)
-# 
-#                 return c_new_collection(name, values)
-# 
-#             else:
-#                 errors.error(self, "Expected '{' or ':' here")
-# 
-#             ch = self.skip_spaces()
-    #
     def get_complex_value(self, name, idn, prev_idn):
         ch = current_char(self)
         if ch == '#':
@@ -1043,7 +977,7 @@ class Loader:
             if self.get_dots():
                 return self.builder.create_empty(name)
             else:
-                errors.invalid_value(self)
+                errors.error_invalid_value(self)
 
         aname = self.try_get_name()
 
@@ -1438,7 +1372,7 @@ class Loader:
 #                             yield (COMPLEX_VALUE, name)
 #                             yield (END, 0)
 #                         else:
-#                             errors.invalid_value(self)
+#                             errors.error_invalid_value(self)
 #
 #                     if self.is_nl:
 #                         if self.pos > idn:
@@ -1509,7 +1443,7 @@ class Loader:
 #                 yield (COMPLEX_VALUE, name)
 #                 yield (END, 0)
 #             else:
-#                 errors.invalid_value(self)
+#                 errors.error_invalid_value(self)
 #
 #         aname = self.try_get_name()
 #
