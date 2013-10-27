@@ -26,7 +26,7 @@ class SafeLoadsTestCase(unittest.TestCase):
         self.assertEqual(v.sequence, [])
         self.assertEqual(v.mapping, {})
         s = dumps([v], pretty=1)
-        self.assertEqual(s, 'aaa{}')
+        self.assertEqual(s, 'aaa {}')
     #
     def test_empty3(self):
         v = loads('''
@@ -37,7 +37,7 @@ aaa:
         self.assertEqual(v.sequence, [])
         self.assertEqual(v.mapping, {})
         s = dumps([v], pretty=1)
-        self.assertEqual(s, 'aaa{}')
+        self.assertEqual(s, 'aaa {}')
     #
     def test_empty4(self):
         v = loads('''

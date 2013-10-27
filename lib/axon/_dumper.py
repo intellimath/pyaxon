@@ -8,9 +8,41 @@
 # {{LICENCE}}
 
 import axon.types as types
-from axon.types import unicode_type, str_type, int_type, long_type
-from axon.types import bool_type, float_type, bytes_type, bytearray_type
+# from axon.types import unicode_type, str_type, int_type, long_type, decimal_type
+# from axon.types import bool_type, float_type, bytes_type, bytearray_type, none_type
+# from axon.types import date_type, time_type, datetime_type
 from axon.types import builtins
+
+unicode_type = types.unicode_type
+str_type = types.str_type
+int_type = types.int_type
+long_type = types.long_type
+decimal_type = types.decimal_type
+bool_type = types.bool_type
+float_type = types.float_type
+bytes_type = types.bytes_type
+bytearray_type = types.bytearray_type
+none_type = types.none_type
+date_type = types.date_type
+time_type = types.time_type
+datetime_type = types.datetime_type
+
+simple_types = {
+    unicode_type,
+    str_type,
+    int_type,
+    long_type,
+    decimal_type,
+    bool_type,
+    float_type,
+    bytes_type,
+    bytearray_type,
+    none_type,
+    date_type,
+    time_type,
+    datetime_type,
+}
+
 
 try:
     import cdecimal as _decimal
@@ -41,22 +73,19 @@ class PyInt:
 #
 
 def mapping_reduce(o):
-    return o.name, o.mapping
+    return o
 #
 def element_reduce(o):
-    return o.name, o.mapping, o.sequence
+    return o
 #
 def sequence_reduce(o):
-    return o.name, o.sequence
-#
-def collection_reduce(o):
-    return o.name + '*', o.sequence
+    return o
 #
 def instance_reduce(o):
-    return o.name, o.sequence, o.mapping
+    return o
 #
 def empty_reduce(o):
-    return o.name,
+    return o
 #
 
 _set_name = 'set'
@@ -81,18 +110,16 @@ _c_type_reducers = {
     Element: element_reduce,
     Sequence: sequence_reduce,
     Instance: instance_reduce,
-    Collection: collection_reduce,
     Empty: empty_reduce,
-    set: set_reduce,
-    tuple: tuple_reduce,
-    list: list_reduce,
-    dict: dict_reduce,
+    #Collection: collection_reduce,
+    Empty: empty_reduce,
+    #set: set_reduce,
+    #tuple: tuple_reduce,
+    #list: list_reduce,
+    #dict: dict_reduce,
 }
 
-#
 c_reduce_dict = _c_type_reducers.copy()
-
-#
 
 def reset_reduce():
     c_reduce_dict = _c_type_reducers.copy()
@@ -126,150 +153,150 @@ def c_new_pyptr(p):
     pyptr.ptr = p
     return pyptr
 
-def _dump_unicode(ob):
-    line = c_as_unicode(ob)
-    pos0 = 0
-    pos = 0
-    text = '"'
-
-    n = len(line)
-    while pos < n:
-        ch = c_unicode_char(line, pos)
-        if ch == '"':
-            if pos != pos0:
-                text += c_unicode_substr(line, pos0, pos)
-            text += '\\"'
-            pos += 1
-            pos0 = pos
-        else:
-            pos += 1
-
-    if pos != pos0:
-        text += c_unicode_substr(line, pos0, pos)
-    return text + '"'
-
-def _dump_bool(o):
-    #return '⊤' if o else '⊥'
-    return 'true' if o else 'false'
-
-def _dump_date(o):
-    d = "%d-%02d-%02d" % (o.year, o.month, o.day)
-    return d
-
-def _dump_tzinfo(o):
-    offset = o.utcoffset(None)
-    seconds = offset.seconds + offset.days * 86400 # 24 * 60 * 60
-
-    if seconds < 0:
-        seconds = -seconds
-        sign = '-'
-    else:
-        sign = '+'
-
-    minutes, seconds = builtins.divmod(seconds, 60)
-    hours, minutes = builtins.divmod(minutes, 60)
-
-    if minutes:
-        return '%s%02d:%02d' % (sign, hours, minutes)
-    else:
-        return '%s%02d' % (sign, hours)
-
-def _dump_time(o):
-    #cdef object t
-
-    if o.second:
-        if o.microsecond:
-            t = "%02d:%02d:%02d.%06d" % (o.hour, o.minute, o.second, o.microsecond)
-        else:
-            t = "%02d:%02d:%02d" % (o.hour, o.minute, o.second)
-    else:
-            t = "%02d:%02d" % (o.hour, o.minute)
-
-    tzinfo = o.tzinfo
-    if tzinfo is not None:
-        t += _dump_tzinfo(tzinfo)
-
-    return t
-
-def _dump_datetime(o):
-    sign = 0
-
-    if o.second:
-        if o.microsecond:
-            t = "%d-%02d-%02dT%02d:%02d:%02d.%06d" % (o.year, o.month, o.day, o.hour, o.minute, o.second, o.microsecond)
-        else:
-            t = "%d-%02d-%02dT%02d:%02d:%02d" % (o.year, o.month, o.day, o.hour, o.minute, o.second)
-    else:
-            t = "%d-%02d-%02dT%02d:%02d" % (o.year, o.month, o.day, o.hour, o.minute)
-
-    tzinfo = o.tzinfo
-    if tzinfo is not None:
-        t += _dump_tzinfo(tzinfo)
-
-    return c_as_unicode(t)
-
-def _dump_none(o):
-    return 'null'
-
-def _dump_int(o):
-    return c_object_to_unicode(o)
-
-def _dump_bytes(o):
-    text = PyUnicode_FromEncodedObject(encodebytes(o), 'ascii', 'strict')
-    return c_as_unicode('|' + text)
-
-def _dump_str(line):
-    #return _dump_unicode(PyUnicode_FromEncodedObject(line, 'latin1', 'strict'))
-    text = PyUnicode_FromEncodedObject(encodebytes(line), 'ascii', 'strict')
-    return c_as_unicode('|' + text)
-
-def _dump_bytearray(o):
-    text = PyUnicode_FromEncodedObject(encodebytes(o), 'ascii', 'strict')
-    return c_as_unicode('|' + text)
-
-def _dump_long(o):
-    return c_object_to_unicode(o)
-
-def _dump_float(o):
-    d = PyFloat_AS_DOUBLE(o)
-    if isfinite(d):
-        return c_object_to_unicode(o)
-
-    if isnan(d):
-        return '?'
-
-    if isinf(d):
-        if signbit(d):
-            return '-∞'
-        else:
-            return '∞'
-
-    if signbit(d):
-        return '-0'
-
-    return '0'
-
-def _dump_decimal(d):
-    #cdef unicode val
-    if d.is_finite():
-        val  = c_object_to_unicode(_decimal2str(d))
-
-    elif d.is_nan():
-        val = '?'
-
-    elif d.is_infinite():
-        if d.is_signed():
-            val = '-∞'
-        else:
-            val = '∞'
-
-    elif d.is_signed():
-        val = '-0'
-    else:
-        val = '0'
-
-    return val + '$'
-
+# def _dump_unicode(ob):
+#     line = c_as_unicode(ob)
+#     pos0 = 0
+#     pos = 0
+#     text = '"'
+# 
+#     n = len(line)
+#     while pos < n:
+#         ch = c_unicode_char(line, pos)
+#         if ch == '"':
+#             if pos != pos0:
+#                 text += c_unicode_substr(line, pos0, pos)
+#             text += '\\"'
+#             pos += 1
+#             pos0 = pos
+#         else:
+#             pos += 1
+# 
+#     if pos != pos0:
+#         text += c_unicode_substr(line, pos0, pos)
+#     return text + '"'
+# 
+# def _dump_bool(o):
+#     #return '⊤' if o else '⊥'
+#     return 'true' if o else 'false'
+# 
+# def _dump_date(o):
+#     d = "%d-%02d-%02d" % (o.year, o.month, o.day)
+#     return d
+# 
+# def _dump_tzinfo(o):
+#     offset = o.utcoffset(None)
+#     seconds = offset.seconds + offset.days * 86400 # 24 * 60 * 60
+# 
+#     if seconds < 0:
+#         seconds = -seconds
+#         sign = '-'
+#     else:
+#         sign = '+'
+# 
+#     minutes, seconds = builtins.divmod(seconds, 60)
+#     hours, minutes = builtins.divmod(minutes, 60)
+# 
+#     if minutes:
+#         return '%s%02d:%02d' % (sign, hours, minutes)
+#     else:
+#         return '%s%02d' % (sign, hours)
+# 
+# def _dump_time(o):
+#     #cdef object t
+# 
+#     if o.second:
+#         if o.microsecond:
+#             t = "%02d:%02d:%02d.%06d" % (o.hour, o.minute, o.second, o.microsecond)
+#         else:
+#             t = "%02d:%02d:%02d" % (o.hour, o.minute, o.second)
+#     else:
+#             t = "%02d:%02d" % (o.hour, o.minute)
+# 
+#     tzinfo = o.tzinfo
+#     if tzinfo is not None:
+#         t += _dump_tzinfo(tzinfo)
+# 
+#     return t
+# 
+# def _dump_datetime(o):
+#     sign = 0
+# 
+#     if o.second:
+#         if o.microsecond:
+#             t = "%d-%02d-%02dT%02d:%02d:%02d.%06d" % (o.year, o.month, o.day, o.hour, o.minute, o.second, o.microsecond)
+#         else:
+#             t = "%d-%02d-%02dT%02d:%02d:%02d" % (o.year, o.month, o.day, o.hour, o.minute, o.second)
+#     else:
+#             t = "%d-%02d-%02dT%02d:%02d" % (o.year, o.month, o.day, o.hour, o.minute)
+# 
+#     tzinfo = o.tzinfo
+#     if tzinfo is not None:
+#         t += _dump_tzinfo(tzinfo)
+# 
+#     return c_as_unicode(t)
+# 
+# def _dump_none(o):
+#     return 'null'
+# 
+# def _dump_int(o):
+#     return c_object_to_unicode(o)
+# 
+# def _dump_bytes(o):
+#     text = PyUnicode_FromEncodedObject(encodebytes(o), 'ascii', 'strict')
+#     return c_as_unicode('|' + text)
+# 
+# def _dump_str(line):
+#     #return _dump_unicode(PyUnicode_FromEncodedObject(line, 'latin1', 'strict'))
+#     text = PyUnicode_FromEncodedObject(encodebytes(line), 'ascii', 'strict')
+#     return c_as_unicode('|' + text)
+# 
+# def _dump_bytearray(o):
+#     text = PyUnicode_FromEncodedObject(encodebytes(o), 'ascii', 'strict')
+#     return c_as_unicode('|' + text)
+# 
+# def _dump_long(o):
+#     return c_object_to_unicode(o)
+# 
+# def _dump_float(o):
+#     d = PyFloat_AS_DOUBLE(o)
+#     if isfinite(d):
+#         return c_object_to_unicode(o)
+# 
+#     if isnan(d):
+#         return '?'
+# 
+#     if isinf(d):
+#         if signbit(d):
+#             return '-∞'
+#         else:
+#             return '∞'
+# 
+#     if signbit(d):
+#         return '-0'
+# 
+#     return '0'
+# 
+# def _dump_decimal(d):
+#     #cdef unicode val
+#     if d.is_finite():
+#         val  = c_object_to_unicode(_decimal2str(d))
+# 
+#     elif d.is_nan():
+#         val = '?'
+# 
+#     elif d.is_infinite():
+#         if d.is_signed():
+#             val = '-∞'
+#         else:
+#             val = '∞'
+# 
+#     elif d.is_signed():
+#         val = '-0'
+#     else:
+#         val = '0'
+# 
+#     return val + '$'
+# 
 def _dump_undef(o):
     return '??'
 
@@ -290,31 +317,35 @@ def dump_default(v):
     return c_object_to_unicode(v)
 
 c_simple_dumpers = {
-    types.int_type: c_new_pyptr(_dump_int),
-    types.long_type: c_new_pyptr(_dump_long),
-    types.float_type: c_new_pyptr(_dump_float),
-
-    types.bytearray_type: c_new_pyptr(_dump_bytearray),
-
-    types.bool_type: c_new_pyptr(_dump_bool),
-
-    _decimal.Decimal: c_new_pyptr(_dump_decimal),
-    datetime.date: c_new_pyptr(_dump_date),
-    datetime.time: c_new_pyptr(_dump_time),
-    datetime.datetime: c_new_pyptr(_dump_datetime),
-
-    Undefined: c_new_pyptr(_dump_undef),
-    type(None): c_new_pyptr(_dump_none),
+    ###types.int_type: c_new_pyptr(_dump_int),
+#     types.long_type: c_new_pyptr(_dump_long),
+#     types.float_type: c_new_pyptr(_dump_float),
+# 
+#     types.unicode_type: c_new_pyptr(_dump_unicode),
+# 
+#     types.bytearray_type: c_new_pyptr(_dump_bytearray),
+# 
+#     types.bool_type: c_new_pyptr(_dump_bool),
+# 
+#     _decimal.Decimal: c_new_pyptr(_dump_decimal),
+#     
+#     datetime.date: c_new_pyptr(_dump_date),
+#     datetime.time: c_new_pyptr(_dump_time),
+#     datetime.datetime: c_new_pyptr(_dump_datetime),
+# 
+#     Undefined: c_new_pyptr(_dump_undef),
+#     type(None): c_new_pyptr(_dump_none),
 }
 
-c_simple_dumpers[types.unicode_type] = c_new_pyptr(_dump_unicode)
-if types.str_type is not types.unicode_type:
-    c_simple_dumpers[types.str_type] = c_new_pyptr(_dump_str)
-
-if types.bytes_type is not types.str_type:
-    c_simple_dumpers[types.bytes_type] = c_new_pyptr(_dump_bytes)
-
-simple_types = set(c_simple_dumpers.keys())
+# if types.str_type != types.unicode_type:
+#     c_simple_dumpers[types.str_type] = c_new_pyptr(_dump_str)
+# 
+# if types.bytes_type != types.str_type:
+#     c_simple_dumpers[types.bytes_type] = c_new_pyptr(_dump_bytes)
+# 
+# if types.int_type != types.long_type:
+#     c_simple_dumpers[types.int_type] = c_new_pyptr(_dump_int)
+# 
 
 class SimpleDumpers:
     #cdef dict c_mapping
@@ -385,23 +416,22 @@ def _dump_name(ob):
     return text
 
 def _dump_key(ob):
-    name = ob
     pos0 = 0
     pos = 0
     text = None
     is_qname = 0
 
-    n = len(name)
+    n = c_unicode_length(ob)
     while pos < n:
-        ch = name[pos]
+        ch = c_unicode_char(ob, pos)
         if ch.isalnum() or ch == '_':
             pos += 1
         elif ch == '"':
             if pos != pos0:
                 if text is None:
-                    text = name[pos0, pos]
+                    text = c_unicode_substr(ob, pos0, pos)
                 else:
-                    text += name[pos0: pos]
+                    text += c_unicode_substr(ob, pos0, pos)
             text += '\\"'
             pos += 1
             pos0 = pos
@@ -412,9 +442,9 @@ def _dump_key(ob):
 
     if pos != pos0:
         if text is None:
-            text = name[pos0: pos]
+            text = c_unicode_substr(ob, pos0, pos)
         else:
-            text += name[pos0: pos]
+            text += c_unicode_substr(ob, pos0, pos)
 
     if is_qname:
         return '"' + text + '"'
@@ -455,13 +485,17 @@ class Dumper:
         self.c_type_reducers = c_reduce_dict
 
         self.fd = fd
+        self.sfd = None
+        if type(fd) is StringWriter:
+            self.sfd = self.fd
+            
+        self.sdumper = SimpleDumper()
     #
     def write(self, sval):
-        if type(self.fd) is StringWriter:
-            sfd = self.fd
-            sfd.write(sval)
-        else:
+        if self.sfd is None:
             self.fd.write(sval)
+        else:
+            self.sfd.write(sval)
     #
     def _pretty_dump_crossref(self, o):
         o_id = id(o)
@@ -505,13 +539,13 @@ class Dumper:
     #
     def _dump(self, o):
 
-        otype = type(o)
-        dumper = dict_get(self.c_simple_dumpers, otype, None)
-        if dumper is None:
+        flag = self._dump_value(o)
+        if not flag:
             if self.crossref:
                 if self._dump_label(o) == 1:
                     return 0
 
+            otype = type(o)
             if otype is list:
                 self.dump_list(o)
             elif otype is dict:
@@ -525,46 +559,40 @@ class Dumper:
                 if reducer is None:
                     raise TypeError('There is no reducer for this type: ' + repr(otype))
                 else:
-                    self._dump_with_reducer(reducer, o)
-        else:
-            self._dump_value(o, dumper)
-
-        if self.size > self.max_size:
-            self.write('\n')
-            self.size = 0
-
+                    ob = reducer(o)
+                    obtype = type(ob)
+                    if obtype is Mapping:
+                        self.dump_mapping(ob)
+                    elif obtype is Sequence:
+                        self.dump_sequence(ob)
+                    elif obtype is Element:
+                        self.dump_element(ob)
+                    elif obtype is Instance:
+                        self.dump_instance(ob)
+                    elif obtype is Empty:
+                        self.dump_empty(ob)
+                    else:
+                        raise RuntimeError()
     #
     def _pretty_dump(self, o, offset, use_offset):
-        this_offset = offset
         new_offset = offset + '  '
 
-        if not use_offset:
-            this_offset = ''
+        if use_offset:
+            self.write(offset)
 
-        self.write(this_offset)
-
-        otype = type(o)
-        dumper = self.c_simple_dumpers.get(otype, None)
-        if dumper is None:
+        flag = self._dump_value(o)
+        if not flag:
             if self.crossref:
                 if self._dump_label(o) == 1:
                     return 0
 
+            otype = type(o)
             if otype is list:
-                if self.nsize and len(o) <= self.nsize and all([is_simple_type(self, v) for v in o]):
-                    self.dump_list(o)
-                else:
-                    self.pretty_dump_list(o, new_offset, not use_offset)
+                self.pretty_dump_list(o, new_offset, not use_offset)
             elif otype is dict:
-                if self.nsize and len(o) <= self.nsize and all([is_simple_type(self, v) for v in o]):
-                    self.dump_dict(o)
-                else:
-                    self.pretty_dump_dict(o, new_offset, not use_offset)
+                self.pretty_dump_dict(o, new_offset, not use_offset)
             elif otype is tuple:
-                if self.nsize and len(o) <= self.nsize and all([is_simple_type(self, v) for v in o]):
-                    self.dump_tuple(o)
-                else:
-                    self.pretty_dump_tuple(o, new_offset, not use_offset)
+                self.pretty_dump_tuple(o, new_offset, not use_offset)
             #elif otype is set:
             #    self.pretty_dump_set(o, new_offset, not use_offset)
             else:
@@ -572,18 +600,52 @@ class Dumper:
                 if reducer is None:
                     raise TypeError('There is no reducer for this type: ' + repr(otype))
                 else:
-                    self._pretty_dump_with_reducer(reducer, o, offset)
-        else:
-            self._dump_value(o, dumper)
+                    ob = reducer(o)
+                    obtype = type(ob)
+                    if obtype is Mapping:
+                        self.pretty_dump_mapping(ob, new_offset, use_offset)
+                    elif obtype is Sequence:
+                        self.pretty_dump_sequence(ob, new_offset, use_offset)
+                    elif otype is Element:
+                        self.pretty_dump_element(ob, new_offset, use_offset)
+                    elif obtype is Instance:
+                        self.pretty_dump_instance(ob, new_offset, use_offset)
+                    elif obtype is Empty:
+                        self.pretty_dump_empty(ob, new_offset, use_offset)
+                    else:
+                        raise RuntimeError()
+                #reducer = self.c_type_reducers.get(otype, None)
+                #if reducer is None:
+                #    raise TypeError('There is no reducer for this type: ' + repr(otype))
+                #else:
+                #    self._pretty_dump_with_reducer(reducer, o, offset)
     #
-    def _dump_value(self, o, dumper):
-        if type(dumper) is PyPointer:
-            ptr = dumper
-            text = ptr.ptr(o)
+    def _dump_value(self, o):
+        otype = type(o)
+        dumper = self.sdumper
+        if otype is unicode_type:
+            text = dumper.dump_unicode(o)
+        elif otype is long_type or otype is int_type:
+            text = dumper.dump_int(o)
+        elif otype is float_type:
+            text = dumper.dump_float(o)
+        elif otype is decimal_type:
+            text = dumper.dump_decimal(o)
+        elif otype is none_type:
+            text = dumper.dump_none(o)
+        elif otype is bytes_type or otype is bytearray_type or otype is str_type:
+            text = dumper.dump_bytes(o)
+        elif otype is date_type:
+            text = dumper.dump_date(o)
+        elif otype is time_type:
+            text = dumper.dump_time(o)
+        elif otype is datetime_type:
+            text = dumper.dump_datetime(o)
         else:
-            text = dumper(o)
-        self.size += len(text)
+            return 0
+                        
         self.write(text)
+        return 1
     #
     def _dump_dict_sequence(self, d):
         i = 0
@@ -596,12 +658,13 @@ class Dumper:
         for k,v in items:
             if i > 0:
                 self.write(' ')
+                #self.size += 1
 
             text = c_as_unicode(k)
             self.write(_dump_key(text))
-            self.size += len(text)
 
             self.write(':')
+
             self._dump(v)
             i += 1
     #
@@ -616,12 +679,14 @@ class Dumper:
         for k,v in items:
             if i > 0:
                 self.write(' ')
+                #self.size += 1
 
             text = c_as_unicode(k)
             self.write(_dump_name(text))
-            self.size += len(text)
+            #self.size += c_unicode_length(text)
 
             self.write(':')
+            #self.size += 1
             self._dump(v)
             i += 1
     #
@@ -631,6 +696,7 @@ class Dumper:
         for v in l:
             if i > 0:
                 self.write(' ')
+                #self.size += 1
             self._dump(v)
             i += 1
     #
@@ -640,6 +706,7 @@ class Dumper:
         for v in l:
             if i > 0:
                 self.write(' ')
+                #self.size += 1
             self._dump(v)
             i += 1
     #
@@ -649,31 +716,79 @@ class Dumper:
         for v in l:
             if i > 0:
                 self.write(' ')
+                #self.size += 1
             self._dump(v)
             i += 1
     #
+    def dump_mapping(self, o):
+        self.write(_dump_name(o.name))
+        #self.size += c_unicode_length(o.name)
+        self.write('{')
+        #self.size += 1
+        self._dump_attr_sequence(o.mapping)
+        self.write('}')
+        #self.size += 1
+    #
+    def dump_element(self, o):
+        self.write(_dump_name(o.name))
+        #self.size += c_unicode_length(o.name)
+        self.write('{')
+        #self.size += 1
+        self._dump_attr_sequence(o.mapping)
+        if o.sequence:
+            self.write(' ')
+            self._dump_list_sequence(o.sequence)
+        self.write('}')
+        #self.size += 1
+    #
+    def dump_sequence(self, o):
+        self.write(_dump_name(o.name))
+        #self.size += c_unicode_length(o.name)
+        self.write('{')
+        #self.size += 1
+        self._dump_list_sequence(o.sequence)
+        self.write('}')
+        #self.size += 1
+    #
+    def dump_instance(self, o):
+        self.write(_dump_name(o.name))
+        #self.size += c_unicode_length(o.name)
+        self.write('{')
+        #self.size += 1
+        self._dump_tuple_sequence(o.sequence)
+        if o.mapping:
+            self.write(' ')
+            #self.size += 1
+            self._dump_attr_sequence(o.mapping)
+        #self.size += 1
+        self.write('}')
+    #
+    def dump_empty(self, o):
+        self.write(_dump_name(o.name))
+        #self.size += c_unicode_length(o.name)
+        self.write('{}')
+        #self.size += 2
+    #
     def dump_list(self, l):
         self.write('[')
+        #self.size += 1
         self._dump_list_sequence(l)
         self.write(']')
-    #
-#    def dump_set(self, l):
-#        if not l:
-#            self.write('∅')
-#        else:
-#            self.write('{')
-#            self._dump_set_sequence(l)
-#            self.write('}')
+        #self.size += 1
     #
     def dump_dict(self, d):
         self.write('{')
+        #self.size += 1
         self._dump_dict_sequence(d)
         self.write('}')
+        #self.size += 1
     #
     def dump_tuple(self, d):
         self.write('(')
+        #self.size += 1
         self._dump_tuple_sequence(d)
         self.write(')')
+        #self.size += 1
     #
     def _pretty_dump_dict_sequence(self, d, w, use_offset):
         if self.sorted:
@@ -735,18 +850,99 @@ class Dumper:
                 self._pretty_dump(v, w, 0)
                 use_offset = 1
     #
+    def pretty_dump_mapping(self, o, w, use_offset):
+        self.write(_dump_name(o.name))
+
+        #w1 = w + '  '
+
+        if self.pretty == 1:
+            self.write(' {')
+        elif self.pretty == 2:
+            self.write(':')
+
+        #self.write('\n')
+        #self.write(w1)
+        
+        self._pretty_dump_attr_sequence(o.mapping, w, 1)
+
+        if self.pretty == 1:
+            self.write('}')
+    #
+    def pretty_dump_element(self, o, w, use_offset):
+        self.write(_dump_name(o.name))
+        
+        if self.pretty == 1:
+            self.write(' {')
+        elif self.pretty == 2:
+            self.write(':')
+
+        #w1 = w + '  '
+
+        #self.write('\n')
+        #self.write(w1)
+        
+        self._pretty_dump_attr_sequence(o.mapping, w, 1)
+        if o.sequence:
+            #self.write(' ')
+            self._pretty_dump_list_sequence(o.sequence, w, 1)
+
+        if self.pretty == 1:
+            self.write('}')
+    #
+    def pretty_dump_sequence(self, o, w, use_offset):
+        self.write(_dump_name(o.name))
+        
+        if self.pretty == 1:
+            self.write(' {')
+        elif self.pretty == 2:
+            self.write(':')
+
+        #w1 = w + '  '
+
+        #self.write('\n')
+        #self.write(w1)
+        
+        self._pretty_dump_list_sequence(o.sequence, w, 1)
+
+        if self.pretty == 1:
+            self.write('}')
+    #
+    def pretty_dump_instance(self, o, w, use_offset):
+        self.write(_dump_name(o.name))
+        
+        if self.pretty == 1:
+            self.write(' {')
+        elif self.pretty == 2:
+            self.write(':')
+            
+        #w1 = w + '  '
+        
+        #self.write('\n')
+        #self.write(w1)
+        
+        self._pretty_dump_tuple_sequence(o.sequence, w, 1)
+        if o.mapping:
+            #self.write(' ')
+            self._pretty_dump_attr_sequence(o.mapping, w, 1)
+
+        if self.pretty == 1:
+            self.write('}')
+    #
+    def pretty_dump_empty(self, o, w, use_offset):
+        self.write(_dump_name(o.name))
+        
+        if self.pretty == 1:
+            self.write(' {}')
+        elif self.pretty == 2:
+            self.write(':\n')
+            self.write(w)
+            self.write('...')
+    
+    #
     def pretty_dump_list(self, l, w, use_offset):
         self.write('[')
         self._pretty_dump_list_sequence(l, w, use_offset)
         self.write(']')
-    #
-#    def pretty_dump_set(self, l, w, use_offset):
-#        if not l:
-#            self.write('∅')
-#        else:
-#            self.write('{')
-#            self._pretty_dump_set_sequence(l, w, 0)
-#            self.write('}')
     #
     def pretty_dump_dict(self, d, w, use_offset):
         self.write('{')
@@ -758,216 +954,216 @@ class Dumper:
         self._pretty_dump_tuple_sequence(l, w, 0)
         self.write(')')
     #
-    def dump_content(self, items):
-        for i, item in enumerate(items):
-
-            if item is None:
-                continue
-
-            if i == 1:
-                self.write(' ')
-
-            tp = type(item)
-            if tp is dict:
-                self._dump_attr_sequence(item)
-            elif tp is tuple:
-                self._dump_tuple_sequence(item)
-            elif tp is list:
-                self._dump_list_sequence(item)
-            elif tp is set:
-                self._dump_set_sequence(item)
-            else:
-                for j, v in enumerate(item):
-                    if j > 0:
-                        self.write(' ')
-                    self._dump(v)
-    #
-    def dump_collection(self, name, collection):
-        N = len(collection)
-        for i, o in enumerate(collection):
-            if self.crossref:
-                self.write(' ')
-                v =  self._dump_label(o)
-                if v == 1:
-                    return 0
-
-            self.write('{')
-
-            otype = type(o)
-            reducer = self.c_type_reducers.get(otype, None)
-            if reducer is None:
-                raise TypeError('There is no reducer for this type: ' + repr(otype))
-            else:
-                items = reducer(o)
-                n = len(items)
-
-                if name != items[0]:
-                    raise ValueError("Invalid name for collection %s-th item" % i)
-
-                if n < 1 or n > 3:
-                    raise ValueError('Reducer returns invalid number of items: %s' % n)
-                elif n > 1:
-                    self.dump_content(items[1:])
-
-                self.write('}')
-    #
-    def _dump_with_reducer(self, reducer, o):
-
-        results = reducer(o)
-        n = len(results)
-
-        name = c_as_unicode(results[0])
-
-        if name.endswith('*'):
-            is_collection = 1
-            name = c_unicode_substr(name, 0, c_unicode_length(name)-1)
-        else:
-            is_collection = 0
-
-        self.write(_dump_name(name))
-        self.size += len(name)
-
-        if is_collection:
-            self.write('*')
-
-        if not is_collection and (n < 1 or n > 3):
-            raise ValueError('Reducer returns invalid number of items: %s' % n)
-
-        if n == 1:
-            self.write('{}')
-            return 0
-
-        self.write('{')
-
-        if is_collection:
-            self.dump_collection(name, results[1])
-        else:
-            self.dump_content(results[1:])
-
-        self.write('}')
-    #
-    def pretty_dump_content(self, items, offset):
-        offset1 = offset + '  '
-        use_offset = 1
-        n = len(items)
-
-        for item in items:
-
-            if item is None:
-                continue
-
-            tp = type(item)
-            if tp is dict:
-                if self.nsize and len(item) <= self.nsize and all(is_simple_type(self, x) for x in item.values()):
-                    self.write("\n")
-                    self.write(offset1)
-                    self._dump_attr_sequence(item)
-                else:
-                    self._pretty_dump_attr_sequence(item, offset1, use_offset)
-            elif tp is list:
-                if self.nsize and len(item) <= self.nsize and all(is_simple_type(self, x) for x in item):
-                    self.write("\n")
-                    self.write(offset1)
-                    self._dump_list_sequence(item)
-                else:
-                    self._pretty_dump_list_sequence(item, offset1, use_offset)
-            elif tp is tuple:
-                if self.nsize and len(item) <= self.nsize and all(is_simple_type(self, x) for x in item):
-                    self.write("\n")
-                    self.write(offset1)
-                    self._dump_tuple_sequence(item)
-                else:
-                    self._pretty_dump_tuple_sequence(item, offset1, use_offset)
-            else:
-                for v in item:
-                    self.write('\n')
-                    self._pretty_dump(v, offset1, use_offset)
-    #
-    def pretty_dump_collection(self, name, collection, offset):
-        new_offset = offset + '  '
-        N = len(collection)
-
-        for i, o in enumerate(collection):
-            self.write('\n')
-            self.write(new_offset)
-            if self.crossref:
-                v = self._dump_label(o)
-                if v == 1:
-                    return 0
-
-            if self.pretty == 1:
-                self.write('{')
-            elif self.pretty == 2:
-                self.write(':')
-
-            otype = type(o)
-            reducer = self.c_type_reducers.get(otype, None)
-            if reducer is None:
-                raise TypeError('There is no reducer for this type: ' + repr(otype))
-            else:
-                items = reducer(o)
-                n = len(items)
-
-                if name != items[0]:
-                    raise ValueError("Invalid name for collection %s-th item" % i)
-
-                if n < 1 or n > 3:
-                    raise ValueError('Reducer returns invalid number of items: %s' % n)
-                elif n > 1:
-                    self.pretty_dump_content(items[1:], new_offset)
-
-            if self.pretty == 1:
-                self.write('}')
-
-    #
-    def _pretty_dump_with_reducer(self, reducer, o, offset):
-
-        results = reducer(o)
-        n = len(results)
-
-        name = c_as_unicode(results[0])
-
-        if name.endswith('*'):
-            is_collection = 1
-            name = c_unicode_substr(name, 0, c_unicode_length(name)-1)
-        else:
-            is_collection = 0
-
-        self.write(_dump_name(name))
-
-        if is_collection:
-            self.write('*')
-
-        if not is_collection and (n < 1 or n > 3):
-            raise ValueError('Reducer returns invalid number of items: %s' % n)
-
-        if n == 1:
-            if self.pretty == 2:
-                self.write(':\n')
-                self.write(offset)
-                self.write('  ...')
-            else:
-                self.write('{}')
-            return 0
-
-        if self.pretty == 1:
-            self.write(' {')
-        elif self.pretty == 2:
-            self.write(':')
-
-        #if self.crossref:
-        #    self._pretty_dump_crossref(o)
-
-        if is_collection:
-            self.pretty_dump_collection(name, results[1], offset)
-        else:
-            self.pretty_dump_content(results[1:], offset)
-
-        if self.pretty == 1:
-            self.write('}')
-        #elif self.pretty == 2:
-        #    self.write('\n')
-        #    self.write(offset)
+#     def dump_content(self, items):
+#         for i, item in enumerate(items):
+# 
+#             if item is None:
+#                 continue
+# 
+#             if i == 1:
+#                 self.write(' ')
+# 
+#             tp = type(item)
+#             if tp is dict:
+#                 self._dump_attr_sequence(item)
+#             elif tp is tuple:
+#                 self._dump_tuple_sequence(item)
+#             elif tp is list:
+#                 self._dump_list_sequence(item)
+#             elif tp is set:
+#                 self._dump_set_sequence(item)
+#             else:
+#                 for j, v in enumerate(item):
+#                     if j > 0:
+#                         self.write(' ')
+#                     self._dump(v)
+#     #
+#     def dump_collection(self, name, collection):
+#         N = len(collection)
+#         for i, o in enumerate(collection):
+#             if self.crossref:
+#                 self.write(' ')
+#                 v =  self._dump_label(o)
+#                 if v == 1:
+#                     return 0
+# 
+#             self.write('{')
+# 
+#             otype = type(o)
+#             reducer = self.c_type_reducers.get(otype, None)
+#             if reducer is None:
+#                 raise TypeError('There is no reducer for this type: ' + repr(otype))
+#             else:
+#                 items = reducer(o)
+#                 n = len(items)
+# 
+#                 if name != items[0]:
+#                     raise ValueError("Invalid name for collection %s-th item" % i)
+# 
+#                 if n < 1 or n > 3:
+#                     raise ValueError('Reducer returns invalid number of items: %s' % n)
+#                 elif n > 1:
+#                     self.dump_content(items[1:])
+# 
+#                 self.write('}')
+#     #
+#     def _dump_with_reducer(self, reducer, o):
+# 
+#         results = reducer(o)
+#         n = len(results)
+# 
+#         name = c_as_unicode(results[0])
+# 
+#         if name.endswith('*'):
+#             is_collection = 1
+#             name = c_unicode_substr(name, 0, c_unicode_length(name)-1)
+#         else:
+#             is_collection = 0
+# 
+#         self.write(_dump_name(name))
+#         self.size += len(name)
+# 
+#         if is_collection:
+#             self.write('*')
+# 
+#         if not is_collection and (n < 1 or n > 3):
+#             raise ValueError('Reducer returns invalid number of items: %s' % n)
+# 
+#         if n == 1:
+#             self.write('{}')
+#             return 0
+# 
+#         self.write('{')
+# 
+#         if is_collection:
+#             self.dump_collection(name, results[1])
+#         else:
+#             self.dump_content(results[1:])
+# 
+#         self.write('}')
+#     #
+#     def pretty_dump_content(self, items, offset):
+#         offset1 = offset + '  '
+#         use_offset = 1
+#         n = len(items)
+# 
+#         for item in items:
+# 
+#             if item is None:
+#                 continue
+# 
+#             tp = type(item)
+#             if tp is dict:
+#                 if self.nsize and len(item) <= self.nsize and all(is_simple_type(self, x) for x in item.values()):
+#                     self.write("\n")
+#                     self.write(offset1)
+#                     self._dump_attr_sequence(item)
+#                 else:
+#                     self._pretty_dump_attr_sequence(item, offset1, use_offset)
+#             elif tp is list:
+#                 if self.nsize and len(item) <= self.nsize and all(is_simple_type(self, x) for x in item):
+#                     self.write("\n")
+#                     self.write(offset1)
+#                     self._dump_list_sequence(item)
+#                 else:
+#                     self._pretty_dump_list_sequence(item, offset1, use_offset)
+#             elif tp is tuple:
+#                 if self.nsize and len(item) <= self.nsize and all(is_simple_type(self, x) for x in item):
+#                     self.write("\n")
+#                     self.write(offset1)
+#                     self._dump_tuple_sequence(item)
+#                 else:
+#                     self._pretty_dump_tuple_sequence(item, offset1, use_offset)
+#             else:
+#                 for v in item:
+#                     self.write('\n')
+#                     self._pretty_dump(v, offset1, use_offset)
+#     #
+#     def pretty_dump_collection(self, name, collection, offset):
+#         new_offset = offset + '  '
+#         N = len(collection)
+# 
+#         for i, o in enumerate(collection):
+#             self.write('\n')
+#             self.write(new_offset)
+#             if self.crossref:
+#                 v = self._dump_label(o)
+#                 if v == 1:
+#                     return 0
+# 
+#             if self.pretty == 1:
+#                 self.write('{')
+#             elif self.pretty == 2:
+#                 self.write(':')
+# 
+#             otype = type(o)
+#             reducer = self.c_type_reducers.get(otype, None)
+#             if reducer is None:
+#                 raise TypeError('There is no reducer for this type: ' + repr(otype))
+#             else:
+#                 items = reducer(o)
+#                 n = len(items)
+# 
+#                 if name != items[0]:
+#                     raise ValueError("Invalid name for collection %s-th item" % i)
+# 
+#                 if n < 1 or n > 3:
+#                     raise ValueError('Reducer returns invalid number of items: %s' % n)
+#                 elif n > 1:
+#                     self.pretty_dump_content(items[1:], new_offset)
+# 
+#             if self.pretty == 1:
+#                 self.write('}')
+# 
+#     #
+#     def _pretty_dump_with_reducer(self, reducer, o, offset):
+# 
+#         results = reducer(o)
+#         n = len(results)
+# 
+#         name = c_as_unicode(results[0])
+# 
+#         if name.endswith('*'):
+#             is_collection = 1
+#             name = c_unicode_substr(name, 0, c_unicode_length(name)-1)
+#         else:
+#             is_collection = 0
+# 
+#         self.write(_dump_name(name))
+# 
+#         if is_collection:
+#             self.write('*')
+# 
+#         if not is_collection and (n < 1 or n > 3):
+#             raise ValueError('Reducer returns invalid number of items: %s' % n)
+# 
+#         if n == 1:
+#             if self.pretty == 2:
+#                 self.write(':\n')
+#                 self.write(offset)
+#                 self.write('  ...')
+#             else:
+#                 self.write('{}')
+#             return 0
+# 
+#         if self.pretty == 1:
+#             self.write(' {')
+#         elif self.pretty == 2:
+#             self.write(':')
+# 
+#         #if self.crossref:
+#         #    self._pretty_dump_crossref(o)
+# 
+#         if is_collection:
+#             self.pretty_dump_collection(name, results[1], offset)
+#         else:
+#             self.pretty_dump_content(results[1:], offset)
+# 
+#         if self.pretty == 1:
+#             self.write('}')
+#         #elif self.pretty == 2:
+#         #    self.write('\n')
+#         #    self.write(offset)
     #
     def dump(self, seq):
         '''
@@ -1050,12 +1246,22 @@ class Dumper:
             self._collect_tuple(o)
         elif otype is set:
             self._collect_set(o)
-        else:
-            reducer = self.c_type_reducers.get(otype, None)
-            if reducer is None:
-                raise TypeError('There is no reducer for this type: ' + repr(otype))
-            else:
-                self._collect_with_reducer(reducer, o)
+        elif otype is Element:
+            self._collect_element(o)
+        elif otype is Mapping:
+            self._collect_mapping(o)
+        elif otype is Sequence:
+            self._collect_sequence(o)
+        elif otype is Instance:
+            self._collect_instance(o)
+        elif otype is Empty:
+            self._collect_instance(o)
+        #else:
+        #    reducer = self.c_type_reducers.get(otype, None)
+        #    if reducer is None:
+        #        raise TypeError('There is no reducer for this type: ' + repr(otype))
+        #    else:
+        #        self._collect_with_reducer(reducer, o)
     #
     def _collect_list(self, lst):
         for v in lst:
@@ -1073,25 +1279,42 @@ class Dumper:
         for v in d.values():
             self._collect(v)
     #
-    def _collect_with_reducer(self, reducer, o):
-
-        results = reducer(o)
-        n = len(results)
-
-        if n == 1:
-            return 0
-
-        for i in range(1, n):
-            results_i = results[i]
-            tp = type(results_i)
-            if tp is list:
-                self._collect_list(results_i)
-            elif tp is dict:
-                self._collect_dict(results_i)
-            elif tp is tuple:
-                self._collect_tuple(results_i)
-            elif tp is set:
-                self._collect_set(results_i)
+    def _collect_element(self, ob):
+        self._collect_dict(ob.mapping)
+        self._collect_list(ob.sequence)
+    #
+    def _collect_instance(self, ob):
+        self._collect_dict(ob.mapping)
+        self._collect_tuple(ob.sequence)
+    #
+    def _collect_mapping(self, ob):
+        self._collect_dict(ob.mapping)
+    #
+    def _collect_sequence(self, ob):
+        self._collect_list(ob.sequence)
+    #
+    def _collect_empty(self, ob):
+        pass
+    #
+    #def _collect_with_reducer(self, reducer, o):
+    #
+    #    results = reducer(o)
+    #    n = len(results)
+    #
+    #    if n == 1:
+    #        return 0
+    #
+    #    for i in range(1, n):
+    #        results_i = results[i]
+    #        tp = type(results_i)
+    #        if tp is list:
+    #            self._collect_list(results_i)
+    #        elif tp is dict:
+    #            self._collect_dict(results_i)
+    #        elif tp is tuple:
+    #            self._collect_tuple(results_i)
+    #        elif tp is set:
+    #            self._collect_set(results_i)
     #
     def collect(self, values):
         for v in values:

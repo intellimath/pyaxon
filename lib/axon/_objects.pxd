@@ -13,6 +13,7 @@ from cpython.object cimport PyObject, PyObject_Unicode
 #from cpython.dict cimport PyDict_GetItem, PyDict_SetItem
 #from cpython.float cimport PyFloat_FromString
 from cpython.unicode cimport PyUnicode_AsASCIIString
+from cpython.unicode cimport PyUnicode_FromEncodedObject
 from cpython.bytes cimport PyBytes_AsString
 from cpython.long cimport PyLong_FromString
 #from cpython.dict cimport PyDict_SetItem, PyDict_GetItem
@@ -22,9 +23,19 @@ from cpython.datetime cimport time_new, timedelta_new, date_new, datetime_new
 
 cdef object _decimal2str
 
+cdef extern from "math.h":
+    bint isnan(double x)
+    bint isinf(double x)
+    bint signbit(double x)
+    bint isfinite(double x)
+
+cdef extern from "floatobject.h":
+    double PyFloat_AS_DOUBLE(object)
+
 cdef extern from "utils.h":
-    inline Py_UCS4 c_unicode_char(unicode text, int pos)
-    inline unicode c_unicode_substr(unicode text, int start, int end)
+    inline Py_UCS4 c_unicode_char(object text, int pos)
+    inline unicode c_unicode_substr(object text, int start, int end)
+    inline int c_unicode_length(object text)
     inline unicode c_object_to_unicode(object o)
 
     inline object c_float_fromstring(object text)
@@ -221,8 +232,8 @@ cdef public class Instance[object InstanceObject, type InstanceType]:
 @cython.locals(s=Sequence)
 cdef public object c_new_sequence(object name, list sequence)
 #
-@cython.locals(s=Collection)
-cdef public object c_new_collection(object name, list sequence)
+#@cython.locals(s=Collection)
+#cdef public object c_new_collection(object name, list sequence)
 #
 @cython.locals(o=Mapping)
 cdef public object c_new_mapping(object name, dict mapping)
@@ -319,6 +330,35 @@ cdef public class SimpleBuilder[type SimpleBuilderType, object SimpleBuilder]:
     cdef inline object create_binary(self, unicode text)
 
 
+@cython.final
+cdef class SimpleDumper:
+
+    cdef unicode dump_int(SimpleDumper, object)
+
+    @cython.locals(d=double)
+    cdef unicode dump_float(SimpleDumper, object)
+
+    cdef unicode dump_decimal(SimpleDumper, object)
+        
+    @cython.locals(text=unicode)
+    cdef unicode dump_bytes(SimpleDumper, object)
+
+    @cython.locals(n=int, pos=int, pos0=int, text=unicode, ch=Py_UCS4)
+    cdef unicode dump_unicode(SimpleDumper, object)
+
+    cdef unicode dump_bool(SimpleDumper, object)
+
+    @cython.locals(d=unicode)
+    cdef unicode dump_date(self, o)
+
+    cdef unicode _dump_tzinfo(SimpleDumper, object)
+
+    cdef unicode dump_time(SimpleDumper, object)
+
+    cdef unicode dump_datetime(SimpleDumper, object)
+
+    cdef unicode dump_none(SimpleDumper, object)
+
 ####################################################################
 
 #cdef unicode NAME_EMPTY
@@ -328,7 +368,7 @@ cdef class StringReader:
     cdef int pos
     cdef int n
 
-    @cython.locals(ch=Py_UCS4, line=unicode, buffer=unicode,
+    @cython.locals(ch=Py_UCS4, line=unicode, buffer=object,
                    pos=int, pos0=int, n=int)
     cpdef unicode readline(StringReader self)
 

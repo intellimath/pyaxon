@@ -17,6 +17,8 @@
 #if PY_MAJOR_VERSION == 3
 
     #define c_int_fromstring(text) PyLong_FromString(text, NULL, 10)
+   
+    #define c_int_tostring(ob) _PyLong_Format(ob, 10)
 
     #define c_int_fromlong(val) PyLong_FromLong(val)
     #define c_int_fromint(val) PyLong_FromLong((long)val)
@@ -29,6 +31,10 @@
 
     #define c_int_fromlong(val) PyInt_FromLong(val)
     #define c_int_fromint(val) PyInt_FromLong((long)val)
+
+    #define c_int_tostring(ob) \
+        if (PyLong_Check(ob)) _PyLong_Format(ob, 10, 0, 1) \
+        else _PyInt_Format(ob, 10, 1)
 
     #define c_object_to_unicode(o) PyObject_Unicode(o)
 

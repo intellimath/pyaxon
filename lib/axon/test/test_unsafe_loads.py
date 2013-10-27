@@ -32,7 +32,7 @@ def mapping_reducer_maker(cls):
                 continue
             attrs[as_name(name)] = getattr(o, name)
 
-        return as_name(cls.__name__), attrs
+        return mapping(as_name(cls.__name__), attrs)
     return type_reducer
 
 

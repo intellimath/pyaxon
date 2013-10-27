@@ -14,10 +14,10 @@ except:
 
 try:
     unicode_type = builtins.unicode
-    str_type = builtins.str
 except AttributeError:
     unicode_type = builtins.str
-    str_type = builtins.str
+
+str_type = builtins.str
 
 try:
     long_type = builtins.long
@@ -34,3 +34,4 @@ date_type = datetime.date
 time_type = datetime.time
 datetime_type = datetime.datetime
 decimal_type = Decimal
+none_type = type(None)

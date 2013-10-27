@@ -21,9 +21,9 @@ cdef extern from "utils.h":
     inline object c_int_fromlong(long val)
     inline object c_int_fromint(int val)
 
-    inline Py_UCS4 c_unicode_char(unicode text, int pos)
-    inline unicode c_unicode_substr(unicode text, int start, int end)
-    inline int c_unicode_length(unicode text)
+    inline Py_UCS4 c_unicode_char(unicode object, int pos)
+    inline unicode c_unicode_substr(unicode object, int start, int end)
+    inline int c_unicode_length(unicode object)
 
     #inline bint CH_BETWEEN(Py_UCS4, Py_UCS4, Py_UCS4)
 
@@ -40,7 +40,7 @@ from axon._objects cimport c_undefined, empty_name
 from axon._objects cimport name_cache, c_as_unicode, c_as_name, py_as_name
 from axon._objects cimport c_as_tuple
 from axon._objects cimport c_new_instance, c_new_mapping, c_new_sequence, \
-                           c_new_collection, c_new_element, c_new_empty
+                           c_new_element, c_new_empty
 
 from axon._objects cimport Builder, SafeBuilder, StrictBuilder, MixedBuilder
 from axon._objects cimport get_builder
