@@ -395,7 +395,7 @@ def _dump_name(ob):
         raise ValueError('Invalid name')
     while pos < n:
         ch = name[pos]
-        if ch.isalnum() or ch == '_': # or ch == '-':
+        if ch.isalnum() or ch == '_' or ch == '.':
             pos += 1
         elif ch == "'":
             pos += 1
