@@ -36,16 +36,16 @@ import cython
 #######################################################################
 #
 
-ATOMIC_VALUE = 1
-DICT = 2
-LIST = 3
-TUPLE = 4
-COMPLEX_VALUE = 5
-COLLECTION = 6
-END = 7
-REFERENCE = 8
-LABEL = 9
-ATTRIBUTE = 10
+# ATOMIC_VALUE = 1
+# DICT = 2
+# LIST = 3
+# TUPLE = 4
+# COMPLEX_VALUE = 5
+# COLLECTION = 6
+# END = 7
+# REFERENCE = 8
+# LABEL = 9
+# ATTRIBUTE = 10
 
 if sys.version_info.major == 3:
     int_mode = 'i'
@@ -206,7 +206,7 @@ class Loader:
         if line == '':
             self.eof = 1
         else:
-            ch = line[len(line) - 1]
+            ch = c_unicode_char(line, c_unicode_length(line) - 1)
             if ch != '\n':
                 line += '\n'
             self.eof = 0
@@ -898,12 +898,13 @@ class Loader:
         if ch == '#':
             self.skip_comments()
 
-        ch = current_char(self)
-        if ch == '.':
-            if self.get_dots():
-                return self.builder.create_empty(name)
-            else:
-                errors.error_invalid_value(self)
+        if idn:
+            ch = current_char(self)
+            if ch == '.':
+                if self.get_dots():
+                    return self.builder.create_empty(name)
+                else:
+                    errors.error_invalid_value(self)
 
         aname = self.try_get_name()
 
@@ -1005,7 +1006,6 @@ class Loader:
         ch = self.moveto_next_token()
 
         while 1:
-            #ch = current_char(self)
             if ch == ']':
                 skip_char(self)
                 self.bs -= 1
@@ -1046,13 +1046,13 @@ class Loader:
 
         while 1:
         
-            if ch == '#':
-                self.skip_comments()
-                self.moveto_next_token()
+            #if ch == '#':
+            #    self.skip_comments()
+            #    self.moveto_next_token()
 
             key = self.try_get_key()
 
-            ch = self.skip_spaces()
+            ch = self.moveto_next_token()
 
             if key is not None:
                 if ch == ':':

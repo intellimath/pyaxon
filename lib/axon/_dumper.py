@@ -624,7 +624,11 @@ class Dumper:
         otype = type(o)
         dumper = self.sdumper
         if otype is unicode_type:
+            self.write('"')        
             text = dumper.dump_unicode(o)
+            self.write(text)
+            self.write('"') 
+            return 1       
         elif otype is long_type or otype is int_type:
             text = dumper.dump_int(o)
         elif otype is float_type:

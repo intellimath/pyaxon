@@ -1051,7 +1051,7 @@ tz_dict = {}
 class SimpleDumper:
 
     def dump_int(self, o):
-        return c_object_to_unicode(o)
+        return c_int_tostring(o)
 
     def dump_float(self, o):
         d = PyFloat_AS_DOUBLE(o)
@@ -1099,7 +1099,8 @@ class SimpleDumper:
     def dump_unicode(self, line):
         pos0 = 0
         pos = 0
-        text = '"'
+        text = ''
+        flag = 0
 
         n = c_unicode_length(line)
         while pos < n:
@@ -1110,12 +1111,16 @@ class SimpleDumper:
                 text += '\\"'
                 pos += 1
                 pos0 = pos
+                flag = 1
             else:
                 pos += 1
 
         if pos != pos0:
-            text += c_unicode_substr(line, pos0, pos)
-        return text + '"'
+            if flag:
+                text += c_unicode_substr(line, pos0, pos)
+            else:
+                text = c_unicode_substr(line, pos0, pos)
+        return text
 
     def dump_bool(self, o):
         #return '⊤' if o else '⊥'
@@ -1179,7 +1184,7 @@ class SimpleDumper:
 class SimpleBuilder:
 
     def create_int(self, text):
-        n = len(text)
+        n = c_unicode_length(text)
         num_buffer = PyBytes_FromStringAndSize(cython.NULL, n+1)
 
         buf = num_buffer
@@ -1191,7 +1196,7 @@ class SimpleBuilder:
         return c_int_fromstring(buf)
 
     def create_float(self, text):
-        n = len(text)
+        n = c_unicode_length(text)
         num_buffer = PyBytes_FromStringAndSize(cython.NULL, n)
 
         buf = num_buffer

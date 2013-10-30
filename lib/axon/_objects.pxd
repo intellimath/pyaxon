@@ -38,6 +38,8 @@ cdef extern from "utils.h":
     inline int c_unicode_length(object text)
     inline unicode c_object_to_unicode(object o)
 
+    inline unicode c_int_tostring(object o)
+
     inline object c_float_fromstring(object text)
     inline object c_int_fromstring(char *text)
     inline object c_int_fromlong(long val)
@@ -269,7 +271,6 @@ cdef class SafeBuilder(Builder):
     cdef public object create_empty(self, object)
 
 cdef class StrictBuilder(Builder):
-    #cdef public SafeBuilder builder
     cdef public object create_mapping(self, object, dict)
     cdef public object create_element(self, object, dict, list)
     cdef public object create_sequence(self, object, list)
@@ -277,7 +278,7 @@ cdef class StrictBuilder(Builder):
     cdef public object create_empty(self, object)
 
 cdef class MixedBuilder(Builder):
-    cdef public SafeBuilder builder
+    cdef SafeBuilder builder
     cdef public object create_mapping(self, object, dict)
     cdef public object create_element(self, object, dict, list)
     cdef public object create_sequence(self, object, list)
@@ -285,11 +286,11 @@ cdef class MixedBuilder(Builder):
     cdef public object create_empty(self, object)
 
 cdef public class GenericBuilder(Builder)[object GenericBuilderObject, type GenericBuilderType]:
-    cdef object create_mapping(self, object, dict)
-    cdef object create_element(self, object, dict, list)
-    cdef object create_sequence(self, object, list)
-    cdef object create_instance(self, object, tuple, dict)
-    cdef object create_empty(self, object)
+    cdef public object create_mapping(self, object, dict)
+    cdef public object create_element(self, object, dict, list)
+    cdef public object create_sequence(self, object, list)
+    cdef public object create_instance(self, object, tuple, dict)
+    cdef public object create_empty(self, object)
 
 cdef dict c_builder_dict
 
@@ -312,10 +313,10 @@ cdef dict tz_dict = {}
 cdef public class SimpleBuilder[type SimpleBuilderType, object SimpleBuilder]:
 
     @cython.locals(n=int, i=int, buf=cython.p_char, num_buffer=bytes)
-    cdef inline object create_int(self, unicode text)
+    cdef inline object create_int(self, object text)
     @cython.locals(n=int, i=int, buf=cython.p_char, num_buffer=bytes)
-    cdef inline object create_float(self, unicode text)
-    cdef inline object create_decimal(self, unicode text)
+    cdef inline object create_float(self, object text)
+    cdef inline object create_decimal(self, object text)
     cdef inline object create_time(self, int h, int m, int s, int ms, object tz)
     cdef inline object create_timedelta(self, int d, int s, int ms)
     cdef inline object create_date(self, int y, int m, int d)
@@ -330,39 +331,39 @@ cdef public class SimpleBuilder[type SimpleBuilderType, object SimpleBuilder]:
     cdef inline object create_binary(self, unicode text)
 
 
-@cython.final
 cdef class SimpleDumper:
 
-    cdef unicode dump_int(SimpleDumper, object)
+    cdef inline unicode dump_int(SimpleDumper, object)
 
     @cython.locals(d=double)
-    cdef unicode dump_float(SimpleDumper, object)
+    cdef inline unicode dump_float(SimpleDumper, object)
 
-    cdef unicode dump_decimal(SimpleDumper, object)
+    cdef inline unicode dump_decimal(SimpleDumper, object)
         
     @cython.locals(text=unicode)
-    cdef unicode dump_bytes(SimpleDumper, object)
+    cdef inline unicode dump_bytes(SimpleDumper, object)
 
-    @cython.locals(n=int, pos=int, pos0=int, text=unicode, ch=Py_UCS4)
-    cdef unicode dump_unicode(SimpleDumper, object)
+    @cython.locals(n=int, pos=int, pos0=int, text=unicode, ch=Py_UCS4, flag=bint)
+    cdef inline unicode dump_unicode(SimpleDumper, object)
 
-    cdef unicode dump_bool(SimpleDumper, object)
+    cdef inline unicode dump_bool(SimpleDumper, object)
 
     @cython.locals(d=unicode)
-    cdef unicode dump_date(self, o)
+    cdef inline unicode dump_date(self, o)
 
-    cdef unicode _dump_tzinfo(SimpleDumper, object)
+    cdef inline unicode _dump_tzinfo(SimpleDumper, object)
 
-    cdef unicode dump_time(SimpleDumper, object)
+    cdef inline unicode dump_time(SimpleDumper, object)
 
-    cdef unicode dump_datetime(SimpleDumper, object)
+    cdef inline unicode dump_datetime(SimpleDumper, object)
 
-    cdef unicode dump_none(SimpleDumper, object)
+    cdef inline unicode dump_none(SimpleDumper, object)
 
 ####################################################################
 
 #cdef unicode NAME_EMPTY
 
+@cython.final
 cdef class StringReader:
     cdef unicode buffer
     cdef int pos
@@ -374,6 +375,7 @@ cdef class StringReader:
 
     cpdef close(StringReader self)
 
+@cython.final
 cdef class StringWriter:
 
     cdef list blocks

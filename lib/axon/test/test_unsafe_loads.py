@@ -49,7 +49,7 @@ class UnsafeLoadsTestCase(unittest.TestCase):
     def setUp(self):
         pass
     #
-    def test_1(self):
+    def test_usafe_1(self):
         v = C()
         v.a = 1
         v.b = 2
@@ -61,7 +61,7 @@ class UnsafeLoadsTestCase(unittest.TestCase):
         self.assertEqual(v.b, v1.b)
         self.assertEqual(v.c, v1.c)
     #
-    def test_2(self):
+    def test_usafe_2(self):
         v = C()
         v.a = 1
         v.b = 2
@@ -80,7 +80,7 @@ class UnsafeLoadsTestCase(unittest.TestCase):
         self.assertEqual(w.b, w1.b)
         self.assertEqual(w.c, w1.c)
     #
-    def test_3(self):
+    def test_usafe_3(self):
         v = E(1, 2, 3)
         text = dumps([v])
         #display(text)
@@ -89,7 +89,7 @@ class UnsafeLoadsTestCase(unittest.TestCase):
         self.assertEqual(v.b, v1.b)
         self.assertEqual(v.c, v1.c)
     #
-    def test_4(self):
+    def test_usafe_4(self):
         from random import randint
         v = C()
         v.x = 1
@@ -107,7 +107,7 @@ class UnsafeLoadsTestCase(unittest.TestCase):
         self.assertEqual(all([type(z) is D for z in v1.y]), True)
         self.assertEqual(all([z.z==z1.z for z,z1 in zip(v1.y, lst)]), True)
     #
-    def test_5(self):
+    def test_usafe_5(self):
         from random import randint
         vs = []
         v = C()
