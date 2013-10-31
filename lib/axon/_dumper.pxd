@@ -34,9 +34,6 @@ cdef inline object dict_get(object op, object key, object default):
 
 
 from axon._objects cimport Empty, Mapping, Element, Sequence, Instance, Undefined
-#from axon._objects cimport c_new_element, c_new_empty, c_new_mapping, c_new_construct, c_new_sequence
-#from axon._objects cimport c_reduce_dict, c_simple_dumpers, simple_types
-#from axon._objects cimport SimpleDumpers, PyPointer
 from axon._objects cimport SimpleDumper
 from axon._objects cimport c_undefined
 from axon._objects cimport name_cache, empty_name, c_as_unicode, c_as_name
@@ -137,8 +134,6 @@ cdef dict _c_type_reducers
 cdef public dict c_factory_dict
 cdef public dict c_reduce_dict
 
-#cdef dict c_simple_dumpers
-
 cdef class PyPointer:
     cdef unicode (*ptr)(object)
 
@@ -193,7 +188,7 @@ cdef public class SimpleDumpers[type SimpleDumpersType, object SimpleDumpers]:
 
 cdef unicode dump_default(object v)
 
-cdef dict c_simple_dumpers
+cdef public dict c_simple_dumpers
 #cdef set simple_types
 
 #
@@ -219,7 +214,7 @@ cdef public class Dumper[object Dumper, type DumperType]:
     cdef dict c_simple_dumpers
     cdef dict c_type_reducers
     cdef long size, max_size
-    cdef int nsize
+    #cdef int hsize
     cdef object fd
     cdef StringWriter sfd
     
@@ -249,7 +244,7 @@ cdef public class Dumper[object Dumper, type DumperType]:
     @cython.locals(flag=bint, this_offset=unicode, new_offset=unicode)
     cdef int _pretty_dump(Dumper self, o, unicode offset, bint use_offset) except -1
     #
-    @cython.locals(text=unicode)
+    @cython.locals(text=unicode, ptr=PyPointer)
     cdef bint _dump_value(Dumper self, o) except -1
     #
     @cython.locals(i=int, text=unicode)
@@ -285,16 +280,16 @@ cdef public class Dumper[object Dumper, type DumperType]:
     #
     cdef int dump_empty(Dumper self, Empty ob) except -1
     #
-    @cython.locals(text=unicode, i=int)
+    @cython.locals(text=unicode, i=int, j=int)
     cdef inline int _pretty_dump_dict_sequence(Dumper self, dict d, unicode w, bint use_offset) except -1
     #
-    @cython.locals(text=unicode, i=int)
+    @cython.locals(text=unicode, i=int, j=int)
     cdef inline int _pretty_dump_attr_sequence(Dumper self, dict d, unicode w, bint use_offset) except -1
     #
-    @cython.locals(i=int)
+    @cython.locals(i=int, j=int)
     cdef inline int _pretty_dump_list_sequence(Dumper self, list l, unicode w, bint use_offset) except -1
     #
-    @cython.locals(i=int)
+    @cython.locals(i=int, j=int)
     cdef inline int _pretty_dump_tuple_sequence(Dumper self, tuple l, unicode w, bint use_offset) except -1
     #
     cdef inline int pretty_dump_list(Dumper self, list l, unicode w, bint use_offset) except -1

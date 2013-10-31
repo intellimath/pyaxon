@@ -29,7 +29,7 @@ for key, d in _dict.items():
         self.assertEqual(t_1, text_1)
         self.assertEqual(t_2, text_2)
     fname = '_'.join(['test_samples', key])
-    setattr(ftest, '__name__', fname)
+    #setattr(ftest, str('__name__'), fname)
     setattr(SamplesTestCase, fname, ftest)
     del ftest
 

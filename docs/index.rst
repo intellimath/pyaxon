@@ -251,6 +251,7 @@ There are introductory `IPython` notebooks:
 * `Syntax <http://intellimath.bitbucket.org/axon/notebooks/axon_syntax.html>`_
 * `What & Why <http://intellimath.bitbucket.org/axon/notebooks/axon_what.html>`_
 * `Benchmarks <http://intellimath.bitbucket.org/axon/notebooks/axon_bench.html>`_
+* `AXON, JSON, XML <http://intellimath.bitbucket.org/axon/notebooks/axon_json_xml.html>`_
 
 Repository for ``AXON`` and ``pyaxon`` is `here <https://bitbucket.org/intellimath/pyaxon>`_.
 Here is also `mirror <https://github.com/intellimath/pyaxon>`_.

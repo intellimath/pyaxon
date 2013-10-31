@@ -1006,6 +1006,10 @@ class Loader:
         ch = self.moveto_next_token()
 
         while 1:
+            if ch == '#':
+                self.skip_comments()
+                self.moveto_next_token()
+                
             if ch == ']':
                 skip_char(self)
                 self.bs -= 1
@@ -1029,6 +1033,10 @@ class Loader:
         ch = self.moveto_next_token()
 
         while 1:
+            if ch == '#':
+                self.skip_comments()
+                self.moveto_next_token()
+        
             if ch == ')':
                 skip_char(self)
                 self.bq -= 1
@@ -1046,9 +1054,9 @@ class Loader:
 
         while 1:
         
-            #if ch == '#':
-            #    self.skip_comments()
-            #    self.moveto_next_token()
+            if ch == '#':
+                self.skip_comments()
+                self.moveto_next_token()
 
             key = self.try_get_key()
 

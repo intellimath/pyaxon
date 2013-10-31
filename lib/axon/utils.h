@@ -32,9 +32,7 @@
     #define c_int_fromlong(val) PyInt_FromLong(val)
     #define c_int_fromint(val) PyInt_FromLong((long)val)
 
-    #define c_int_tostring(ob) \
-        if (PyLong_Check(ob)) _PyLong_Format(ob, 10, 0, 1) \
-        else _PyInt_Format(ob, 10, 1)
+    #define c_int_tostring(ob)  PyLong_Check(ob)? _PyLong_Format(ob, 10, 0, 1) : _PyInt_Format((PyIntObject*)ob, 10, 1)
 
     #define c_object_to_unicode(o) PyObject_Unicode(o)
 

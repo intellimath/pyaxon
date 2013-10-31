@@ -85,7 +85,7 @@ aaa:
         self.assertEqual(type(v), Sequence)
         #self.assertEqual(v.sequence, [1, 2, 3, 4])
         self.assertEqual(v.mapping, None)
-        s = dumps([v], pretty=False)
+        s = dumps([v], pretty=0)
         self.assertEqual(s, 'aaa{1 2 bbb{1 2 3} 3 4}')
     #
     def test_sequence2(self):
