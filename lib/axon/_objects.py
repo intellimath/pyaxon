@@ -40,6 +40,7 @@ import axon.errors as errors
 from axon.types import builtins
 
 from axon.types import str_type
+c_str_type = str_type
 
 import datetime
 import_datetime()
@@ -63,8 +64,6 @@ default_decimal_context = _decimal.getcontext()
 _str2decimal = default_decimal_context.create_decimal
 _decimal2str = default_decimal_context.to_eng_string
 
-
-c_str_type = str_type
 
 class Undefined:
     def __repr__(self):
@@ -1115,6 +1114,9 @@ class SimpleDumper:
     def dump_bytes(self, o):
         text = PyUnicode_FromEncodedObject(encodebytes(o), 'ascii', 'strict')
         return c_as_unicode('|' + text)
+
+    def dump_str(self, o):
+        return self.dump_unicode(c_as_unicode(o))
 
     def dump_unicode(self, line):
         pos0 = 0

@@ -108,22 +108,22 @@ def empty_reduce(o):
     return o
 #
 
-_set_name = 'set'
-_tuple_name = 'tuple'
-_list_name = 'list'
-_dict_name = 'dict'
-
-def set_reduce(o):
-    return _set_name, tuple(o)
-#
-def tuple_reduce(o):
-    return _tuple_name, tuple(o)
-#
-def dict_reduce(o):
-    return _dict_name, o
-#
-def list_reduce(o):
-    return _list_name, o
+# _set_name = 'set'
+# _tuple_name = 'tuple'
+# _list_name = 'list'
+# _dict_name = 'dict'
+# 
+# def set_reduce(o):
+#     return _set_name, tuple(o)
+# #
+# def tuple_reduce(o):
+#     return _tuple_name, tuple(o)
+# #
+# def dict_reduce(o):
+#     return _dict_name, o
+# #
+# def list_reduce(o):
+#     return _list_name, o
 
 _c_type_reducers = {
     Mapping: mapping_reduce,
@@ -132,7 +132,6 @@ _c_type_reducers = {
     Instance: instance_reduce,
     Empty: empty_reduce,
     #Collection: collection_reduce,
-    Empty: empty_reduce,
     #set: set_reduce,
     #tuple: tuple_reduce,
     #list: list_reduce,
@@ -156,6 +155,8 @@ def reduce(type_, reduce_func = None):
         return _factory
     else:
         c_reduce_dict[type_] = reduce_func
+
+reduce_dict = c_reduce_dict
 
 #
 #
@@ -269,7 +270,9 @@ def _dump_name(ob):
     if ch.isalpha() or ch == '_':
         pos += 1
     else:
-        raise ValueError('Invalid name')
+        is_qname = 1
+        pos += 1
+        
     while pos < n:
         ch = name[pos]
         if ch.isalnum() or ch == '_' or ch == '.':
@@ -422,6 +425,7 @@ class Dumper:
                 if self._dump_label(o) == 1:
                     return 0
 
+            #self.write('\n')
             otype = type(o)
             if otype is list:
                 self.dump_list(o)
@@ -474,8 +478,9 @@ class Dumper:
             #    self.pretty_dump_set(o, new_offset, not use_offset)
             else:
                 reducer = self.c_type_reducers.get(otype, None)
+                #print(repr(o))
                 if reducer is None:
-                    raise TypeError('There is no reducer for this type: ' + repr(otype))
+                    raise TypeError('There is no reducer for this type: %r %r' % (otype, o))
                 else:
                     ob = reducer(o)
                     obtype = type(ob)
@@ -492,11 +497,6 @@ class Dumper:
                         self.pretty_dump_empty(ob, new_offset, use_offset)
                     else:
                         raise RuntimeError()
-                #reducer = self.c_type_reducers.get(otype, None)
-                #if reducer is None:
-                #    raise TypeError('There is no reducer for this type: ' + repr(otype))
-                #else:
-                #    self._pretty_dump_with_reducer(reducer, o, offset)
     #
     def _dump_value(self, o):
         otype = type(o)
@@ -508,6 +508,12 @@ class Dumper:
             self.write(text)
             self.write('"') 
             return 1       
+        elif otype is str_type:
+            self.write('"')        
+            text = dumper.dump_str(o)        
+            self.write(text)
+            self.write('"') 
+            return 1       
         elif otype is long_type or otype is int_type:
             text = dumper.dump_int(o)
         elif otype is float_type:
@@ -516,7 +522,7 @@ class Dumper:
             text = dumper.dump_decimal(o)
         elif otype is none_type:
             text = dumper.dump_none(o)
-        elif otype is bytes_type or otype is bytearray_type or otype is str_type:
+        elif otype is bytes_type or otype is bytearray_type:
             text = dumper.dump_bytes(o)
         elif otype is date_type:
             text = dumper.dump_date(o)
@@ -706,7 +712,10 @@ class Dumper:
             text = c_as_unicode(k)
             self.write(_dump_key(text))
             self.write(': ')
-            self._pretty_dump(v, w, 0)
+            if flag:
+                self._pretty_dump(v, w, 0)
+            else:
+                self._dump_value(v)
                 
             if j < self.hsize:
                 if flag:
@@ -742,7 +751,10 @@ class Dumper:
             text = c_as_unicode(k)
             self.write(_dump_name(text))
             self.write(': ')
-            self._pretty_dump(v, w, 0)
+            if flag:
+                self._pretty_dump(v, w, 0)
+            else:
+                self._dump_value(v)
                 
             if j < self.hsize:
                 if flag:
@@ -755,6 +767,12 @@ class Dumper:
                 j = 1                
     #
     def _pretty_dump_list_sequence(self, l, w, use_offset):
+        if self.pretty == 1 and len(l) == 1: 
+            v = l[0]
+            if type(v) in simple_types:
+                self._dump_value(v)
+                return 0
+            
         j = 1
         for v in l:
             flag = type(v) not in simple_types
@@ -767,7 +785,10 @@ class Dumper:
                 self._pretty_dump(v, w, 1)
             else:
                 self.write(' ')
-                self._pretty_dump(v, w, 0)
+                if flag:
+                    self._pretty_dump(v, w, 0)
+                else:
+                    self._dump_value(v)
                 
             if j < self.hsize:
                 if flag:
@@ -780,6 +801,12 @@ class Dumper:
                 j = 1                
     #
     def _pretty_dump_tuple_sequence(self, l, w, use_offset):
+        if self.pretty == 1 and len(l) == 1: 
+            v = l[0]
+            if type(v) in simple_types:
+                self._dump_value(v)
+                return 0
+
         j = 1
         for v in l:
             flag = type(v) not in simple_types
@@ -792,8 +819,10 @@ class Dumper:
                 self._pretty_dump(v, w, 1)
             else:
                 self.write(' ')
-                self._pretty_dump(v, w, 0)
-                use_offset = 1
+                if flag:
+                    self._pretty_dump(v, w, 0)
+                else:
+                    self._dump_value(v)
 
             if j < self.hsize:
                 if flag:

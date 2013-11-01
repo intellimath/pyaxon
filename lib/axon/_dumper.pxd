@@ -136,18 +136,18 @@ cpdef instance_reduce(Instance o)
 cpdef empty_reduce(Empty o)
 #
 
-cdef unicode _set_name
-cdef unicode _tuple_name
-cdef unicode _list_name
-cdef unicode _dict_name
-
-cpdef set_reduce(o)
-#
-cpdef tuple_reduce(o)
-#
-cpdef dict_reduce(o)
-#
-cpdef list_reduce(o)
+# cdef unicode _set_name
+# cdef unicode _tuple_name
+# cdef unicode _list_name
+# cdef unicode _dict_name
+# 
+# cpdef set_reduce(o)
+# #
+# cpdef tuple_reduce(o)
+# #
+# cpdef dict_reduce(o)
+# #
+# cpdef list_reduce(o)
 
 cdef dict _c_type_reducers
 

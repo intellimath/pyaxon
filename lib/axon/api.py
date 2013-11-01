@@ -26,6 +26,8 @@ from axon._dumper import Dumper
 from axon.types import unicode_type, str_type
 from axon._objects import as_unicode, StringReader, StringWriter
 
+import io
+
 import sys
 _major_version = sys.version_info.major
 del sys
@@ -44,6 +46,18 @@ class Reader(object):
         line = self.fd.readline()
         line =  line.decode(self.encoding)
         return line
+
+    def close(self):
+        self.fd.close()
+
+class Writer(object):
+    def __init__(self, fd, encoding):
+        self.fd = fd
+        self.encoding = encoding
+
+    def write(self, line):
+        line =  line.encode(self.encoding)
+        self.fd.write(line)
 
     def close(self):
         self.fd.close()
@@ -114,9 +128,10 @@ def dump(fpath, val, pretty=0, sorted=1, hsize=1, crossref=0, encoding='utf-8'):
 
     For other parameters see :py:func:`dumps`.
     '''
-    fd = open(fpath, mode='wt', encoding=encoding)
+    fd = io.open(fpath, mode='w', encoding=encoding)
+
     dumper = Dumper(fd, pretty, sorted, hsize, crossref)
-    dumper.dump(val, pretty)
+    dumper.dump(val)
     fd.close()
 
 def loads(text, mode="safe", errto=None, json=0):
@@ -211,12 +226,7 @@ def iload(fd, mode="safe", errto=None, encoding='utf-8', json=0):
     '''
 
     if type(fd) in (str_type, unicode_type):
-        import io
-        if _major_version >= 3:
-            fd = io.open(fd, mode='rt', encoding=encoding)
-        else:
-            fd = io.open(fd, mode='rt')
-            fd = Reader(fd, encoding)
+        fd = io.open(fd, mode='r', encoding=encoding)
 
     loader = Loader(fd, mode, errto, json)
 

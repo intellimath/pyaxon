@@ -105,7 +105,7 @@ cdef inline unicode c_as_unicode(object ob):
     tp = type(ob)
     if tp is unicode:
         return <unicode>ob
-    elif tp is c_str_type:
+    elif tp == c_str_type:
         return c_object_to_unicode(ob)
     elif ob is None:
         return c_object_to_unicode('')
@@ -357,6 +357,8 @@ cdef class SimpleDumper:
     cdef inline unicode dump_float(SimpleDumper, object)
 
     cdef inline unicode dump_decimal(SimpleDumper, object)
+
+    cdef inline unicode dump_str(SimpleDumper, object)
         
     @cython.locals(text=unicode)
     cdef inline unicode dump_bytes(SimpleDumper, object)
