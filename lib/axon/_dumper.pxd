@@ -189,7 +189,7 @@ cdef public class SimpleDumpers[type SimpleDumpersType, object SimpleDumpers]:
 cdef unicode dump_default(object v)
 
 cdef public dict c_simple_dumpers
-#cdef set simple_types
+cdef set simple_types
 
 #
 # Dumping
@@ -214,7 +214,7 @@ cdef public class Dumper[object Dumper, type DumperType]:
     cdef dict c_simple_dumpers
     cdef dict c_type_reducers
     cdef long size, max_size
-    #cdef int hsize
+    cdef int hsize
     cdef object fd
     cdef StringWriter sfd
     
@@ -280,16 +280,16 @@ cdef public class Dumper[object Dumper, type DumperType]:
     #
     cdef int dump_empty(Dumper self, Empty ob) except -1
     #
-    @cython.locals(text=unicode, i=int, j=int)
+    @cython.locals(text=unicode, i=int, j=int, flag=bint)
     cdef inline int _pretty_dump_dict_sequence(Dumper self, dict d, unicode w, bint use_offset) except -1
     #
-    @cython.locals(text=unicode, i=int, j=int)
+    @cython.locals(text=unicode, i=int, j=int, flag=bint)
     cdef inline int _pretty_dump_attr_sequence(Dumper self, dict d, unicode w, bint use_offset) except -1
     #
-    @cython.locals(i=int, j=int)
+    @cython.locals(i=int, j=int, flag=bint)
     cdef inline int _pretty_dump_list_sequence(Dumper self, list l, unicode w, bint use_offset) except -1
     #
-    @cython.locals(i=int, j=int)
+    @cython.locals(i=int, j=int, flag=bint)
     cdef inline int _pretty_dump_tuple_sequence(Dumper self, tuple l, unicode w, bint use_offset) except -1
     #
     cdef inline int pretty_dump_list(Dumper self, list l, unicode w, bint use_offset) except -1

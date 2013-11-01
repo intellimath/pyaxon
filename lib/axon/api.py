@@ -28,7 +28,7 @@ class Reader(object):
     def close(self):
         self.fd.close()
 
-def display(text, pretty=1, sorted=1, crossref=0):
+def display(text, pretty=1, sorted=1, hsize=1, crossref=0):
     '''
     Display AXON text in formatted form for easy read.
 
@@ -39,9 +39,9 @@ def display(text, pretty=1, sorted=1, crossref=0):
         formatted `unicode` AXON text
     '''
     val = loads(text)
-    print(dumps(val, pretty, sorted, crossref))
+    print(dumps(val, pretty, sorted, hsize, crossref))
 
-def dumps(val, pretty=0, sorted=1, crossref=0):
+def dumps(val, pretty=0, sorted=1, hsize=1, crossref=0):
     '''
     Dump value into unicode text.
 
@@ -79,13 +79,13 @@ def dumps(val, pretty=0, sorted=1, crossref=0):
 
     fd = StringWriter()
 
-    dumper = Dumper(fd, pretty, sorted, crossref)
+    dumper = Dumper(fd, pretty, sorted, hsize, crossref)
     dumper.dump(val)
     v = fd.getvalue()
     fd.close()
     return v
 
-def dump(fpath, val, pretty=0, sorted=1, crossref=0, encoding='utf-8'):
+def dump(fpath, val, pretty=0, sorted=1, hsize=1, crossref=0, encoding='utf-8'):
     '''\
     Same as :py:func:`dumps` but for dumping into a file.
 
@@ -95,7 +95,7 @@ def dump(fpath, val, pretty=0, sorted=1, crossref=0, encoding='utf-8'):
     For other parameters see :py:func:`dumps`.
     '''
     fd = open(fpath, mode='wt', encoding=encoding)
-    dumper = Dumper(fd, pretty, sorted, crossref)
+    dumper = Dumper(fd, pretty, sorted, hsize, crossref)
     dumper.dump(val, pretty)
     fd.close()
 
