@@ -68,11 +68,13 @@ from axon._objects cimport Builder, SafeBuilder, StrictBuilder, MixedBuilder
 from axon._objects cimport get_builder
 from axon._objects cimport SimpleBuilder
 
+from axon._objects cimport c_new_token, end_token, dict_token, tuple_token, list_token
+from axon._objects cimport ATOMIC, END, COMPLEX, ATTRIBUTE, KEY, REFERENCE, LABEL, LIST, DICT, TUPLE
+
 cdef object unicode_type, str_type, int_type, long_type
 cdef object bool_type, float_type, bytes_type
 
 cdef dict c_constants
-#cdef dict c_factory_dict
 
 cdef inline object dict_get(object op, object key, object default):
     cdef PyObject* val = <PyObject*>PyDict_GetItem(op, key)
@@ -121,17 +123,6 @@ cdef inline object dict_get(object op, object key, object default):
 #         return unicode('')
 #     else:
 #         raise TypeError('This object %r is not unicode compatible' % ob)
-
-# cdef object ATOMIC_VALUE
-# cdef object DICT
-# cdef object LIST
-# cdef object TUPLE
-# cdef object COMPLEX_VALUE
-# cdef object COLLECTION
-# cdef object END
-# cdef object REFERENCE
-# cdef object LABEL
-
 
 @cython.final
 cdef class Loader:
@@ -252,10 +243,6 @@ cdef class Loader:
     @cython.locals(ch=Py_UCS4, val=object, is_multi=bint)
     cdef object get_value(Loader self, int idn, int prev_idn)
 
-    #@cython.locals(ch=Py_UCS4, val=object,
-    #               sequence=list, mapping=dict, v=bint, values=list)
-    #cdef object get_collection(Loader self, object name, int idn, int prev_idn)
-
     @cython.locals(ch=Py_UCS4, val=object,
                    sequence=list, mapping=dict, v=bint, is_multi=bint)
     cdef object get_complex_value(Loader self, object name, int idn, int prev_idn)
@@ -283,8 +270,11 @@ cdef class Loader:
     @cython.locals(ch=Py_UCS4, is_multi=bint)
     cdef bint get_sequence_part(Loader self, list sequence, dict mapping, int idn, int prev_idn) except -1
 
-    #@cython.locals(ch=Py_UCS4)
-    #cdef bint get_sequence_part_only(Loader self, list sequence, int idn) except -1
+    #cpdef itokens(self)
 
     #@cython.locals(ch=Py_UCS4)
-    #cdef bint get_mapping_part_only(Loader self, dict mapping, int idn) except -1
+    #cpdef _itokens(Loader self, int idn, int prev_idn)
+    
+    #@cython.locals(ch=Py_UCS4)
+    #cpdef _inamed(Loader self, object name, int idn, int prev_idn)    
+    

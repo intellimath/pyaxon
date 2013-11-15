@@ -35,11 +35,25 @@ cdef extern from "math.h":
 cdef extern from "floatobject.h":
     double PyFloat_AS_DOUBLE(object)
 
+#cdef extern from "utils.h":
+#    inline int c_unicode_length(object text)
+#    inline unicode c_unicode_substr(object text, int start, int end)
+#    inline Py_UCS4 c_unicode_char(object text, int index)
+#    inline unicode c_object_to_unicode(object o)
+
 cdef extern from "utils.h":
-    inline int c_unicode_length(object text)
+    inline Py_UCS4 c_unicode_char(object text, int pos)
     inline unicode c_unicode_substr(object text, int start, int end)
-    inline Py_UCS4 c_unicode_char(object text, int index)
+    inline int c_unicode_length(object text)
     inline unicode c_object_to_unicode(object o)
+
+    inline unicode c_int_tostring(object o)
+
+    inline object c_float_fromstring(object text)
+    inline object c_int_fromstring(char *text)
+    inline object c_int_fromlong(long val)
+    inline object c_int_fromint(int val)
+
 
 from cpython.object cimport PyObject
 from cpython.dict cimport PyDict_SetItem, PyDict_GetItem
@@ -54,10 +68,12 @@ cdef inline object dict_get(object op, object key, object default):
 
 
 from axon._objects cimport Empty, Mapping, Element, Sequence, Instance, Undefined
-from axon._objects cimport SimpleDumper
 from axon._objects cimport c_undefined
 from axon._objects cimport name_cache, empty_name, c_as_unicode, c_as_name
 from axon._objects cimport StringWriter
+
+from axon._objects cimport c_new_token, end_token, dict_token, tuple_token, list_token
+from axon._objects cimport ATOMIC, END, COMPLEX, ATTRIBUTE, KEY, REFERENCE, LABEL, LIST, DICT, TUPLE
 
 # cdef inline unicode c_as_unicode(object ob):
 #     if type(ob) is unicode:
@@ -159,6 +175,39 @@ cdef class PyPointer:
 
 @cython.locals(pyptr=PyPointer)
 cdef PyPointer c_new_pyptr(unicode (*p)(object))
+
+cdef class SimpleDumper:
+
+    cdef inline unicode dump_int(SimpleDumper, object)
+
+    @cython.locals(d=double)
+    cdef inline unicode dump_float(SimpleDumper, object)
+
+    cdef inline unicode dump_decimal(SimpleDumper, object)
+
+    cdef inline unicode dump_str(SimpleDumper, object)
+        
+    @cython.locals(text=unicode)
+    cdef inline unicode dump_bytes(SimpleDumper, object)
+
+    @cython.locals(n=int, pos=int, pos0=int, text=unicode, ch=Py_UCS4, flag=bint)
+    cdef inline unicode dump_unicode(SimpleDumper, object)
+
+    cdef inline unicode dump_bool(SimpleDumper, object)
+
+    @cython.locals(d=unicode)
+    cdef inline unicode dump_date(self, o)
+
+    cdef inline unicode _dump_tzinfo(SimpleDumper, object)
+
+    cdef inline unicode dump_time(SimpleDumper, object)
+
+    cdef inline unicode dump_datetime(SimpleDumper, object)
+
+    cdef inline unicode dump_none(SimpleDumper, object)
+
+
+cdef SimpleDumper _simple_dumper
 
 cdef public class SimpleDumpers[type SimpleDumpersType, object SimpleDumpers]:
     cdef public dict mapping

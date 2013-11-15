@@ -22,7 +22,7 @@
 
 from __future__ import unicode_literals, print_function
 from axon._loader import Loader
-from axon._dumper import Dumper
+from axon._dumper import Dumper, tokens2str
 from axon.types import unicode_type, str_type
 from axon._objects import as_unicode, StringReader, StringWriter
 
@@ -232,3 +232,12 @@ def iload(fd, mode="safe", errto=None, encoding='utf-8', json=0):
 
     return loader
 
+def itokens(text, mode="safe", errto=None, encoding='utf-8', json=0):
+    text = as_unicode(text)
+    fd = StringReader(text)
+
+    loader = Loader(fd, mode, errto, json)
+
+    for tok in loader.itokens():
+        yield tok
+    

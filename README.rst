@@ -2,19 +2,20 @@
 PYAXON
 ======
 
-``pyaxon`` is an `MIT Licensed <http://opensource.org/licenses/MIT>`_ python library for `AXON <http://axon.intellimath.org>`_ -
+``pyaxon`` is an `MIT Licensed <http://opensource.org/licenses/MIT>`_ python library
+for `AXON <http://axon.intellimath.org>`_ -
 An eXtended Object Notation - simple text based format for interchanging
 objects, documents and data.
 It tries to combine the best of `JSON <http://www.json.org>`_,
 `XML <http://www.w3.org/XML/>`_ and `YAML <http://www.yaml.org>`_.
 
 Main repository for ``pyaxon`` is on `bitbucket <https://bitbucket.org/intellimath/pyaxon>`_.
-There is an mirror on `github <https://github.com/intellimath/pyaxon>`_
+There is a mirror on `github <https://github.com/intellimath/pyaxon>`_
 
 Features
 --------
 
-1. Provide simple API for loading and dumping of objects.
+1. Provide simple API for loading and dumping of objects in textual form.
 2. Provide safe loading and dumping by default.
 3. Provide unsafe loading and dumping of objects on the base of registration of factory/reduce callables.
 4. Provide a way for fully controlled by application/framework/library unsafe loading and dumping.
@@ -22,6 +23,11 @@ Features
 
 History
 -------
+
+**0.5.8**
+
+1. Fix 2.7/3.3 compatibility error with reading from files.
+2. Pretty dumping now is more compact in simple cases.
 
 **0.5.7**
 

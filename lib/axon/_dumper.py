@@ -4,6 +4,7 @@
 #cython: wraparound=False
 #cython: nonecheck=False
 #cython: language_level=3
+#cython: infer_types=True
 
 # The MIT License (MIT)
 # 
@@ -62,7 +63,6 @@ simple_types = {
     time_type,
     datetime_type,
 }
-
 
 try:
     import cdecimal as _decimal
@@ -224,6 +224,180 @@ c_simple_dumpers = {}
 # if types.int_type != types.long_type:
 #     c_simple_dumpers[types.int_type] = c_new_pyptr(_dump_int)
 # 
+
+class SimpleDumper:
+
+    def __call__(self, o):
+        otype = type(o)
+        if otype is unicode_type:
+            return '"' + self.dump_unicode(o) + '"'
+        elif otype is str_type:
+            return '"' + self.dump_str(o) + '"'
+        elif otype is long_type or otype is int_type:
+            return self.dump_int(o)
+        elif otype is float_type:
+            return self.dump_float(o)
+        elif otype is decimal_type:
+            return self.dump_decimal(o)
+        elif otype is none_type:
+            return self.dump_none(o)
+        elif otype is bytes_type or otype is bytearray_type:
+            return self.dump_bytes(o)
+        elif otype is date_type:
+            return self.dump_date(o)
+        elif otype is time_type:
+            return self.dump_time(o)
+        elif otype is datetime_type:
+            return self.dump_datetime(o)
+        elif otype is bool_type:
+            return self.dump_bool(o)
+        else:
+            _dumper = c_simple_dumpers.get(otype, None)
+            if _dumper is None:
+                return '???'
+            else:
+                if type(_dumper) is PyPointer:
+                    ptr = _dumper
+                    text = ptr.ptr(o)
+                else:
+                    text = _dumper(o)
+                return text
+                                        
+    def dump_int(self, o):
+        return c_int_tostring(o)
+
+    def dump_float(self, o):
+        d = PyFloat_AS_DOUBLE(o)
+        if isfinite(d):
+            return c_object_to_unicode(o)
+
+        if isnan(d):
+            return '?'
+
+        if isinf(d):
+            if signbit(d):
+                return '-∞'
+            else:
+                return '∞'
+
+        if signbit(d):
+            return '-0'
+
+        return '0'
+
+    def dump_decimal(self, d):
+        if d.is_finite():
+            val  = c_object_to_unicode(_decimal2str(d))
+
+        elif d.is_nan():
+            val = '?'
+
+        elif d.is_infinite():
+            if d.is_signed():
+                val = '-∞'
+            else:
+                val = '∞'
+
+        elif d.is_signed():
+            val = '-0'
+        else:
+            val = '0'
+
+        return val + '$'
+        
+    def dump_bytes(self, o):
+        text = PyUnicode_FromEncodedObject(encodebytes(o), 'ascii', 'strict')
+        return c_as_unicode('|' + text)
+
+    def dump_str(self, o):
+        return self.dump_unicode(c_as_unicode(o))
+
+    def dump_unicode(self, line):
+        pos0 = 0
+        pos = 0
+        text = ''
+        flag = 0
+
+        n = c_unicode_length(line)
+        while pos < n:
+            ch = c_unicode_char(line, pos)
+            if ch == '"':
+                if pos != pos0:
+                    text += c_unicode_substr(line, pos0, pos)
+                text += '\\"'
+                pos += 1
+                pos0 = pos
+                flag = 1
+            else:
+                pos += 1
+
+        if pos != pos0:
+            if flag:
+                text += c_unicode_substr(line, pos0, pos)
+            else:
+                text = c_unicode_substr(line, pos0, pos)
+        return text
+
+    def dump_bool(self, o):
+        #return '⊤' if o else '⊥'
+        return 'true' if o else 'false'
+
+    def dump_date(self, o):
+        d = "%d-%02d-%02d" % (o.year, o.month, o.day)
+        return d
+
+    def _dump_tzinfo(self, o):
+        offset = o.utcoffset(None)
+        seconds = offset.seconds + offset.days * 86400 # 24 * 60 * 60
+
+        if seconds < 0:
+            seconds = -seconds
+            sign = '-'
+        else:
+            sign = '+'
+
+        minutes, seconds = builtins.divmod(seconds, 60)
+        hours, minutes = builtins.divmod(minutes, 60)
+
+        if minutes:
+            return '%s%02d:%02d' % (sign, hours, minutes)
+        else:
+            return '%s%02d' % (sign, hours)
+
+    def dump_time(self, o):
+        if o.second:
+            if o.microsecond:
+                t = "%02d:%02d:%02d.%06d" % (o.hour, o.minute, o.second, o.microsecond)
+            else:
+                t = "%02d:%02d:%02d" % (o.hour, o.minute, o.second)
+        else:
+                t = "%02d:%02d" % (o.hour, o.minute)
+
+        tzinfo = o.tzinfo
+        if tzinfo is not None:
+            t += self._dump_tzinfo(tzinfo)
+
+        return t
+
+    def dump_datetime(self, o):
+        if o.second:
+            if o.microsecond:
+                t = "%d-%02d-%02dT%02d:%02d:%02d.%06d" % (o.year, o.month, o.day, o.hour, o.minute, o.second, o.microsecond)
+            else:
+                t = "%d-%02d-%02dT%02d:%02d:%02d" % (o.year, o.month, o.day, o.hour, o.minute, o.second)
+        else:
+                t = "%d-%02d-%02dT%02d:%02d" % (o.year, o.month, o.day, o.hour, o.minute)
+
+        tzinfo = o.tzinfo
+        if tzinfo is not None:
+            t += self._dump_tzinfo(tzinfo)
+
+        return c_as_unicode(t)
+
+    def dump_none(self, o):
+        return 'null'
+
+_simple_dumper = SimpleDumper()
 
 class SimpleDumpers:
     #cdef dict c_mapping
@@ -435,6 +609,16 @@ class Dumper:
                 self.dump_tuple(o)
             #elif otype is set:
             #    self.dump_set(o)
+            elif otype is Mapping:
+                self.dump_mapping(o)
+            elif otype is Sequence:
+                self.dump_sequence(o)
+            elif otype is Element:
+                self.dump_element(o)
+            elif otype is Instance:
+                self.dump_instance(o)
+            elif otype is Empty:
+                self.dump_empty(o)
             else:
                 reducer = self.c_type_reducers.get(otype, None)
                 if reducer is None:
@@ -476,6 +660,16 @@ class Dumper:
                 self.pretty_dump_tuple(o, new_offset, not use_offset)
             #elif otype is set:
             #    self.pretty_dump_set(o, new_offset, not use_offset)
+            elif otype is Mapping:
+                self.pretty_dump_mapping(o, new_offset, use_offset)
+            elif otype is Sequence:
+                self.pretty_dump_sequence(o, new_offset, use_offset)
+            elif otype is Element:
+                self.pretty_dump_element(o, new_offset, use_offset)
+            elif otype is Instance:
+                self.pretty_dump_instance(o, new_offset, use_offset)
+            elif otype is Empty:
+                self.pretty_dump_empty(o, new_offset, use_offset)
             else:
                 reducer = self.c_type_reducers.get(otype, None)
                 #print(repr(o))
@@ -1100,3 +1294,36 @@ class Dumper:
 #         return str(o)
 #     else:
 #         return dumper(o)
+
+def dump_tok(tok):
+    if tok.type == END:
+        return '}'
+    elif tok.type == LIST:
+        return 'list{'
+    elif tok.type == DICT:
+        return 'dict{'
+    elif tok.type == TUPLE:
+        return 'tuple{'
+    elif tok.type == COMPLEX:
+        return '%s{' % tok.val
+    elif tok.type == ATTRIBUTE:
+        return '%s:' % tok.val
+    elif tok.type == KEY:
+        return '%s:' % tok.val
+    elif tok.type == REFERENCE:
+        return '*%s' % tok.val
+    elif tok.type == LABEL:
+        return '&%s' % tok.val
+    else:
+        return _simple_dumper(tok.val)
+
+def itokens2str(tokens):
+    tokens = list(tokens)
+    n = len(tokens)
+    for i, tok in enumerate(tokens):
+        yield dump_tok(tok)
+        if i < n-1 and tokens[i+1] is not end_token and tok.type not in (2,3,4,5,9,10):
+            yield ' '
+            
+def tokens2str(tokens):
+    return ''.join(itokens2str(tokens))

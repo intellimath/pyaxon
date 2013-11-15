@@ -149,6 +149,37 @@ cdef public dict name_cache
 
 cdef object c_str_type
 
+cdef int ATOMIC = 1
+cdef int DICT = 2
+cdef int LIST = 3
+cdef int TUPLE = 4
+cdef int COMPLEX = 5
+cdef int END = 6
+cdef int REFERENCE = 7
+cdef int LABEL = 8
+cdef int ATTRIBUTE = 9
+cdef int KEY = 10
+
+cdef class Token:
+    cdef public int type
+    cdef public object val
+
+cdef inline Token c_new_token(int type, object val):
+    cdef Token tok = Token.__new__(Token)
+    tok.type = type
+    tok.val = val
+    return tok
+
+cdef inline Token c_new_token0(int type):
+    cdef Token tok = Token.__new__(Token)
+    tok.type = type
+    return tok
+
+cdef Token end_token = c_new_token0(END)
+cdef Token dict_token = c_new_token0(DICT)
+cdef Token list_token = c_new_token0(LIST)
+cdef Token tuple_token = c_new_token0(TUPLE)
+
 @cython.final
 cdef public class Undefined[object UndefinedObject, type UndefinedType]:
     pass
@@ -348,37 +379,6 @@ cdef public class SimpleBuilder[type SimpleBuilderType, object SimpleBuilder]:
     cdef inline object create_decimal_nan(self)
     cdef inline object create_binary(self, unicode text)
 
-
-cdef class SimpleDumper:
-
-    cdef inline unicode dump_int(SimpleDumper, object)
-
-    @cython.locals(d=double)
-    cdef inline unicode dump_float(SimpleDumper, object)
-
-    cdef inline unicode dump_decimal(SimpleDumper, object)
-
-    cdef inline unicode dump_str(SimpleDumper, object)
-        
-    @cython.locals(text=unicode)
-    cdef inline unicode dump_bytes(SimpleDumper, object)
-
-    @cython.locals(n=int, pos=int, pos0=int, text=unicode, ch=Py_UCS4, flag=bint)
-    cdef inline unicode dump_unicode(SimpleDumper, object)
-
-    cdef inline unicode dump_bool(SimpleDumper, object)
-
-    @cython.locals(d=unicode)
-    cdef inline unicode dump_date(self, o)
-
-    cdef inline unicode _dump_tzinfo(SimpleDumper, object)
-
-    cdef inline unicode dump_time(SimpleDumper, object)
-
-    cdef inline unicode dump_datetime(SimpleDumper, object)
-
-    cdef inline unicode dump_none(SimpleDumper, object)
-
 ####################################################################
 
 #cdef unicode NAME_EMPTY
@@ -415,3 +415,4 @@ cdef public class timezone(tzinfo)[object TimeZoneUTCObject, type TimeZoneUTCTyp
 
     cdef public object offset
     cdef public object name
+    

@@ -102,3 +102,6 @@ def error_expected_same_name(self, name):
 #
 def error_expected_complex_value(self):
     error(self, "Expected complex here")
+#
+def error_expected_label(self):
+    error(self, "Expected label of the value")

@@ -4,6 +4,7 @@
 #cython: wraparound=False
 #cython: nonecheck=False
 #cython: language_level=3
+#cython: infer_types=True
 
 
 # The MIT License (MIT)
@@ -55,17 +56,6 @@ import cython
 #
 #######################################################################
 #
-
-# ATOMIC_VALUE = 1
-# DICT = 2
-# LIST = 3
-# TUPLE = 4
-# COMPLEX_VALUE = 5
-# COLLECTION = 6
-# END = 7
-# REFERENCE = 8
-# LABEL = 9
-# ATTRIBUTE = 10
 
 if sys.version_info.major == 3:
     int_mode = 'i'
@@ -185,7 +175,6 @@ class Loader:
         '''
         Load all values.
         '''
-
         sequence = []
         while 1:
             self.skip_spaces()
@@ -542,12 +531,12 @@ class Loader:
     def get_name(self):
         pos0 = self.pos
         ch = next_char(self)
-        while ch.isalnum() or ch == '_': # or ch == '-':
+        while ch.isalnum() or ch == '_':
             ch = next_char(self)
             
         if ch == '.':
             ch = next_char(self)
-            while ch.isalnum() or ch == '_': # or ch == '-':
+            while ch.isalnum() or ch == '_':
                 ch = next_char(self)
 
         name0 = get_token(self, pos0)
@@ -798,10 +787,6 @@ class Loader:
     #
     def get_value(self, idn, prev_idn):
 
-        #if idn:
-        #    if (self.is_nl and self.pos != idn) or self.pos < idn:
-        #        errors.error_indentation(self, idn)
-            
         ch = current_char(self)
         if (ch <= '9' and ch >= '0') or ch == '.':
             val = self.get_number()
@@ -876,12 +861,6 @@ class Loader:
                     val = self.sbuilder.create_decimal_nan()
                 else:
                     val = self.sbuilder.create_nan()
-#             elif ch == '⊤': # \U22A4
-#                 skip_char(self)
-#                 val = True
-#             elif ch == '⊥': # \U22A5
-#                 skip_char(self)
-#                 val = False
             elif ch == '*':
                 skip_char(self)
                 label = self.try_get_label()
@@ -985,16 +964,6 @@ class Loader:
 
         return val
     #
-    def get_empty_sequence(self, name, sequence, idn, prev_idn):
-        mapping = {}
-        v = self.get_mapping_part(mapping, None, idn, prev_idn)
-        if v:
-            errors.error_unexpected_value(self, 'in named element-like structure')
-
-        val = self.builder.create_element(name, {}, sequence)
-
-        return val
-    #
     def get_mapping_sequence(self, name, mapping, idn, prev_idn):
         sequence = []
         v = self.get_mapping_part(mapping, sequence, idn, prev_idn)
@@ -1009,16 +978,6 @@ class Loader:
 
         return val
     #
-    def get_empty_mapping(self, name, mapping, idn, prev_idn):
-        sequence = []
-        v = self.get_sequence_part(sequence, None, idn, prev_idn)
-        if v:
-            errors.error_unexpected_value(self, 'in named instance-like structure')
-
-        val = self.builder.create_instance(name, (), mapping)
-
-        return val
-
     def get_list_value(self):
 
         sequence = []
@@ -1132,11 +1091,14 @@ class Loader:
 
                     self.moveto_next_token()
 
-                    if self.is_nl and self.pos > idn:
-                        if sequence is not None:
-                            val = self.get_complex_value(name, self.pos, idn)
-                            sequence.append(val)
-                        return 1
+                    if self.is_nl:
+                        if self.pos > idn:
+                            if sequence is not None:
+                                val = self.get_complex_value(name, self.pos, idn)
+                                sequence.append(val)
+                            return 1
+                        else:
+                            errors.error_indentation(self, idn)
 
                     val = self.get_value(idn, prev_idn)
                     mapping[name] = val
@@ -1193,10 +1155,13 @@ class Loader:
 
                     self.moveto_next_token()
 
-                    if self.is_nl and self.pos > idn:
-                        val = self.get_complex_value(name, self.pos, idn)
-                        sequence.append(val)
-                        continue
+                    if self.is_nl:
+                        if self.pos > idn:
+                            val = self.get_complex_value(name, self.pos, idn)
+                            sequence.append(val)
+                            continue
+                        else:
+                            errors.error_indentation(self, idn)
 
                     if mapping is not None:
                         val = self.get_value(idn, prev_idn)
@@ -1223,4 +1188,167 @@ class Loader:
                     val = self.get_value(idn, prev_idn)
                     sequence.append(val)
     #
+
+    def itokens(self):
+        while not self.eof:
+            self.skip_spaces()
+            for tok in self._itokens(0, 0):
+                print(tok)
+                yield tok
+
+    def _itokens(self, idn, prev_idn):
+        while 1:
+            ch = self.skip_spaces()
+            if (ch <= '9' and ch >= '0') or ch == '.':
+                val = self.get_number()
+                yield c_new_token(ATOMIC, val)
+                continue
+            elif ch.isalpha() or ch == '_':
+                name = self.get_name()
+                for tok in self._inamed(name, idn, prev_idn):
+                    yield tok
+                continue
+
+            if ch == '-':
+                ch = self.line[self.pos+1]
+                if ch.isdigit():
+                    val = self.get_number()
+                    yield c_new_token(ATOMIC, val)
+                else:
+                    skip_char(self)
+                    val = self.get_negative_constant()
+                    yield c_new_token(ATOMIC, val)
+            elif ch == '"':
+                val = self.get_string(ch)
+                ch = self.moveto_next_token()
+                if ch == ':':
+                    skip_char(self)
+                    yield c_new_token(KEY, val)
+                    ch = self.moveto_next_token()
+                else:
+                    yield c_new_token(ATOMIC, val)
+            elif ch == "'":
+                name = self.get_string(ch)
+                for tok in self._inamed(name, idn, prev_idn):
+                    yield tok
+            elif ch == '{':
+                self.bc += 1
+                skip_char(self)
+                yield dict_token
+                for tok in self._itokens(self, 0, idn):
+                    yield tok                
+            elif ch == '[':
+                self.bs += 1
+                skip_char(self)
+                yield list_token
+                for tok in self._itokens(self, 0, idn):
+                    yield tok                
+            elif ch == '(':
+                self.bq += 1
+                skip_char(self)
+                yield tuple_token
+                for tok in self._itokens(self, 0, idn):
+                    yield tok                
+            elif ch == '}':
+                self.bc -= 1
+                skip_char(self)
+                yield end_token
+                break
+            elif ch == ']':
+                self.bs -= 1
+                skip_char(self)
+                yield end_token
+                break
+            elif ch == ')':
+                self.bq -= 1
+                skip_char(self)
+                yield end_token
+                break
+            elif ch == '|':
+                val = self.get_base64()
+                yield c_new_token(ATOMIC, val)
+            elif ch == '∞': # \U221E
+                ch = next_char(self)
+                if ch == '$':
+                    skip_char(self)
+                    val = self.sbuilder.create_decimal_inf()
+                    yield c_new_token(ATOMIC, val)
+                else:
+                    val = self.sbuilder.create_inf()
+                    yield c_new_token(ATOMIC, val)
+            elif ch == '?':
+                ch = next_char(self)
+                if ch == '?':
+                    skip_char(self)
+                    val = c_undefined
+                    yield c_new_token(ATOMIC, val)
+                elif ch == '$':
+                    skip_char(self)
+                    val = self.sbuilder.create_decimal_nan()
+                    yield c_new_token(ATOMIC, val)
+                else:
+                    val = self.sbuilder.create_nan()
+                    yield c_new_token(ATOMIC, val)
+            elif ch == '*':
+                skip_char(self)
+                label = self.try_get_label()
+                if label is not None:
+                    yield c_new_token(REFERENCE, val)
+                else:
+                    errors.error_expected_label(self)
+            elif ch == '&':
+                pos0 = self.pos
+                skip_char(self)
+                label = self.try_get_label()
+                if label is not None:
+                    yield c_new_token(LABEL, label)
+                else:
+                    errors.error_expected_label(self)
+            elif ch == '#':
+                self.skip_comments()
+                continue
+            elif self.eof:
+                break
+            else:
+                errors.error_unexpected_value(self, 'expected named complex value')
+
+            #if not valid_end_item(self):
+            #    errors.error_end_item(self)
+    #
+    def _inamed(self, name, idn, prev_idn):
+        ch = self.skip_spaces()
+        if ch == '{':
+            self.bc += 1
+            skip_char(self)
+            self.moveto_next_token()
+
+            yield c_new_token(COMPLEX, name)
+            for tok in self._itokens(0, idn):
+                yield tok                
+        elif ch == ':':
+            skip_char(self)
+            ch = self.moveto_next_token()
+
+            if ch == '.':
+                if self.get_dots():
+                    yield c_new_token(COMPLEX, name)
+                    yield end_token                          
+                else:
+                    errors.error_invalid_value(self)
+
+            if self.is_nl:
+                if self.pos > idn:
+                    yield c_new_token(COMPLEX, name)
+                    for tok in self._itokens(self.pos, idn):
+                        yield tok                
+                else:
+                    errors.error_indentation(self, idn)
+            else:
+                yield c_new_token(ATTRIBUTE, name)
+                for tok in self._itokens(self.pos, idn):
+                    yield tok                
+        else:
+            val = self.get_constant_or_string(name)
+            yield c_new_token(ATOMIC, val)
+
 

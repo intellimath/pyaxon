@@ -4,6 +4,7 @@
 #cython: wraparound=False
 #cython: nonecheck=False
 #cython: language_level=3
+#cython: infer_types=True
 
 # The MIT License (MIT)
 # 
@@ -64,6 +65,26 @@ default_decimal_context = _decimal.getcontext()
 _str2decimal = default_decimal_context.create_decimal
 _decimal2str = default_decimal_context.to_eng_string
 
+ATOMIC = 1
+DICT = 2
+LIST = 3
+TUPLE = 4
+COMPLEX = 5
+END = 6
+REFERENCE = 7
+LABEL = 8
+ATTRIBUTE = 9
+KEY = 10
+
+class Token:
+    def __str__(self):
+        return '%s: %r' % (self.type, self.val)
+        
+
+end_token = c_new_token0(END)
+dict_token = c_new_token0(DICT)
+list_token = c_new_token0(LIST)
+tuple_token = c_new_token0(TUPLE)
 
 class Undefined:
     def __repr__(self):
@@ -311,11 +332,11 @@ class Empty:
     '''
     @property
     def mapping(self):
-        return c_empty_dict
+        return None
     #
     @property
     def sequence(self):
-        return c_empty_list
+        return None
     #
     @property
     def a(self):
@@ -454,7 +475,7 @@ class Mapping:
         self.name = c_as_name(name)
         self.mapping = c_as_dict(mapping)
     #
-    def get(self, name, default=undef):
+    def get(self, name, default=None):
         return self.mapping.get(name, default)
     #
     def set(self, name, val):
@@ -536,7 +557,7 @@ class Element:
     def __contains__(self, name):
         return name in self.mapping
     #
-    def get(self, name, default=undef):
+    def get(self, name, default=None):
         return self.mapping.get(name, default)
     #
     def set(self, name, val):
@@ -619,7 +640,7 @@ class Instance:
     def __setitem__(self, index, val):
         self.sequence[index] = val
     #
-    def get(self, name, default=undef):
+    def get(self, name, default=None):
         return self.mapping.get(name, default)
     #
     def set(self, name, val):
@@ -668,77 +689,6 @@ class Instance:
     def as_instance(self):
         return self
 
-
-# #
-# # Collection
-# #
-# class Collection(object):
-#     '''
-#     Sequence of named complex values with the same name
-# 
-#     .. py:attribute:: name
-# 
-#     Name of sequence.
-# 
-#     '''
-#     #
-#     def __init__(self, name, sequence=None):
-#         self.name = c_as_name(name)
-#         self.sequence = []
-#         for o in sequence:
-#             if o.name != name:
-#                 errors.error_expected_same_name(self, name)
-#             self.sequence.append(o)
-#     #
-#     def __getitem__(self, index):
-#         return self.sequence[index]
-#     #
-#     def __setitem__(self, index, o):
-#         if o.name != self.name:
-#             errors.error_expected_same_name(self, self.name)
-#         self.sequence[index] = o
-#     #
-#     def append(self, o):
-#         if o.name != self.name:
-#             errors.error_expected_same_name(self, self.name)
-#         self.sequence.append(o)
-#     #
-#     def __richcmp__(self, other, op):
-#         if type(self) is Collection:
-#             v = (self.name == other.name) and (self.sequence == other.sequence)
-#             if op == 2:
-#                 return v
-#             elif op == 3:
-#                 return not v
-#             else:
-#                 raise TypeError(
-#                     'This type of comparison is not supported')
-#         else:
-#             raise TypeError(
-#                 'Types %r and %r are not comparable at all' % (type(self), type(other)))
-#     #
-#     def __iter__(self):
-#         return iter(self.sequence)
-#     #
-#     def __len__(self):
-#         return len(self.sequence)
-#     #
-#     def __repr__(self):
-#         return 'collection(' + repr(self.name) + ', ' + \
-#             ', '.join([repr(v) for v in self.sequence]) + ')'
-#     #
-#     def as_mapping(self):
-#         raise error("Collection->Mapping convertion isn't available")
-#     #
-#     def as_sequence(self):
-#         raise error("Collection->Sequence convertion isn't available")
-#     #
-#     def as_element(self, mapping=None):
-#         raise error("Collection->Element convertion isn't available")
-#     #
-#     def as_instance(self, mapping=None):
-#         raise error("Collection->Instance convertion isn't available")
-
 ####################################################################
 
 def c_new_sequence(name, sequence):
@@ -746,12 +696,6 @@ def c_new_sequence(name, sequence):
     s.name = name
     s.sequence = sequence
     return s
-
-# def c_new_collection(name, sequence):
-#     s = Collection.__new__(Collection)
-#     s.name = name
-#     s.sequence = sequence
-#     return s
 
 def c_new_mapping(name, mapping):
     o = Mapping.__new__(Mapping)
@@ -795,24 +739,6 @@ def sequence(name, sequence=None):
         python sequence containing values.
     '''
     return c_new_sequence(c_as_name(name), c_as_list(sequence))
-#
-# def collection(name, sequence=None):
-#     '''
-#     Factory function for creating named sequence.
-# 
-#     :param name:
-# 
-#         name of sequence.
-# 
-#     :param sequence:
-# 
-#         python sequence containing values.
-#     '''
-#     lst = c_as_list(sequence)
-#     for o in lst:
-#         if o.name != name:
-#             error("Element must have same name '%s'" % name)
-#     return c_new_collection(c_as_name(name), lst)
 #
 def mapping(name, mapping=None):
     '''
@@ -1067,141 +993,6 @@ _decimal_nan = _str2decimal('NaN')
 
 tz_dict = {}
 
-class SimpleDumper:
-
-    def dump_int(self, o):
-        return c_int_tostring(o)
-
-    def dump_float(self, o):
-        d = PyFloat_AS_DOUBLE(o)
-        if isfinite(d):
-            return c_object_to_unicode(o)
-
-        if isnan(d):
-            return '?'
-
-        if isinf(d):
-            if signbit(d):
-                return '-∞'
-            else:
-                return '∞'
-
-        if signbit(d):
-            return '-0'
-
-        return '0'
-
-    def dump_decimal(self, d):
-        if d.is_finite():
-            val  = c_object_to_unicode(_decimal2str(d))
-
-        elif d.is_nan():
-            val = '?'
-
-        elif d.is_infinite():
-            if d.is_signed():
-                val = '-∞'
-            else:
-                val = '∞'
-
-        elif d.is_signed():
-            val = '-0'
-        else:
-            val = '0'
-
-        return val + '$'
-        
-    def dump_bytes(self, o):
-        text = PyUnicode_FromEncodedObject(encodebytes(o), 'ascii', 'strict')
-        return c_as_unicode('|' + text)
-
-    def dump_str(self, o):
-        return self.dump_unicode(c_as_unicode(o))
-
-    def dump_unicode(self, line):
-        pos0 = 0
-        pos = 0
-        text = ''
-        flag = 0
-
-        n = c_unicode_length(line)
-        while pos < n:
-            ch = c_unicode_char(line, pos)
-            if ch == '"':
-                if pos != pos0:
-                    text += c_unicode_substr(line, pos0, pos)
-                text += '\\"'
-                pos += 1
-                pos0 = pos
-                flag = 1
-            else:
-                pos += 1
-
-        if pos != pos0:
-            if flag:
-                text += c_unicode_substr(line, pos0, pos)
-            else:
-                text = c_unicode_substr(line, pos0, pos)
-        return text
-
-    def dump_bool(self, o):
-        #return '⊤' if o else '⊥'
-        return 'true' if o else 'false'
-
-    def dump_date(self, o):
-        d = "%d-%02d-%02d" % (o.year, o.month, o.day)
-        return d
-
-    def _dump_tzinfo(self, o):
-        offset = o.utcoffset(None)
-        seconds = offset.seconds + offset.days * 86400 # 24 * 60 * 60
-
-        if seconds < 0:
-            seconds = -seconds
-            sign = '-'
-        else:
-            sign = '+'
-
-        minutes, seconds = builtins.divmod(seconds, 60)
-        hours, minutes = builtins.divmod(minutes, 60)
-
-        if minutes:
-            return '%s%02d:%02d' % (sign, hours, minutes)
-        else:
-            return '%s%02d' % (sign, hours)
-
-    def dump_time(self, o):
-        if o.second:
-            if o.microsecond:
-                t = "%02d:%02d:%02d.%06d" % (o.hour, o.minute, o.second, o.microsecond)
-            else:
-                t = "%02d:%02d:%02d" % (o.hour, o.minute, o.second)
-        else:
-                t = "%02d:%02d" % (o.hour, o.minute)
-
-        tzinfo = o.tzinfo
-        if tzinfo is not None:
-            t += self._dump_tzinfo(tzinfo)
-
-        return t
-
-    def dump_datetime(self, o):
-        if o.second:
-            if o.microsecond:
-                t = "%d-%02d-%02dT%02d:%02d:%02d.%06d" % (o.year, o.month, o.day, o.hour, o.minute, o.second, o.microsecond)
-            else:
-                t = "%d-%02d-%02dT%02d:%02d:%02d" % (o.year, o.month, o.day, o.hour, o.minute, o.second)
-        else:
-                t = "%d-%02d-%02dT%02d:%02d" % (o.year, o.month, o.day, o.hour, o.minute)
-
-        tzinfo = o.tzinfo
-        if tzinfo is not None:
-            t += self._dump_tzinfo(tzinfo)
-
-        return c_as_unicode(t)
-
-    def dump_none(self, o):
-        return 'null'
 
 class SimpleBuilder:
 
@@ -1413,3 +1204,4 @@ class timezone(tzinfo):
             return "timezone(%s, %s)" % (self.offset, self.name)
         else:
             return "timezone(%s)" % (self.offset,)
+
