@@ -155,7 +155,7 @@ class Loader:
             if self.errto != sys.stderr:
                 self.errto.close()
             raise StopIteration
-        return self.get_value(0, 0)
+        return self.get_value(0)
     #
     def _check_pairs(self):
         if self.bc > 0:
@@ -185,7 +185,7 @@ class Loader:
                     self.errto.close()
                 break
 
-            val = self.get_value(0, 0)
+            val = self.get_value(0)
             sequence.append(val)
 
         return sequence
@@ -225,9 +225,9 @@ class Loader:
             self.pos = 0
     #
     def skip_spaces(self):
-        self.is_nl = 0
         if self.eof:
             return 0
+        self.is_nl = 0
 
         ch = current_char(self)
         while ch <= ' ':
@@ -268,13 +268,13 @@ class Loader:
     #    return ch <= ' ' or ch == '}' or ch == ']' or ch == ')' or ch == 0
     #
     
-    def get_dots(self):
-        n = 1
-        ch = next_char(self)
-        while ch == '.':
-            n += 1
-            ch = next_char(self)
-        return n == 3
+#     def get_dots(self):
+#         n = 1
+#         ch = next_char(self)
+#         while ch == '.':
+#             n += 1
+#             ch = next_char(self)
+#         return n == 3
     #
     def try_get_int(self, maxsize):
 
@@ -785,7 +785,7 @@ class Loader:
         else:
             errors.error_invalid_value_with_prefix(self, '-')
     #
-    def get_value(self, idn, prev_idn):
+    def get_value(self, idn):
 
         ch = current_char(self)
         if (ch <= '9' and ch >= '0') or ch == '.':
@@ -820,22 +820,18 @@ class Loader:
                 if ch == '{':
                     self.bc += 1
                     skip_char(self)
-                    self.moveto_next_token()
+                    self.skip_spaces()
 
-                    val = self.get_complex_value(name, 0, idn)
+                    val = self.get_complex_value(name, 0)
                 elif ch == ':':
                     skip_char(self)
-                    ch = self.moveto_next_token()
-
-                    if ch == '.':
-                        if self.get_dots():
-                            return self.builder.create_empty(name)
-                        else:
-                            errors.error_invalid_value(self)
+                    ch = self.skip_spaces()
 
                     if self.is_nl:
-                        if self.pos > idn:
-                            val = self.get_complex_value(name, self.pos, idn)
+                        if self.eof or self.pos <= idn:
+                            val = self.builder.create_empty(name)
+                        elif self.pos > idn:
+                            val = self.get_complex_value(name, self.pos)
                         else:
                             errors.error_indentation(self, idn)
                     else:
@@ -875,15 +871,17 @@ class Loader:
                 skip_char(self)
                 label = self.try_get_label()
 
-                self.moveto_next_token()
+                self.skip_spaces()
 
-                val = self.get_value(pos0, idn)
+                val = self.get_value(pos0)
                 self.labeled_objects[label] = val
             elif ch == '#':
                 self.skip_comments()
                 if self.eof:
                     errors.error_unexpected_end(self)
-                val = self.get_value(idn, prev_idn)
+                val = self.get_value(idn)
+            elif ch == '\0':
+                errors.error_unexpected_end(self)
             else:
                 errors.error_unexpected_value(self, 'expected named complex value')
 
@@ -892,69 +890,65 @@ class Loader:
 
         return val
     #
-    def get_complex_value(self, name, idn, prev_idn):
+    def get_complex_value(self, name, idn):
         ch = current_char(self)
         if ch == '#':
             self.skip_comments()
-
-        if idn:
-            ch = current_char(self)
-            if ch == '.':
-                if self.get_dots():
-                    return self.builder.create_empty(name)
-                else:
-                    errors.error_invalid_value(self)
 
         aname = self.try_get_name()
 
         if aname is not None:
 
-            ch = self.moveto_next_token()
+            ch = self.skip_spaces()
 
             if ch == ':':
                 skip_char(self)
-                self.moveto_next_token()
+                self.skip_spaces()
 
                 if self.is_nl:
-                    if self.pos > idn:
-                        sequence = [self.get_complex_value(aname, self.pos, idn)]
-                        val = self.get_sequence_mapping(name, sequence, idn, prev_idn)
+                    if self.eof or self.pos <= idn:
+                        sequence = [self.builder.create_empty(aname)]
+                        val = self.get_sequence_mapping(name, sequence, idn)
+                    elif self.pos > idn:
+                        sequence = [self.get_complex_value(aname, self.pos)]
+                        val = self.get_sequence_mapping(name, sequence, idn)
                     else:
                         errors.error_indentation(self, idn)
                 else:
-                    mapping = {aname: self.get_value(idn, prev_idn)}
-                    val = self.get_mapping_sequence(name, mapping, idn, prev_idn)
+                    mapping = {aname: self.get_value(idn)}
+                    val = self.get_mapping_sequence(name, mapping, idn)
             elif ch == '{':
                 self.bc += 1
                 skip_char(self)
 
-                ch = self.moveto_next_token()
+                ch = self.skip_spaces()
 
-                sequence = [self.get_complex_value(aname, 0, idn)]
-                val = self.get_sequence_mapping(name, sequence, idn, prev_idn)
+                sequence = [self.get_complex_value(aname, 0)]
+                val = self.get_sequence_mapping(name, sequence, idn)
             else:
                 sequence = [self.get_constant_or_string(aname)]
-                val = self.get_sequence_mapping(name, sequence, idn, prev_idn)
+                val = self.get_sequence_mapping(name, sequence, idn)
 
         else:
-            ch = self.moveto_next_token()
+            ch = self.skip_spaces()
 
             if ch == '}':
                 self.bc -= 1
                 skip_char(self)
-
+                val = self.builder.create_empty(name)
+            elif ch == '\0':
                 val = self.builder.create_empty(name)
             else:
-                sequence = [self.get_value(idn, prev_idn)]
-                val = self.get_sequence_mapping(name, sequence, idn, prev_idn)
+                sequence = [self.get_value(idn)]
+                val = self.get_sequence_mapping(name, sequence, idn)
 
         return val
     #
-    def get_sequence_mapping(self, name, sequence, idn, prev_idn):
+    def get_sequence_mapping(self, name, sequence, idn):
         mapping = {}
-        v = self.get_sequence_part(sequence, mapping, idn, prev_idn)
+        v = self.get_sequence_part(sequence, mapping, idn)
         if v:
-            v = self.get_mapping_part(mapping, None, idn, prev_idn)
+            v = self.get_mapping_part(mapping, None, idn)
             if v:
                 errors.error_unexpected_value(self, 'in named sequence-like structure')
 
@@ -964,11 +958,11 @@ class Loader:
 
         return val
     #
-    def get_mapping_sequence(self, name, mapping, idn, prev_idn):
+    def get_mapping_sequence(self, name, mapping, idn):
         sequence = []
-        v = self.get_mapping_part(mapping, sequence, idn, prev_idn)
+        v = self.get_mapping_part(mapping, sequence, idn)
         if v:
-            v = self.get_sequence_part(sequence, None, idn, prev_idn)
+            v = self.get_sequence_part(sequence, None, idn)
             if v:
                 errors.error_unexpected_value(self, 'in named mapping-like structure')
 
@@ -982,71 +976,75 @@ class Loader:
 
         sequence = []
 
-        ch = self.moveto_next_token()
+        ch = self.skip_spaces()
 
         while 1:
             if ch == '#':
                 self.skip_comments()
-                self.moveto_next_token()
+                self.skip_spaces()
                 
             if ch == ']':
                 skip_char(self)
                 self.bs -= 1
                 return sequence
+            elif ch == '\0':
+                errors.error_unexpected_end(self)
 
-            val = self.get_value(0, 0)
+            val = self.get_value(0)
             sequence.append(val)
 
-            ch = self.moveto_next_token()
+            ch = self.skip_spaces()
 
             if self.json:
                 ch = current_char(self)
                 if ch == ',':
                     skip_char(self)
-                    ch = self.moveto_next_token()
+                    ch = self.skip_spaces()
     #
     def get_tuple_value(self):
 
         sequence = []
 
-        ch = self.moveto_next_token()
+        ch = self.skip_spaces()
 
         while 1:
             if ch == '#':
                 self.skip_comments()
-                self.moveto_next_token()
+                self.skip_spaces()
         
             if ch == ')':
                 skip_char(self)
                 self.bq -= 1
                 return tuple(sequence)
+            elif ch == '\0':
+                errors.error_unexpected_end(self)
 
-            val = self.get_value(0, 0)
+            val = self.get_value(0)
             sequence.append(val)
 
-            ch = self.moveto_next_token()
+            ch = self.skip_spaces()
     #
     def get_dict_value(self):
         mapping = {}
 
-        ch = self.moveto_next_token()
+        ch = self.skip_spaces()
 
         while 1:
         
             if ch == '#':
                 self.skip_comments()
-                self.moveto_next_token()
+                self.skip_spaces()
 
             key = self.try_get_key()
 
-            ch = self.moveto_next_token()
+            ch = self.skip_spaces()
 
             if key is not None:
                 if ch == ':':
                     skip_char(self)
-                    self.moveto_next_token()
+                    self.skip_spaces()
 
-                    val = self.get_value(0, 0)
+                    val = self.get_value(0)
                     mapping[key] = val
                 else:
                     errors.error_dict_value(self)
@@ -1055,27 +1053,29 @@ class Loader:
                     skip_char(self)
                     self.bc -= 1
                     return mapping
+                elif ch == '\0':
+                    errors.error_unexpected_end(self)
                 else:
                     errors.error_dict_value(self)
 
-            ch = self.moveto_next_token()
+            ch = self.skip_spaces()
 
             if self.json:
                 ch = current_char(self)
                 if ch == ',':
                     skip_char(self)
-                    self.moveto_next_token()
+                    ch = self.skip_spaces()
     #
-    def get_mapping_part(self, mapping, sequence, idn, prev_idn):
+    def get_mapping_part(self, mapping, sequence, idn):
 
         while 1:
             ch = self.skip_spaces()
 
             if idn:
-                if self.pos == idn:
-                    pass
-                elif self.pos <= prev_idn or self.eof or ch == '}' or ch == ']':
+                if self.eof or self.pos < idn or ch == '}' or ch == ']':
                     return 0
+                elif self.pos == idn:
+                    pass
                 elif self.is_nl:
                     errors.error_indentation(self, idn)
             elif self.eof:
@@ -1088,28 +1088,31 @@ class Loader:
 
                 if ch == ':':
                     skip_char(self)
-
-                    self.moveto_next_token()
+                    self.skip_spaces()
 
                     if self.is_nl:
-                        if self.pos > idn:
+                        if self.eof or self.pos <= idn:
                             if sequence is not None:
-                                val = self.get_complex_value(name, self.pos, idn)
+                                val = self.builder.create_empty(name)
+                                sequence.append(val)
+                            return 1
+                        elif self.pos > idn:
+                            if sequence is not None:
+                                val = self.get_complex_value(name, self.pos)
                                 sequence.append(val)
                             return 1
                         else:
                             errors.error_indentation(self, idn)
 
-                    val = self.get_value(idn, prev_idn)
+                    val = self.get_value(idn)
                     mapping[name] = val
                 elif ch == '{':
                     self.bc += 1
                     skip_char(self)
-
-                    self.moveto_next_token()
+                    self.skip_spaces()
 
                     if sequence is not None:
-                        val = self.get_complex_value(name, 0, idn)
+                        val = self.get_complex_value(name, 0)
                         sequence.append(val)
 
                     return 1
@@ -1126,20 +1129,20 @@ class Loader:
                     return 0
                 else:
                     if sequence is not None:
-                        val = self.get_value(idn, prev_idn)
+                        val = self.get_value(idn)
                         sequence.append(val)
                     return 1
     #
-    def get_sequence_part(self, sequence, mapping, idn, prev_idn):
+    def get_sequence_part(self, sequence, mapping, idn):
 
         while 1:
             ch = self.skip_spaces()
 
             if idn:
+                if self.eof or self.pos < idn or ch == '}' or ch == ']':
+                    return 0
                 if self.pos == idn:
                     pass
-                elif self.pos <= prev_idn or self.eof or ch == '}' or ch == ']':
-                    return 0
                 elif self.is_nl: # self.pos > idn:
                     errors.error_indentation(self, idn)
             elif self.eof:
@@ -1152,28 +1155,31 @@ class Loader:
 
                 if ch == ':':
                     skip_char(self)
-
-                    self.moveto_next_token()
+                    self.skip_spaces()
 
                     if self.is_nl:
-                        if self.pos > idn:
-                            val = self.get_complex_value(name, self.pos, idn)
+                        if self.eof or self.pos <= idn:
+                            val = self. builder.create_empty(name)
+                            sequence.append(val)
+                            continue
+                        elif self.pos > idn:
+                            val = self.get_complex_value(name, self.pos)
                             sequence.append(val)
                             continue
                         else:
                             errors.error_indentation(self, idn)
 
                     if mapping is not None:
-                        val = self.get_value(idn, prev_idn)
+                        val = self.get_value(idn)
                         mapping[name] = val
                     return 1
                 elif ch == '{':
                     skip_char(self)
                     self.bc += 1
 
-                    self.moveto_next_token()
+                    self.skip_spaces()
 
-                    val = self.get_complex_value(name, 0, idn)
+                    val = self.get_complex_value(name, 0)
                     sequence.append(val)
                 else:
                     val = self.get_constant_or_string(name)
@@ -1185,10 +1191,140 @@ class Loader:
                     self.bc -= 1
                     return 0
                 else:
-                    val = self.get_value(idn, prev_idn)
+                    val = self.get_value(idn)
                     sequence.append(val)
     #
+    def get_one_token(self, idn):
+        ch = self.skip_spaces()
+        
+        if idn:
+            if self.eof or self.pos < idn or ch == '}' or ch == ']':
+                yield end_token
+            elif self.pos == idn:
+                pass
+            elif self.is_nl:
+                errors.error_indentation(self, idn)
+        
+        if (ch <= '9' and ch >= '0') or ch == '.':
+            val = self.get_number()
+            return c_new_token(ATOMIC, val)
+        
+        if ch.isalpha() or ch == '_':
+            name = self.get_name()
+        elif ch == "'":
+            name = self.get_string(ch)
+        else:
+            name = None
+            
+        if name is not None:
+            if ch == '{':
+                self.bc += 1
+                skip_char(self)
+                return c_new_token(COMPLEX, name)
+            elif ch == ':':
+                skip_char(self)
+                ch = self.skip_spaces()
 
+                if self.is_nl:
+                    if self.pos > idn:
+                        return c_new_token(COMPLEX, name)
+                    else:
+                        errors.error_indentation(self, idn)
+                else:
+                    return c_new_token(ATTRIBUTE, name)
+            else:
+                val = self.get_constant_or_string(name)
+                return c_new_token(ATOMIC, val)
+
+        if ch == '-':
+            ch = self.line[self.pos+1]
+            if ch.isdigit():
+                val = self.get_number()
+                return c_new_token(ATOMIC, val)
+            else:
+                skip_char(self)
+                val = self.get_negative_constant()
+                return c_new_token(ATOMIC, val)
+        elif ch == '"':
+            val = self.get_string(ch)
+            ch = self.skip_spaces()
+            if ch == ':':
+                skip_char(self)
+                return c_new_token(KEY, val)
+            else:
+                return c_new_token(ATOMIC, val)
+        elif ch == '{':
+            self.bc += 1
+            skip_char(self)
+            return dict_token
+        elif ch == '[':
+            self.bs += 1
+            skip_char(self)
+            return list_token
+        elif ch == '(':
+            self.bq += 1
+            skip_char(self)
+            return tuple_token
+        elif ch == '}':
+            self.bc -= 1
+            skip_char(self)
+            return end_token
+        elif ch == ']':
+            self.bs -= 1
+            skip_char(self)
+            return end_token
+        elif ch == ')':
+            self.bq -= 1
+            skip_char(self)
+            return end_token
+        elif ch == '|':
+            val = self.get_base64()
+            return c_new_token(ATOMIC, val)
+        elif ch == '∞': # \U221E
+            ch = next_char(self)
+            if ch == '$':
+                skip_char(self)
+                val = self.sbuilder.create_decimal_inf()
+                return c_new_token(ATOMIC, val)
+            else:
+                val = self.sbuilder.create_inf()
+                return c_new_token(ATOMIC, val)
+        elif ch == '?':
+            ch = next_char(self)
+            if ch == '?':
+                skip_char(self)
+                val = c_undefined
+                return c_new_token(ATOMIC, val)
+            elif ch == '$':
+                skip_char(self)
+                val = self.sbuilder.create_decimal_nan()
+                return c_new_token(ATOMIC, val)
+            else:
+                val = self.sbuilder.create_nan()
+                return c_new_token(ATOMIC, val)
+        elif ch == '*':
+            skip_char(self)
+            label = self.try_get_label()
+            if label is not None:
+                return c_new_token(REFERENCE, label)
+            else:
+                errors.error_expected_label(self)
+        elif ch == '&':
+            skip_char(self)
+            label = self.try_get_label()
+            if label is not None:
+                return c_new_token(LABEL, label)
+            else:
+                errors.error_expected_label(self)
+        elif ch == '#':
+            self.skip_comments()
+        else:
+            errors.error_unexpected_value(self, 'expected named complex value')
+
+        #if not valid_end_item(self):
+        #    errors.error_end_item(self)
+
+    #
     def itokens(self):
         while not self.eof:
             self.skip_spaces()
@@ -1196,16 +1332,27 @@ class Loader:
                 print(tok)
                 yield tok
 
-    def _itokens(self, idn, prev_idn):
+    def _itokens(self, idn):
         while 1:
             ch = self.skip_spaces()
+            
+            if idn:
+                if self.pos == idn:
+                    pass
+                elif self.pos < idn:
+                    yield end_token
+                    break
+                elif self.is_nl:
+                    errors.error_indentation(self, idn)
+            
             if (ch <= '9' and ch >= '0') or ch == '.':
                 val = self.get_number()
                 yield c_new_token(ATOMIC, val)
                 continue
-            elif ch.isalpha() or ch == '_':
+            
+            if ch.isalpha() or ch == '_':
                 name = self.get_name()
-                for tok in self._inamed(name, idn, prev_idn):
+                for tok in self._inamed(name, idn):
                     yield tok
                 continue
 
@@ -1220,16 +1367,16 @@ class Loader:
                     yield c_new_token(ATOMIC, val)
             elif ch == '"':
                 val = self.get_string(ch)
-                ch = self.moveto_next_token()
+                ch = self.skip_spaces()
                 if ch == ':':
                     skip_char(self)
                     yield c_new_token(KEY, val)
-                    ch = self.moveto_next_token()
+                    ch = self.skip_spaces()
                 else:
                     yield c_new_token(ATOMIC, val)
             elif ch == "'":
                 name = self.get_string(ch)
-                for tok in self._inamed(name, idn, prev_idn):
+                for tok in self._inamed(name, idn):
                     yield tok
             elif ch == '{':
                 self.bc += 1
@@ -1315,26 +1462,20 @@ class Loader:
             #if not valid_end_item(self):
             #    errors.error_end_item(self)
     #
-    def _inamed(self, name, idn, prev_idn):
+    def _inamed(self, name, idn):
         ch = self.skip_spaces()
+        
         if ch == '{':
             self.bc += 1
             skip_char(self)
-            self.moveto_next_token()
+            self.skip_spaces()
 
             yield c_new_token(COMPLEX, name)
             for tok in self._itokens(0, idn):
                 yield tok                
         elif ch == ':':
             skip_char(self)
-            ch = self.moveto_next_token()
-
-            if ch == '.':
-                if self.get_dots():
-                    yield c_new_token(COMPLEX, name)
-                    yield end_token                          
-                else:
-                    errors.error_invalid_value(self)
+            ch = self.skip_spaces()
 
             if self.is_nl:
                 if self.pos > idn:

@@ -178,8 +178,8 @@ cdef class Loader:
     @cython.locals(line=unicode, ch=Py_UCS4, n=int)
     cdef void next_line(Loader self)
 
-    @cython.locals(ch=Py_UCS4, n=int)
-    cdef bint get_dots(Loader self)
+#     @cython.locals(ch=Py_UCS4, n=int)
+#     cdef bint get_dots(Loader self)
 
     #@cython.locals(ch=Py_UCS4)
     #cdef inline bint valid_end_item(Loader self)
@@ -241,19 +241,19 @@ cdef class Loader:
     cdef object get_negative_constant(Loader self)
 
     @cython.locals(ch=Py_UCS4, val=object, is_multi=bint)
-    cdef object get_value(Loader self, int idn, int prev_idn)
+    cdef object get_value(Loader self, int idn)
 
     @cython.locals(ch=Py_UCS4, val=object,
                    sequence=list, mapping=dict, v=bint, is_multi=bint)
-    cdef object get_complex_value(Loader self, object name, int idn, int prev_idn)
+    cdef object get_complex_value(Loader self, object name, int idn)
 
     @cython.locals(ch=Py_UCS4, val=object,
                    mapping=dict, v=bint)
-    cdef object get_sequence_mapping(Loader self, object name, list sequence, int idn, int prev_idn)
+    cdef object get_sequence_mapping(Loader self, object name, list sequence, int idn)
 
     @cython.locals(ch=Py_UCS4, val=object,
                    sequence=list, v=bint)
-    cdef object get_mapping_sequence(Loader self, object name, dict mapping, int idn, int prev_idn)
+    cdef object get_mapping_sequence(Loader self, object name, dict mapping, int idn)
 
     @cython.locals(sequence=list, ch=Py_UCS4, val=object)
     cdef object get_list_value(Loader self)
@@ -265,16 +265,16 @@ cdef class Loader:
     cdef object get_dict_value(Loader self)
 
     @cython.locals(ch=Py_UCS4, is_multi=bint)
-    cdef bint get_mapping_part(Loader self, dict mapping, list sequence, int idn, int prev_idn) except -1
+    cdef bint get_mapping_part(Loader self, dict mapping, list sequence, int idn) except -1
 
     @cython.locals(ch=Py_UCS4, is_multi=bint)
-    cdef bint get_sequence_part(Loader self, list sequence, dict mapping, int idn, int prev_idn) except -1
+    cdef bint get_sequence_part(Loader self, list sequence, dict mapping, int idn) except -1
 
     #cpdef itokens(self)
 
     #@cython.locals(ch=Py_UCS4)
-    #cpdef _itokens(Loader self, int idn, int prev_idn)
+    #cpdef _itokens(Loader self, int idn)
     
     #@cython.locals(ch=Py_UCS4)
-    #cpdef _inamed(Loader self, object name, int idn, int prev_idn)    
+    #cpdef _inamed(Loader self, object name, int idn)    
     

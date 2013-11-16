@@ -1114,7 +1114,7 @@ class Dumper:
         elif self.pretty == 2:
             self.write(':\n')
             self.write(w)
-            self.write('...')
+            #self.write('...')
     
     #
     def pretty_dump_list(self, l, w, use_offset):
@@ -1322,7 +1322,7 @@ def itokens2str(tokens):
     n = len(tokens)
     for i, tok in enumerate(tokens):
         yield dump_tok(tok)
-        if i < n-1 and tokens[i+1] is not end_token and tok.type not in (2,3,4,5,9,10):
+        if (i < n-1 and tokens[i+1] is not end_token) or tok.type not in (2,3,4,5,9,10):
             yield ' '
             
 def tokens2str(tokens):

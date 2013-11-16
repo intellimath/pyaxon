@@ -72,6 +72,7 @@ from axon._objects cimport c_undefined
 from axon._objects cimport name_cache, empty_name, c_as_unicode, c_as_name
 from axon._objects cimport StringWriter
 
+from axon._objects cimport Token
 from axon._objects cimport c_new_token, end_token, dict_token, tuple_token, list_token
 from axon._objects cimport ATOMIC, END, COMPLEX, ATTRIBUTE, KEY, REFERENCE, LABEL, LIST, DICT, TUPLE
 
@@ -428,3 +429,5 @@ cdef public class Dumper[object Dumper, type DumperType]:
 
 cdef set _simple_types
 cdef bint is_simple_type(Dumper self, object tp)
+
+cpdef object dump_tok(Token tok)
