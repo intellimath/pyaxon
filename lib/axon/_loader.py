@@ -1199,7 +1199,7 @@ class Loader:
         
         if idn:
             if self.eof or self.pos < idn or ch == '}' or ch == ']':
-                yield end_token
+                return end_token
             elif self.pos == idn:
                 pass
             elif self.is_nl:

@@ -821,9 +821,6 @@ class Builder:
     def create_sequence(self, name, sequence):
         return None
     #
-    def create_collection(self, name, sequence):
-        return None
-
     def create_mapping(self, name, mapping):
         return None
     #
@@ -838,23 +835,17 @@ class Builder:
 
 class SafeBuilder(Builder):
     #
-    def create_sequence(self, name, sequence):
-        s = Sequence.__new__(Sequence)
-        s.name = name
-        s.sequence = sequence
-        return s
-    #
-    def create_collection(self, name, sequence):
-        s = Collection.__new__(Collection)
-        s.name = name
-        s.sequence = sequence
-        return s
-
     def create_mapping(self, name, mapping):
         o = Mapping.__new__(Mapping)
         o.name = name
         o.mapping = mapping
         return o
+    #
+    def create_sequence(self, name, sequence):
+        s = Sequence.__new__(Sequence)
+        s.name = name
+        s.sequence = sequence
+        return s
     #
     def create_element(self, name, mapping, sequence):
         e = Element.__new__(Element)

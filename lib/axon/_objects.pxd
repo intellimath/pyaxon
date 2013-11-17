@@ -160,6 +160,7 @@ cdef int LABEL = 8
 cdef int ATTRIBUTE = 9
 cdef int KEY = 10
 
+@cython.freelist(64)
 cdef class Token:
     cdef public int type
     cdef public object val
@@ -230,6 +231,7 @@ cdef object new_attrs(dict o)
 #
 # Empty
 #
+@cython.freelist(64)
 @cython.final
 cdef public class Empty[type EmptyType, object EmptyObject]:
     cdef public object name
@@ -237,6 +239,7 @@ cdef public class Empty[type EmptyType, object EmptyObject]:
 #
 # Sequence
 #
+@cython.freelist(64)
 @cython.final
 cdef public class Sequence[object SequenceObject, type SequenceType]:
     cdef public object name
@@ -244,17 +247,9 @@ cdef public class Sequence[object SequenceObject, type SequenceType]:
     #
 
 #
-# Collection
-#
-@cython.final
-cdef public class Collection[object CollectionObject, type CollectionType]:
-    cdef public object name
-    cdef public list sequence
-    #
-
-#
 # Object
 #
+@cython.freelist(64)
 @cython.final
 cdef public class Mapping[object MappingObject, type MappingType]:
     cdef public object name
@@ -264,6 +259,7 @@ cdef public class Mapping[object MappingObject, type MappingType]:
 #
 # Element
 #
+@cython.freelist(64)
 @cython.final
 cdef public class Element[object ElementObject, type ElementType]:
     cdef public object name
@@ -273,6 +269,7 @@ cdef public class Element[object ElementObject, type ElementType]:
 #
 # Construct
 #
+@cython.freelist(64)
 @cython.final
 cdef public class Instance[object InstanceObject, type InstanceType]:
     cdef public object name

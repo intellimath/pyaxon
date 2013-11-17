@@ -240,11 +240,11 @@ cdef class Loader:
     @cython.locals(ch=Py_UCS4)
     cdef object get_negative_constant(Loader self)
 
-    @cython.locals(ch=Py_UCS4, val=object, is_multi=bint)
+    @cython.locals(ch=Py_UCS4, val=object)
     cdef object get_value(Loader self, int idn)
 
     @cython.locals(ch=Py_UCS4, val=object,
-                   sequence=list, mapping=dict, v=bint, is_multi=bint)
+                   sequence=list, mapping=dict, v=bint)
     cdef object get_complex_value(Loader self, object name, int idn)
 
     @cython.locals(ch=Py_UCS4, val=object,
@@ -269,6 +269,9 @@ cdef class Loader:
 
     @cython.locals(ch=Py_UCS4, is_multi=bint)
     cdef bint get_sequence_part(Loader self, list sequence, dict mapping, int idn) except -1
+
+    @cython.locals(ch=Py_UCS4)
+    cdef object get_one_token(Loader self, int idn)
 
     #cpdef itokens(self)
 
