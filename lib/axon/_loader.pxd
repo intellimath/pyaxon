@@ -68,9 +68,9 @@ from axon._objects cimport Builder, SafeBuilder, StrictBuilder, MixedBuilder
 from axon._objects cimport get_builder
 from axon._objects cimport SimpleBuilder
 
-from axon._objects cimport c_new_token, c_new_token0, c_new_token1
-from axon._objects cimport end_token, dict_token, tuple_token, list_token
-from axon._objects cimport ATOMIC, END, COMPLEX, ATTRIBUTE, KEY, REFERENCE, LABEL, LIST, DICT, TUPLE
+#from axon._objects cimport c_new_token, c_new_token0, c_new_token1
+#from axon._objects cimport end_token, dict_token, tuple_token, list_token
+#from axon._objects cimport ATOMIC, END, COMPLEX, ATTRIBUTE, KEY, REFERENCE, LABEL, LIST, DICT, TUPLE
 
 cdef object unicode_type, str_type, int_type, long_type
 cdef object bool_type, float_type, bytes_type

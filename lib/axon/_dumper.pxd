@@ -72,9 +72,9 @@ from axon._objects cimport c_undefined
 from axon._objects cimport name_cache, empty_name, c_as_unicode, c_as_name
 from axon._objects cimport StringWriter
 
-from axon._objects cimport Token
-from axon._objects cimport c_new_token, end_token, dict_token, tuple_token, list_token
-from axon._objects cimport ATOMIC, END, COMPLEX, ATTRIBUTE, KEY, REFERENCE, LABEL, LIST, DICT, TUPLE
+#from axon._objects cimport Token
+#from axon._objects cimport c_new_token, end_token, dict_token, tuple_token, list_token
+#from axon._objects cimport ATOMIC, END, COMPLEX, ATTRIBUTE, KEY, REFERENCE, LABEL, LIST, DICT, TUPLE
 
 # cdef inline unicode c_as_unicode(object ob):
 #     if type(ob) is unicode:
