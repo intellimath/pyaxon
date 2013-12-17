@@ -1,5 +1,5 @@
 from __future__ import unicode_literals, print_function
-from axon import loads, dumps
+from axon import loads, dumps, tokens
 import unittest
 
 from axon.test import samples
@@ -23,11 +23,14 @@ for key, d in _dict.items():
         t_0 = dumps(vs, sorted=1)
         t_1 = dumps(vs, pretty=1, sorted=1)
         t_2 = dumps(vs, pretty=2, sorted=1)
+        toks = tokens(text_o)
+        t_3 = ''.join(toks)
         #print(t_0, t_1, t_2)
         #print(text_0, text_1, text_2)
         self.assertEqual(t_0, text_0)
         self.assertEqual(t_1, text_1)
         self.assertEqual(t_2, text_2)
+        self.assertEqual(t_3, text_0)
     fname = '_'.join(['test_samples', key])
     #setattr(ftest, str('__name__'), fname)
     setattr(SamplesTestCase, fname, ftest)

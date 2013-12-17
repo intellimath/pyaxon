@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# coding: utf-8
 
 # The MIT License (MIT)
 # 
@@ -22,10 +22,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-from __future__ import unicode_literals
-
 from axon._loader import as_name
-from axon._objects import undef, factory #, NamedValue, named
+from axon._objects import undef, factory
 from axon._objects import as_unicode, as_list, as_dict, as_tuple
 from axon._dumper import reduce, dump_as_str
 

@@ -65,26 +65,26 @@ default_decimal_context = _decimal.getcontext()
 _str2decimal = default_decimal_context.create_decimal
 _decimal2str = default_decimal_context.to_eng_string
 
-ATOMIC = 1
-DICT = 2
-LIST = 3
-TUPLE = 4
-COMPLEX = 5
-END = 6
-REFERENCE = 7
-LABEL = 8
-ATTRIBUTE = 9
-KEY = 10
-
-class Token:
-    def __str__(self):
-        return '%s: %r' % (self.type, self.val)
-        
-
-end_token = c_new_token0(END)
-dict_token = c_new_token0(DICT)
-list_token = c_new_token0(LIST)
-tuple_token = c_new_token0(TUPLE)
+# ATOMIC = 1
+# DICT = 2
+# LIST = 3
+# TUPLE = 4
+# COMPLEX = 5
+# END = 6
+# REFERENCE = 7
+# LABEL = 8
+# ATTRIBUTE = 9
+# KEY = 10
+# 
+# class Token:
+#     def __str__(self):
+#         return '%s: %r' % (self.type, self.val)
+#         
+# 
+# end_token = c_new_token0(END)
+# dict_token = c_new_token0(DICT)
+# list_token = c_new_token0(LIST)
+# tuple_token = c_new_token0(TUPLE)
 
 class Undefined:
     def __repr__(self):

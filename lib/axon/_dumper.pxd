@@ -430,4 +430,4 @@ cdef public class Dumper[object Dumper, type DumperType]:
 cdef set _simple_types
 cdef bint is_simple_type(Dumper self, object tp)
 
-cpdef object dump_tok(Token tok)
+# cpdef object dump_tok(Token tok)

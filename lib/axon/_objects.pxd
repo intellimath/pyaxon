@@ -149,37 +149,45 @@ cdef public dict name_cache
 
 cdef object c_str_type
 
-cdef int ATOMIC = 1
-cdef int DICT = 2
-cdef int LIST = 3
-cdef int TUPLE = 4
-cdef int COMPLEX = 5
-cdef int END = 6
-cdef int REFERENCE = 7
-cdef int LABEL = 8
-cdef int ATTRIBUTE = 9
-cdef int KEY = 10
-
-@cython.freelist(64)
-cdef class Token:
-    cdef public int type
-    cdef public object val
-
-cdef inline Token c_new_token(int type, object val):
-    cdef Token tok = Token.__new__(Token)
-    tok.type = type
-    tok.val = val
-    return tok
-
-cdef inline Token c_new_token0(int type):
-    cdef Token tok = Token.__new__(Token)
-    tok.type = type
-    return tok
-
-cdef Token end_token = c_new_token0(END)
-cdef Token dict_token = c_new_token0(DICT)
-cdef Token list_token = c_new_token0(LIST)
-cdef Token tuple_token = c_new_token0(TUPLE)
+# cdef int ATOMIC = 1
+# cdef int DICT = 2
+# cdef int LIST = 3
+# cdef int TUPLE = 4
+# cdef int COMPLEX = 5
+# cdef int END = 6
+# cdef int REFERENCE = 7
+# cdef int LABEL = 8
+# cdef int ATTRIBUTE = 9
+# cdef int KEY = 10
+# 
+# @cython.freelist(64)
+# cdef class Token:
+#     cdef public int type
+#     cdef public object val
+#     #cdef int idn
+# 
+# cdef inline Token c_new_token(int type, object val):
+#     cdef Token tok = Token.__new__(Token)
+#     tok.type = type
+#     tok.val = val
+#     return tok
+# 
+# cdef inline Token c_new_token0(int type):
+#     cdef Token tok = Token.__new__(Token)
+#     tok.type = type
+#     return tok
+# 
+# #cdef inline Token c_new_token1(int type, object val, int idn):
+# #    cdef Token tok = Token.__new__(Token)
+# #    tok.type = type
+# #    tok.val = val
+# #    tok.idn = idn
+# #    return tok
+# 
+# cdef Token end_token = c_new_token0(END)
+# cdef Token dict_token = c_new_token0(DICT)
+# cdef Token list_token = c_new_token0(LIST)
+# cdef Token tuple_token = c_new_token0(TUPLE)
 
 @cython.final
 cdef public class Undefined[object UndefinedObject, type UndefinedType]:

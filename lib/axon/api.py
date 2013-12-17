@@ -232,12 +232,12 @@ def iload(fd, mode="safe", errto=None, encoding='utf-8', json=0):
 
     return loader
 
-def itokens(text, mode="safe", errto=None, encoding='utf-8', json=0):
-    text = as_unicode(text)
-    fd = StringReader(text)
-
-    loader = Loader(fd, mode, errto, json)
-
-    for tok in loader.itokens():
-        yield tok
-    
+# def itokens(text, mode="safe", errto=None, encoding='utf-8', json=0):
+#     text = as_unicode(text)
+#     fd = StringReader(text)
+# 
+#     loader = Loader(fd, mode, errto, json)
+# 
+#     for tok in loader.itokens():
+#         yield tok
+#     

@@ -1295,35 +1295,39 @@ class Dumper:
 #     else:
 #         return dumper(o)
 
-def dump_tok(tok):
-    if tok.type == END:
-        return '}'
-    elif tok.type == LIST:
-        return 'list{'
-    elif tok.type == DICT:
-        return 'dict{'
-    elif tok.type == TUPLE:
-        return 'tuple{'
-    elif tok.type == COMPLEX:
-        return '%s{' % tok.val
-    elif tok.type == ATTRIBUTE:
-        return '%s:' % tok.val
-    elif tok.type == KEY:
-        return '%s:' % tok.val
-    elif tok.type == REFERENCE:
-        return '*%s' % tok.val
-    elif tok.type == LABEL:
-        return '&%s' % tok.val
-    else:
-        return _simple_dumper(tok.val)
-
-def itokens2str(tokens):
-    tokens = list(tokens)
-    n = len(tokens)
-    for i, tok in enumerate(tokens):
-        yield dump_tok(tok)
-        if (i < n-1 and tokens[i+1] is not end_token) or tok.type not in (2,3,4,5,9,10):
-            yield ' '
-            
-def tokens2str(tokens):
-    return ''.join(itokens2str(tokens))
+# def dump_tok(tok):
+#     if tok.type == END:
+#         return '}'
+#     elif tok.type == LIST:
+#         return 'list{'
+#     elif tok.type == DICT:
+#         return 'dict{'
+#     elif tok.type == TUPLE:
+#         return 'tuple{'
+#     elif tok.type == COMPLEX:
+#         return '%s{' % tok.val
+#     elif tok.type == ATTRIBUTE:
+#         return '%s:' % tok.val
+#     elif tok.type == KEY:
+#         return '%s:' % tok.val
+#     elif tok.type == REFERENCE:
+#         return '*%s' % tok.val
+#     elif tok.type == LABEL:
+#         return '&%s' % tok.val
+#     else:
+#         return _simple_dumper(tok.val)
+# 
+# def itokens2str(tokens):
+#     iter_tokens = iter(tokens)
+#     prev_tok = next(iter_tokens)
+#     while 1:
+#         tok = next(iter_tokens)
+#         yield dump_tok(prev_tok)
+#         if tok is not end_token or prev_tok.type in (2,3,4,5,9,10):
+#             yield ' '
+#         prev_tok = tok
+#     yield prev_tok
+#     
+#             
+# def tokens2str(tokens):
+#     return ''.join(itokens2str(tokens))

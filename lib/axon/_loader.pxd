@@ -24,7 +24,7 @@
 
 cimport cython
 from cpython.object cimport PyObject, Py_SIZE
-#from cpython.list cimport PyList_Append, PyList_SET_ITEM
+#from cpython.list cimport PyList_Append, PyList_SET_ITEM, PyList_GET_ITEM
 from cpython.dict cimport PyDict_SetItem, PyDict_GetItem
 
 #from cpython.unicode cimport PyUnicode_AsASCIIString
@@ -68,7 +68,8 @@ from axon._objects cimport Builder, SafeBuilder, StrictBuilder, MixedBuilder
 from axon._objects cimport get_builder
 from axon._objects cimport SimpleBuilder
 
-from axon._objects cimport c_new_token, end_token, dict_token, tuple_token, list_token
+from axon._objects cimport c_new_token, c_new_token0, c_new_token1
+from axon._objects cimport end_token, dict_token, tuple_token, list_token
 from axon._objects cimport ATOMIC, END, COMPLEX, ATTRIBUTE, KEY, REFERENCE, LABEL, LIST, DICT, TUPLE
 
 cdef object unicode_type, str_type, int_type, long_type
@@ -140,6 +141,10 @@ cdef class Loader:
     cdef int bc
     cdef int bs
     cdef int bq
+    
+    #cdef list idn_stack
+    #cdef int idn
+    #cdef int idn_i
 
     cdef bint json
 
@@ -270,14 +275,3 @@ cdef class Loader:
     @cython.locals(ch=Py_UCS4, is_multi=bint)
     cdef bint get_sequence_part(Loader self, list sequence, dict mapping, int idn) except -1
 
-    @cython.locals(ch=Py_UCS4)
-    cdef object get_one_token(Loader self, int idn)
-
-    #cpdef itokens(self)
-
-    #@cython.locals(ch=Py_UCS4)
-    #cpdef _itokens(Loader self, int idn)
-    
-    #@cython.locals(ch=Py_UCS4)
-    #cpdef _inamed(Loader self, object name, int idn)    
-    
