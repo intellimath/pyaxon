@@ -28,6 +28,8 @@ History
 
 1. Fix 2.7/3.3 compatibility error with reading from files.
 2. Pretty dumping now is more compact in simple cases.
+3. Now default pretty dumping mode is indented without braces (like YAML);
+   new parameter ``braces=1`` with ``pretty=1`` specifies formatted mode with braces (like JSON).
 
 **0.5.7**
 
