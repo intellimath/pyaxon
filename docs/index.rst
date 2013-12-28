@@ -124,8 +124,53 @@ Here is an example of ``AXON`` message:
 .. raw:: html
 
     <table>
-    <tr><th>formatted expression form</th><th>statement form</th></tr>
-    <tr><td><pre>
+    <tr><th>statement form</th><th>formatted expression form</th></tr>
+    <tr>
+    <td><pre>
+    axon:
+        name: "An eXtended Object Notation"
+        short_name: "AXON"
+        python_library: "pyaxon"
+        atomic_values:
+            int: [0 -1 17]
+            float: [3.1428 1.5e-17]
+            decimal: [10$ 1000.35$ -1.25e6$]
+            bool: [true false]
+            string: "abc абв 中文本"
+            multiline_string: "one
+    two
+    three"
+            date: 2012-12-31
+            time: [12:30:34 12:35:12.000120 12:35+03]
+            datetime: [2012-12-31T12:30 2012-12-31T12:35+03]
+            binary: |UTcJFhV3cl97ZEk+BA0hWggDUj8lbE0bQH5r
+    Uy0nNjwmZDpANClsAj4WeDsfCWkcW2Bdc0VNQ
+    CQVZCBhXxFGJBpSLGs3HGlcbSdgdH4ab34UBT
+    wndTs2MXdSOxIGBgdYclFQYnlDH3NfUSI1LEc
+    HDARDeFcDCBwiPTAZODU=
+        complex_values:
+            anonymous:
+                list: ["one" "two" "three"]
+                dict: {"one":1 "two":2 "three":3}
+                tuple: ("nodes" "edges")
+            named:
+                mapping: rgb:
+                    red:16 green:32 blue:64
+                element: node:
+                    id: 1
+                    node:
+                        id: 2
+                        class: "A"
+                    node:
+                        id: 3
+                        class: "B"
+                sequence: primes:
+                    2 3 5 7 11 13 17 19 23 29 31
+                instance: row:
+                    12 2003-12-01 12:00
+                    T: 12.1 R:0.5 W:5 D:"W"
+    </pre></td>
+    <td><pre>
     axon {
         name: "An eXtended Object Notation"
         short_name: "AXON"
@@ -175,50 +220,7 @@ Here is an example of ``AXON`` message:
         }
     }
     </pre></td>
-    <td><pre>
-    axon:
-        name: "An eXtended Object Notation"
-        short_name: "AXON"
-        python_library: "pyaxon"
-        atomic_values:
-            int: [0 -1 17]
-            float: [3.1428 1.5e-17]
-            decimal: [10$ 1000.35$ -1.25e6$]
-            bool: [true false]
-            string: "abc абв 中文本"
-            multiline_string: "one
-    two
-    three"
-            date: 2012-12-31
-            time: [12:30:34 12:35:12.000120 12:35+03]
-            datetime: [2012-12-31T12:30 2012-12-31T12:35+03]
-            binary: |UTcJFhV3cl97ZEk+BA0hWggDUj8lbE0bQH5r
-    Uy0nNjwmZDpANClsAj4WeDsfCWkcW2Bdc0VNQ
-    CQVZCBhXxFGJBpSLGs3HGlcbSdgdH4ab34UBT
-    wndTs2MXdSOxIGBgdYclFQYnlDH3NfUSI1LEc
-    HDARDeFcDCBwiPTAZODU=
-        complex_values:
-            anonymous:
-                list: ["one" "two" "three"]
-                dict: {"one":1 "two":2 "three":3}
-                tuple: ("nodes" "edges")
-            named:
-                mapping: rgb:
-                    red:16 green:32 blue:64
-                element: node:
-                    id: 1
-                    node:
-                        id: 2
-                        class: "A"
-                    node:
-                        id: 3
-                        class: "B"
-                sequence: primes:
-                    2 3 5 7 11 13 17 19 23 29 31
-                instance: row:
-                    12 2003-12-01 12:00
-                    T: 12.1 R:0.5 W:5 D:"W"
-    </pre></td></tr>
+    </tr>
     <tr><th colspan=2>compact expression form</th></tr>
     <tr><td colspan=2><pre>
     axon{name:"An eXtended Object Notation" python_library:"pyaxon" short_name:"AXON"
