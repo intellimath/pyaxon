@@ -1,17 +1,17 @@
 # The MIT License (MIT)
-# 
+#
 # Copyright (c) <2011-2013> <Shibzukhov Zaur, szport at gmail dot com>
-# 
+#
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
 # in the Software without restriction, including without limitation the rights
 # to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 # copies of the Software, and to permit persons to whom the Software is
 # furnished to do so, subject to the following conditions:
-# 
+#
 # The above copyright notice and this permission notice shall be included in
 # all copies or substantial portions of the Software.
-# 
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 # FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -62,7 +62,7 @@ class Writer(object):
     def close(self):
         self.fd.close()
 
-def display(text, pretty=1, sorted=1, hsize=1, crossref=0):
+def display(text, pretty=1, braces=0, sorted=1, hsize=1, crossref=0):
     '''
     Display AXON text in formatted form for easy read.
 
@@ -73,9 +73,9 @@ def display(text, pretty=1, sorted=1, hsize=1, crossref=0):
         formatted `unicode` AXON text
     '''
     val = loads(text)
-    print(dumps(val, pretty, sorted, hsize, crossref))
+    print(dumps(val, pretty, braces, sorted, hsize, crossref))
 
-def dumps(val, pretty=0, sorted=1, hsize=1, crossref=0):
+def dumps(val, pretty=0, braces=0, sorted=1, hsize=1, crossref=0):
     '''
     Dump value into unicode text.
 
@@ -113,13 +113,13 @@ def dumps(val, pretty=0, sorted=1, hsize=1, crossref=0):
 
     fd = StringWriter()
 
-    dumper = Dumper(fd, pretty, sorted, hsize, crossref)
+    dumper = Dumper(fd, pretty, braces, sorted, hsize, crossref)
     dumper.dump(val)
     v = fd.getvalue()
     fd.close()
     return v
 
-def dump(fpath, val, pretty=0, sorted=1, hsize=1, crossref=0, encoding='utf-8'):
+def dump(fpath, val, pretty=0, braces=0, sorted=1, hsize=1, crossref=0, encoding='utf-8'):
     '''\
     Same as :py:func:`dumps` but for dumping into a file.
 
@@ -130,7 +130,7 @@ def dump(fpath, val, pretty=0, sorted=1, hsize=1, crossref=0, encoding='utf-8'):
     '''
     fd = io.open(fpath, mode='w', encoding=encoding)
 
-    dumper = Dumper(fd, pretty, sorted, hsize, crossref)
+    dumper = Dumper(fd, pretty, braces, sorted, hsize, crossref)
     dumper.dump(val)
     fd.close()
 
@@ -235,9 +235,9 @@ def iload(fd, mode="safe", errto=None, encoding='utf-8', json=0):
 # def itokens(text, mode="safe", errto=None, encoding='utf-8', json=0):
 #     text = as_unicode(text)
 #     fd = StringReader(text)
-# 
+#
 #     loader = Loader(fd, mode, errto, json)
-# 
+#
 #     for tok in loader.itokens():
 #         yield tok
-#     
+#

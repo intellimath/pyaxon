@@ -36,7 +36,7 @@ class ObjectTestCase(unittest.TestCase):
         self.assertEqual(type(v), Instance)
         self.assertEqual(v.sequence, (4, 5, 6))
         self.assertEqual(v.mapping, {'a': 1, 'b': 2, 'c': 3})
-        s = dumps([v], pretty=2)
+        s = dumps([v], pretty=1)
         self.assertEqual(s, '''\
 aaa:
   4

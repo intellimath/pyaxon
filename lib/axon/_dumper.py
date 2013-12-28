@@ -7,19 +7,19 @@
 #cython: infer_types=True
 
 # The MIT License (MIT)
-# 
+#
 # Copyright (c) <2011-2013> <Shibzukhov Zaur, szport at gmail dot com>
-# 
+#
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
 # in the Software without restriction, including without limitation the rights
 # to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 # copies of the Software, and to permit persons to whom the Software is
 # furnished to do so, subject to the following conditions:
-# 
+#
 # The above copyright notice and this permission notice shall be included in
 # all copies or substantial portions of the Software.
-# 
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 # FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -112,7 +112,7 @@ def empty_reduce(o):
 # _tuple_name = 'tuple'
 # _list_name = 'list'
 # _dict_name = 'dict'
-# 
+#
 # def set_reduce(o):
 #     return _set_name, tuple(o)
 # #
@@ -198,32 +198,32 @@ c_simple_dumpers = {}
 #    ###types.int_type: c_new_pyptr(_dump_int),
 #     types.long_type: c_new_pyptr(_dump_long),
 #     types.float_type: c_new_pyptr(_dump_float),
-# 
+#
 #     types.unicode_type: c_new_pyptr(_dump_unicode),
-# 
+#
 #     types.bytearray_type: c_new_pyptr(_dump_bytearray),
-# 
+#
 #     types.bool_type: c_new_pyptr(_dump_bool),
-# 
+#
 #     _decimal.Decimal: c_new_pyptr(_dump_decimal),
-#     
+#
 #     datetime.date: c_new_pyptr(_dump_date),
 #     datetime.time: c_new_pyptr(_dump_time),
 #     datetime.datetime: c_new_pyptr(_dump_datetime),
-# 
+#
 #     Undefined: c_new_pyptr(_dump_undef),
 #     type(None): c_new_pyptr(_dump_none),
 
 
 # if types.str_type != types.unicode_type:
 #     c_simple_dumpers[types.str_type] = c_new_pyptr(_dump_str)
-# 
+#
 # if types.bytes_type != types.str_type:
 #     c_simple_dumpers[types.bytes_type] = c_new_pyptr(_dump_bytes)
-# 
+#
 # if types.int_type != types.long_type:
 #     c_simple_dumpers[types.int_type] = c_new_pyptr(_dump_int)
-# 
+#
 
 class SimpleDumper:
 
@@ -262,7 +262,7 @@ class SimpleDumper:
                 else:
                     text = _dumper(o)
                 return text
-                                        
+
     def dump_int(self, o):
         return c_int_tostring(o)
 
@@ -304,7 +304,7 @@ class SimpleDumper:
             val = '0'
 
         return val + '$'
-        
+
     def dump_bytes(self, o):
         text = PyUnicode_FromEncodedObject(encodebytes(o), 'ascii', 'strict')
         return c_as_unicode('|' + text)
@@ -446,7 +446,7 @@ def _dump_name(ob):
     else:
         is_qname = 1
         pos += 1
-        
+
     while pos < n:
         ch = name[pos]
         if ch.isalnum() or ch == '_' or ch == '.':
@@ -519,7 +519,7 @@ class Dumper:
     Dumper class
     '''
     #
-    def __init__(self, fd, pretty=0, sorted=1, hsize=1, crossref=0):
+    def __init__(self, fd, pretty=0, braces=0, sorted=1, hsize=1, crossref=0):
 
         self.max_size = 65000
         self.size = 0
@@ -529,7 +529,11 @@ class Dumper:
         self.crossref_set2 = None
         self.crossref_dict = None
 
-        self.pretty = pretty
+        self.pretty = 0
+        if pretty:
+            self.pretty = 1
+            if braces:
+                self.pretty = 2
         #self.offset = '  '
         self.hsize = hsize
 
@@ -542,7 +546,7 @@ class Dumper:
         self.sfd = None
         if type(fd) is StringWriter:
             self.sfd = self.fd
-            
+
         self.sdumper = SimpleDumper()
     #
     def write(self, sval):
@@ -697,17 +701,17 @@ class Dumper:
         #print(otype)
         dumper = self.sdumper
         if otype is unicode_type:
-            self.write('"')        
+            self.write('"')
             text = dumper.dump_unicode(o)
             self.write(text)
-            self.write('"') 
-            return 1       
+            self.write('"')
+            return 1
         elif otype is str_type:
-            self.write('"')        
-            text = dumper.dump_str(o)        
+            self.write('"')
+            text = dumper.dump_str(o)
             self.write(text)
-            self.write('"') 
-            return 1       
+            self.write('"')
+            return 1
         elif otype is long_type or otype is int_type:
             text = dumper.dump_int(o)
         elif otype is float_type:
@@ -736,7 +740,7 @@ class Dumper:
                     text = ptr.ptr(o)
                 else:
                     text = _dumper(o)
-                                        
+
         self.write(text)
         return 1
     #
@@ -887,14 +891,14 @@ class Dumper:
             items = sorted(d.items())
         else:
             items = d.items()
-        
+
         j = 1
         for k,v in items:
             flag = type(v) not in simple_types
             if not use_offset and flag:
                 use_offset = 1
                 j = 1
-        
+
             if use_offset:
                 self.write('\n')
                 self.write(w)
@@ -910,7 +914,7 @@ class Dumper:
                 self._pretty_dump(v, w, 0)
             else:
                 self._dump_value(v)
-                
+
             if j < self.hsize:
                 if flag:
                     use_offset = 1
@@ -919,7 +923,7 @@ class Dumper:
                 j += 1
             else:
                 use_offset = 1
-                j = 1                
+                j = 1
     #
     def _pretty_dump_attr_sequence(self, d, w, use_offset):
         if self.sorted:
@@ -933,7 +937,7 @@ class Dumper:
             if not use_offset and flag:
                 use_offset = 1
                 j = 1
-        
+
             if use_offset:
                 self.write('\n')
                 self.write(w)
@@ -949,7 +953,7 @@ class Dumper:
                 self._pretty_dump(v, w, 0)
             else:
                 self._dump_value(v)
-                
+
             if j < self.hsize:
                 if flag:
                     use_offset = 1
@@ -958,22 +962,22 @@ class Dumper:
                 j += 1
             else:
                 use_offset = 1
-                j = 1                
+                j = 1
     #
     def _pretty_dump_list_sequence(self, l, w, use_offset):
-        if self.pretty == 1 and len(l) == 1: 
+        if self.pretty == 2 and len(l) == 1:
             v = l[0]
             if type(v) in simple_types:
                 self._dump_value(v)
                 return 0
-            
+
         j = 1
         for v in l:
             flag = type(v) not in simple_types
             if not use_offset and flag:
                 use_offset = 1
                 j = 1
-        
+
             if use_offset:
                 self.write('\n')
                 self._pretty_dump(v, w, 1)
@@ -983,7 +987,7 @@ class Dumper:
                     self._pretty_dump(v, w, 0)
                 else:
                     self._dump_value(v)
-                
+
             if j < self.hsize:
                 if flag:
                     use_offset = 1
@@ -992,10 +996,10 @@ class Dumper:
                 j += 1
             else:
                 use_offset = 1
-                j = 1                
+                j = 1
     #
     def _pretty_dump_tuple_sequence(self, l, w, use_offset):
-        if self.pretty == 1 and len(l) == 1: 
+        if self.pretty == 2 and len(l) == 1:
             v = l[0]
             if type(v) in simple_types:
                 self._dump_value(v)
@@ -1026,7 +1030,7 @@ class Dumper:
                 j += 1
             else:
                 use_offset = 1
-                j = 1                
+                j = 1
     #
     def pretty_dump_mapping(self, o, w, use_offset):
         self.write(_dump_name(o.name))
@@ -1034,88 +1038,87 @@ class Dumper:
         #w1 = w + '  '
 
         if self.pretty == 1:
-            self.write(' {')
-        elif self.pretty == 2:
             self.write(':')
+        elif self.pretty == 2:
+            self.write(' {')
 
         #self.write('\n')
         #self.write(w1)
-        
+
         self._pretty_dump_attr_sequence(o.mapping, w, 1)
 
-        if self.pretty == 1:
+        if self.pretty == 2:
             self.write('}')
     #
     def pretty_dump_element(self, o, w, use_offset):
         self.write(_dump_name(o.name))
-        
+
         if self.pretty == 1:
-            self.write(' {')
-        elif self.pretty == 2:
             self.write(':')
+        elif self.pretty == 2:
+            self.write(' {')
 
         #w1 = w + '  '
 
         #self.write('\n')
         #self.write(w1)
-        
+
         self._pretty_dump_attr_sequence(o.mapping, w, 1)
         if o.sequence:
             #self.write(' ')
             self._pretty_dump_list_sequence(o.sequence, w, 1)
 
-        if self.pretty == 1:
+        if self.pretty == 2:
             self.write('}')
     #
     def pretty_dump_sequence(self, o, w, use_offset):
         self.write(_dump_name(o.name))
-        
+
         if self.pretty == 1:
-            self.write(' {')
-        elif self.pretty == 2:
             self.write(':')
+        elif self.pretty == 2:
+            self.write(' {')
 
         #w1 = w + '  '
 
         #self.write('\n')
         #self.write(w1)
-        
+
         self._pretty_dump_list_sequence(o.sequence, w, 1)
 
-        if self.pretty == 1:
+        if self.pretty == 2:
             self.write('}')
     #
     def pretty_dump_instance(self, o, w, use_offset):
         self.write(_dump_name(o.name))
-        
+
         if self.pretty == 1:
-            self.write(' {')
-        elif self.pretty == 2:
             self.write(':')
-            
+        elif self.pretty == 2:
+            self.write(' {')
+
         #w1 = w + '  '
-        
+
         #self.write('\n')
         #self.write(w1)
-        
+
         self._pretty_dump_tuple_sequence(o.sequence, w, 1)
         if o.mapping:
             #self.write(' ')
             self._pretty_dump_attr_sequence(o.mapping, w, 1)
 
-        if self.pretty == 1:
+        if self.pretty == 2:
             self.write('}')
     #
     def pretty_dump_empty(self, o, w, use_offset):
         self.write(_dump_name(o.name))
-        
+
         if self.pretty == 1:
-            self.write(' {}')
-        elif self.pretty == 2:
             self.write(':\n')
             self.write(w)
-            #self.write('...')
-    
+        elif self.pretty == 2:
+            self.write(' {}')
+
     #
     def pretty_dump_list(self, l, w, use_offset):
         self.write('[')
@@ -1316,7 +1319,7 @@ class Dumper:
 #         return '&%s' % tok.val
 #     else:
 #         return _simple_dumper(tok.val)
-# 
+#
 # def itokens2str(tokens):
 #     iter_tokens = iter(tokens)
 #     prev_tok = next(iter_tokens)
@@ -1327,7 +1330,7 @@ class Dumper:
 #             yield ' '
 #         prev_tok = tok
 #     yield prev_tok
-#     
-#             
+#
+#
 # def tokens2str(tokens):
 #     return ''.join(itokens2str(tokens))

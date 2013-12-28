@@ -25,29 +25,29 @@ class SafeLoadsTestCase(unittest.TestCase):
         self.assertEqual(type(v), Empty)
         self.assertEqual(v.sequence, None)
         self.assertEqual(v.mapping, None)
-        s = dumps([v], pretty=1)
+        s = dumps([v], pretty=1, braces=1)
         self.assertEqual(s, 'aaa {}')
     #
     def test_empty3(self):
         v = loads('''
 aaa:
-
+    
 ''')[0]
         self.assertEqual(type(v), Empty)
         self.assertEqual(v.sequence, None)
         self.assertEqual(v.mapping, None)
-        s = dumps([v], pretty=1)
+        s = dumps([v], pretty=1, braces=1)
         self.assertEqual(s, 'aaa {}')
     #
     def test_empty4(self):
         v = loads('''
 aaa:
-   
+    
 ''')[0]
         self.assertEqual(type(v), Empty)
         self.assertEqual(v.sequence, None)
         self.assertEqual(v.mapping, None)
-        s = dumps([v], pretty=2)
+        s = dumps([v], pretty=1)
         self.assertEqual(s, '''\
 aaa:
   ''')
@@ -58,9 +58,9 @@ aaa:
   bbb:
     
   ccc:
-    
+
 ''')[0]
-        s = dumps([v], pretty=2)
+        s = dumps([v], pretty=1)
         self.assertEqual(s, '''\
 aaa:
   bbb:
@@ -78,9 +78,9 @@ aaa:
   ccc:
     c:1
     ddd:
-      
+
 ''')[0]
-        s = dumps([v], pretty=2)
+        s = dumps([v], pretty=1)
         self.assertEqual(s, '''\
 aaa:
   a: 1
@@ -102,9 +102,9 @@ aaa:
   ccc:
     c:1 d:  23
     ddd:
-      
+
 ''')[0]
-        s = dumps([v], pretty=2)
+        s = dumps([v], pretty=1)
         self.assertEqual(s, '''\
 aaa:
   a: 1

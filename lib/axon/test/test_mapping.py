@@ -51,7 +51,7 @@ aaa:
         self.assertEqual(type(v), Mapping)
         self.assertEqual(v.sequence, None)
         self.assertEqual(v.mapping, {'a': 1, 'b': 2, 'c': 3})
-        s = dumps([v], pretty=2)
+        s = dumps([v], pretty=1)
         self.assertEqual(s, '''\
 aaa:
   a: 1
@@ -75,7 +75,7 @@ aaa:
         self.assertEqual(v.sequence, None)
         s = dumps([v])
         self.assertEqual(s, '''aaa{a:1 b:2 c:c{e:1 f:f{r:2 s:3}} d:4}''')
-        s = dumps([v], pretty=2)
+        s = dumps([v], pretty=1)
         self.assertEqual(s, '''\
 aaa:
   a: 1
@@ -104,7 +104,7 @@ aaa:
         self.assertEqual(type(v), Element)
         s = dumps([v])
         self.assertEqual(s, '''aaa{a:1 b:2 c{e:1 f{r:2 s:3}} d{4}}''')
-        s = dumps([v], pretty=2)
+        s = dumps([v], pretty=1)
         self.assertEqual(s, '''\
 aaa:
   a: 1
