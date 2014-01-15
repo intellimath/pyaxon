@@ -51,13 +51,11 @@ class ConstantTestCase(unittest.TestCase):
     #
     def test_decimal_inf(self):
         v = loads('Infinity$')[0]
-        print(v)
         s = dumps([v])
         self.assertEqual(s, '∞$')
     #
     def test_decimal_inf1(self):
         v = loads('∞$')[0]
-        print(v)
         s = dumps([v])
         self.assertEqual(s, '∞$')
     #

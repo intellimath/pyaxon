@@ -38,7 +38,7 @@ class build_py(_build_py):
             modules = [m for m in modules if m[2] not in py_ext_modules]
         return modules
 
-use_cython = 1
+use_cython = 0
 
 if use_cython:
     from Cython.Distutils import Extension, build_ext
@@ -101,7 +101,6 @@ setup(
         'Intended Audience :: Developers',
         'Intended Audience :: Information Technology',
         'License :: OSI Approved :: MIT License',
-        'Platform :: Any',
         'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
