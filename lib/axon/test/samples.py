@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 
 text_1_o = text_1_0 = text_1_1 = text_1_2 = '''{}'''
 
@@ -309,4 +310,12 @@ text_15_2 = '''aaa:
     3
   3
   4'''
+
+#################################
+
+text_16_o = '''aaa{1}'''
+text_16_0 = '''aaa{1}'''
+text_16_1 = '''aaa { 1}'''
+text_16_2 = '''aaa:
+  1'''
 

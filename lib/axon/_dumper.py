@@ -965,11 +965,11 @@ class Dumper:
                 j = 1
     #
     def _pretty_dump_list_sequence(self, l, w, use_offset):
-        if self.pretty == 2 and len(l) == 1:
-            v = l[0]
-            if type(v) in simple_types:
-                self._dump_value(v)
-                return 0
+        #if  self.pretty == 2 and len(l) == 1 and not use_offset:
+        #    v = l[0]
+        #    if type(v) in simple_types:
+        #        self._dump_value(v)
+        #        return 0
 
         j = 1
         for v in l:
@@ -1084,7 +1084,10 @@ class Dumper:
         #self.write('\n')
         #self.write(w1)
 
-        self._pretty_dump_list_sequence(o.sequence, w, 1)
+        if self.pretty == 2 and len(o.sequence) == 1:
+            self._pretty_dump_list_sequence(o.sequence, w, 0)
+        else:
+            self._pretty_dump_list_sequence(o.sequence, w, 1)
 
         if self.pretty == 2:
             self.write('}')
