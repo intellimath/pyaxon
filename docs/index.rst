@@ -20,7 +20,7 @@
 What is AXON
 ------------
 
-An eXtended Object Notation (``AXON``) is a simple text based format for interchanging of
+AXON is eXtended Object Notation (``AXON``). It's a simple text based format for interchanging of
 objects, documents and data.
 
 It tries to combine the best of `JSON <http://www.json.org>`_,

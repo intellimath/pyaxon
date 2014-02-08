@@ -3,8 +3,8 @@ PYAXON
 ======
 
 ``pyaxon`` is an `MIT Licensed <http://opensource.org/licenses/MIT>`_ python library
-for `AXON <http://axon.intellimath.org>`_ -
-An eXtended Object Notation - simple text based format for interchanging
+for `AXON <http://axon.intellimath.org>`_ 
+AXON is eXtended Object Notation. It's a simple text based format for interchanging
 objects, documents and data.
 It tries to combine the best of `JSON <http://www.json.org>`_,
 `XML <http://www.w3.org/XML/>`_ and `YAML <http://www.yaml.org>`_.
