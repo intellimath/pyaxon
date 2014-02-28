@@ -1196,3 +1196,27 @@ class timezone(tzinfo):
         else:
             return "timezone(%s)" % (self.offset,)
 
+# class Context(object):
+#     
+#     def set(self, key, value):
+#         self._dict[key] = value
+#         return 0
+# 
+#     def get(self, key):
+#         val = self._dict.get(key, undef)
+#         if val is undef:
+#             if self.parent is None:
+#                 return undef
+#             else:
+#                 return self.parent.get(key)
+#         else:
+#             return val
+# 
+#     def update(self, kw):
+#         self._dict.update(kw)
+#         return 0
+#     
+# def new_context(parent):
+#     o = Context.__new__(Context)
+#     o.parent = parent
+#     o._dict = {}

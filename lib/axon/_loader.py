@@ -140,6 +140,8 @@ class Loader:
         #self.idn_stack = []
 
         self.lnum = 0
+        
+        self.global_context = {}
 
         self.next_line()
     #
@@ -921,7 +923,7 @@ class Loader:
                 skip_char(self)
 
                 ch = self.skip_spaces()
-
+                
                 sequence = [self.get_complex_value(aname, 0)]
                 val = self.get_sequence_mapping(name, sequence, idn)
             else:

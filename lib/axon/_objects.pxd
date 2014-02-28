@@ -421,3 +421,17 @@ cdef public class timezone(tzinfo)[object TimeZoneUTCObject, type TimeZoneUTCTyp
     cdef public object offset
     cdef public object name
     
+    
+# cdef class Context:
+# 
+#     cdef public Context parent
+#     cdef dict _dict
+#     
+#     cdef int set(self, object key, object value) except -1
+# 
+#     cdef int update(self, dict kw) except -1
+# 
+#     cdef object get(self, object key)
+# 
+# @cython.locals(o=Context)
+# cdef inline Context new_context(Context parent)

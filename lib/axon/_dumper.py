@@ -970,7 +970,6 @@ class Dumper:
         #    if type(v) in simple_types:
         #        self._dump_value(v)
         #        return 0
-
         j = 1
         for v in l:
             flag = type(v) not in simple_types
@@ -982,7 +981,8 @@ class Dumper:
                 self.write('\n')
                 self._pretty_dump(v, w, 1)
             else:
-                self.write(' ')
+                if j > 1:
+                    self.write(' ')
                 if flag:
                     self._pretty_dump(v, w, 0)
                 else:

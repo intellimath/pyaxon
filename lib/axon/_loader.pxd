@@ -137,6 +137,8 @@ cdef class Loader:
     cdef public int pos
     cdef public int lnum
     cdef public object errto
+    
+    cdef dict global_context
 
     cdef int bc
     cdef int bs
