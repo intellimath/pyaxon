@@ -982,7 +982,7 @@ class Loader:
         while 1:
             if ch == '#':
                 self.skip_comments()
-                self.skip_spaces()
+                ch = self.skip_spaces()
                 
             if ch == ']':
                 skip_char(self)
@@ -1011,7 +1011,7 @@ class Loader:
         while 1:
             if ch == '#':
                 self.skip_comments()
-                self.skip_spaces()
+                ch = self.skip_spaces()
         
             if ch == ')':
                 skip_char(self)
