@@ -24,6 +24,10 @@ Features
 History
 -------
 
+**0.5.9**
+
+1. Some errors with processing of comment lines are fixed.
+
 **0.5.8**
 
 1. Fix 2.7/3.3 compatibility error with reading from files.

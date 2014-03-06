@@ -287,19 +287,54 @@ text_12_2 = '''aaa:
     ddd:
       '''
 
+text_12c_o = '''
+# comments
+# comments
+aaa:
+  # comments
+  a: 1 # comments
+  # comments
+  b:2 # comments
+  # comments
+  bbb:
+    
+  # comments  
+  ccc:
+    # comments
+    c:1 # comments
+    # comments
+    ddd:
+      '''
+text_12c_0 = '''aaa{a:1 b:2 bbb{} ccc{c:1 ddd{}}}'''
+text_12c_1 = '''aaa {
+  a: 1
+  b: 2
+  bbb {}
+  ccc {
+    c: 1
+    ddd {}}}'''
+text_12c_2 = '''aaa:
+  a: 1
+  b: 2
+  bbb:
+    
+  ccc:
+    c: 1
+    ddd:
+      '''
+
 #################################
 
 text_13_o = '''
 aaa:
-  a: 1
+  a: 1 
   b:2 c:    12
-  bbb:
-    
+  bbb:    
   ccc:
     c:1     d:""
     ddd:
-      1
-      2
+      1 
+      2 
       a:1
 '''
 text_13_0 = '''aaa{a:1 b:2 c:12 bbb{} ccc{c:1 d:"" ddd{1 2 a:1}}}'''
@@ -316,6 +351,53 @@ text_13_1 = '''aaa {
       2
       a: 1}}}'''
 text_13_2 = '''aaa:
+  a: 1
+  b: 2
+  c: 12
+  bbb:
+    
+  ccc:
+    c: 1
+    d: ""
+    ddd:
+      1
+      2
+      a: 1'''
+
+text_13c_o = '''
+# comments
+aaa:
+  # comments
+  a: 1 # comments
+  # comments
+  b:2 c:    12
+  # comments
+  bbb:    
+  # comments
+  ccc:
+    # comments
+    c:1     d:""
+    # comments
+    ddd:
+      1 # comments
+      # comments
+      2 # comments
+      a:1
+'''
+text_13c_0 = '''aaa{a:1 b:2 c:12 bbb{} ccc{c:1 d:"" ddd{1 2 a:1}}}'''
+text_13c_1 = '''aaa {
+  a: 1
+  b: 2
+  c: 12
+  bbb {}
+  ccc {
+    c: 1
+    d: ""
+    ddd {
+      1
+      2
+      a: 1}}}'''
+text_13c_2 = '''aaa:
   a: 1
   b: 2
   c: 12
@@ -363,6 +445,43 @@ text_14_2 = '''aaa:
       s: 3
   d: 4'''
 
+text_14c_o = '''\
+aaa:
+  # comments
+  a: 1 # comments
+  b: 2 # comments
+  # comments
+  c: c:
+    # comments
+    e: 1
+    # comments
+    f: f:
+      # comments
+      r: 2 # comments
+      s: 3 # comments
+  # comments
+  d: 4
+'''
+text_14c_0 = '''aaa{a:1 b:2 c:c{e:1 f:f{r:2 s:3}} d:4}'''
+text_14c_1 = '''aaa {
+  a: 1
+  b: 2
+  c: c {
+    e: 1
+    f: f {
+      r: 2
+      s: 3}}
+  d: 4}'''
+text_14c_2 = '''aaa:
+  a: 1
+  b: 2
+  c: c:
+    e: 1
+    f: f:
+      r: 2
+      s: 3
+  d: 4'''
+
 #################################
 
 text_15_o = '''aaa:
@@ -381,6 +500,35 @@ text_15_1 = '''aaa {
   3
   4}'''
 text_15_2 = '''aaa:
+  1
+  2
+  bbb:
+    1
+    2
+    3
+  3
+  4'''
+
+text_15c_o = '''aaa:
+  # comments
+  1 2 # comments
+  # comments
+  # comments
+  bbb {1 2 3} # comments
+  # comments
+  3 4
+'''
+text_15c_0 = '''aaa{1 2 bbb{1 2 3} 3 4}'''
+text_15c_1 = '''aaa {
+  1
+  2
+  bbb {
+    1
+    2
+    3}
+  3
+  4}'''
+text_15c_2 = '''aaa:
   1
   2
   bbb:
