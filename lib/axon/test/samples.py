@@ -60,6 +60,16 @@ text_6_o = '''
 '''
 text_6_0 = text_6_1 = text_6_2 = '''[]'''
 
+text_6c_o = '''
+# comments...
+ [   
+# comments
+# ....
+     
+     ]
+'''
+text_6c_0 = text_6c_1 = text_6c_2 = '''[]'''
+
 #################################
 
 text_7_o = '''aaa{}'''
@@ -111,6 +121,25 @@ text_8a_1 = '''aaa {
   3
   4}'''
 text_8a_2 = '''aaa:
+  1
+  2
+  3
+  4'''
+
+text_8c_o = '''aaa:
+    # comments
+    # ....
+    1   2 # comment
+    # comment
+    3 4
+'''
+text_8c_0 = '''aaa{1 2 3 4}'''
+text_8c_1 = '''aaa {
+  1
+  2
+  3
+  4}'''
+text_8c_2 = '''aaa:
   1
   2
   3
@@ -178,6 +207,36 @@ text_10a_1 = '''aaa {
   5
   6}'''
 text_10a_2 = '''aaa:
+  a: 1
+  b: 2
+  c: 3
+  4
+  5
+  6'''
+
+text_10c_o = '''
+# comments
+# ...
+aaa:
+   # comment
+   a:1 # comment
+   # comment
+   b:2
+   # comment
+   # comment
+   c:3 # comment
+   # comment
+   4    5   6
+'''
+text_10c_0 = '''aaa{a:1 b:2 c:3 4 5 6}'''
+text_10c_1 = '''aaa {
+  a: 1
+  b: 2
+  c: 3
+  4
+  5
+  6}'''
+text_10c_2 = '''aaa:
   a: 1
   b: 2
   c: 3

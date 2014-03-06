@@ -1071,7 +1071,11 @@ class Loader:
 
         while 1:
             ch = self.skip_spaces()
-
+            
+            if ch == '#':
+                self.skip_comments()
+                self.skip_spaces()
+            
             if idn:
                 if self.eof or self.pos < idn or ch == '}' or ch == ']':
                     return 0
@@ -1138,6 +1142,10 @@ class Loader:
 
         while 1:
             ch = self.skip_spaces()
+
+            if ch == '#':
+                self.skip_comments()
+                self.skip_spaces()
 
             if idn:
                 if self.eof or self.pos < idn or ch == '}' or ch == ']':
