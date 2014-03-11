@@ -520,7 +520,7 @@ class Loader:
 
         text = get_token(self, pos0)
 
-        if ch == '$':
+        if ch == 'd' or ch == 'D' or ch == '$':
             skip_char(self)
             return self.sbuilder.create_decimal(text)
 
