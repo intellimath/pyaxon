@@ -303,7 +303,7 @@ class SimpleDumper:
         else:
             val = '0'
 
-        return val + '$'
+        return val + 'D'
 
     def dump_bytes(self, o):
         text = PyUnicode_FromEncodedObject(encodebytes(o), 'ascii', 'strict')
