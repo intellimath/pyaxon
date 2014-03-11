@@ -27,6 +27,7 @@ History
 **0.5.9**
 
 1. Some errors with processing of comment lines are fixed.
+2. It's possible now to use "d"/"D" suffix instead of "$" to indicate decimal values.
 
 **0.5.8**
 
