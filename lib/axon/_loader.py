@@ -778,7 +778,7 @@ class Loader:
                 errors.error_invalid_value_with_prefix(self, '-')
         elif ch == '∞':
             ch = next_char(self)
-            if ch == '$':
+            if ch == 'd' or ch == 'D' or ch == '$':
                 skip_char(self)
                 return self.sbuilder.create_decimal_ninf()
             else:
@@ -843,7 +843,7 @@ class Loader:
                 val = self.get_base64()
             elif ch == '∞': # \U221E
                 ch = next_char(self)
-                if ch == '$':
+                if ch == 'D' or ch == 'd' or ch == '$':
                     skip_char(self)
                     val = self.sbuilder.create_decimal_inf()
                 else:
@@ -853,7 +853,7 @@ class Loader:
                 if ch == '?':
                     skip_char(self)
                     val = c_undefined
-                elif ch == '$':
+                elif ch == 'D' or ch == 'd' or ch == '$':
                     skip_char(self)
                     val = self.sbuilder.create_decimal_nan()
                 else:

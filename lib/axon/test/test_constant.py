@@ -42,32 +42,32 @@ class ConstantTestCase(unittest.TestCase):
     def test_decimal_nan(self):
         v = loads('NaN$')[0]
         s = dumps([v])
-        self.assertEqual(s, '?$')
+        self.assertEqual(s, '?D')
     #
     def test_decimal_nan2(self):
-        v = loads('?$')[0]
+        v = loads('?D')[0]
         s = dumps([v])
-        self.assertEqual(s, '?$')
+        self.assertEqual(s, '?D')
     #
     def test_decimal_inf(self):
         v = loads('Infinity$')[0]
         s = dumps([v])
-        self.assertEqual(s, '∞$')
+        self.assertEqual(s, '∞D')
     #
     def test_decimal_inf1(self):
-        v = loads('∞$')[0]
+        v = loads('∞D')[0]
         s = dumps([v])
-        self.assertEqual(s, '∞$')
+        self.assertEqual(s, '∞D')
     #
     def test_decimal_ninf(self):
         v = loads('-Infinity$')[0]
         s = dumps([v])
-        self.assertEqual(s, '-∞$')
+        self.assertEqual(s, '-∞D')
     #
     def test_decimal_ninf1(self):
-        v = loads('-∞$')[0]
+        v = loads('-∞D')[0]
         s = dumps([v])
-        self.assertEqual(s, '-∞$')
+        self.assertEqual(s, '-∞D')
     #
 
 def suite():
