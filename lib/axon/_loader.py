@@ -123,8 +123,6 @@ class Loader:
         self.sbuilder = SimpleBuilder()
 
         self.c_constants = c_constants.copy()
-        #self.c_constants[c_as_name(c_as_unicode('NaN'))] = self.sbuilder.create_nan()
-        #self.c_constants[c_as_name(c_as_unicode('Infinity'))] = self.sbuilder.create_inf()
 
         if errto is None:
             self.errto = sys.stderr
@@ -215,6 +213,8 @@ class Loader:
 
         if line == '':
             self.eof = 1
+            self.pos = 0
+            self.col = 0
         else:
             ch = c_unicode_char(line, c_unicode_length(line) - 1)
             if ch != '\n':
@@ -224,6 +224,7 @@ class Loader:
 
             self.line = line
             self.pos = 0
+            self.col = 0
     #
     def skip_spaces(self):
         if self.eof:
@@ -238,8 +239,13 @@ class Loader:
                 if self.eof:
                     return 0
                 ch = current_char(self)
+            elif ch == '\t':
+                ch = next_char(self)
+                self.col += 8
             else:
                 ch = next_char(self)
+                self.col += 1
+            
         return ch
     #
     def moveto_next_token(self):
@@ -255,14 +261,22 @@ class Loader:
                 if self.eof:
                     errors.error_unexpected_end(self)
                 ch = current_char(self)
+            elif ch == '\t':
+                ch = next_char(self)
+                self.col += 8
             else:
                 ch = next_char(self)
+                self.col += 1
         return ch
     #
     def skip_whitespace(self):
         ch = current_char(self)
         while ch == ' ' or ch == '\t':
             ch = next_char(self)
+            if ch == '\t':
+                self.col += 8
+            else:
+                self.col += 1
     #
     #def valid_end_item(self):
     #    ch = current_char(self)
@@ -829,10 +843,10 @@ class Loader:
                     ch = self.skip_spaces()
 
                     if self.is_nl:
-                        if self.eof or self.pos <= idn:
+                        if self.eof or self.col <= idn:
                             val = self.builder.create_empty(name)
-                        elif self.pos > idn:
-                            val = self.get_complex_value(name, self.pos)
+                        elif self.col > idn:
+                            val = self.get_complex_value(name, self.col)
                         else:
                             errors.error_indentation(self, idn)
                     else:
@@ -907,11 +921,11 @@ class Loader:
                 self.skip_spaces()
 
                 if self.is_nl:
-                    if self.eof or self.pos <= idn:
+                    if self.eof or self.col <= idn:
                         sequence = [self.builder.create_empty(aname)]
                         val = self.get_sequence_mapping(name, sequence, idn)
                     elif self.pos > idn:
-                        sequence = [self.get_complex_value(aname, self.pos)]
+                        sequence = [self.get_complex_value(aname, self.col)]
                         val = self.get_sequence_mapping(name, sequence, idn)
                     else:
                         errors.error_indentation(self, idn)
@@ -1077,9 +1091,9 @@ class Loader:
                 self.skip_spaces()
             
             if idn:
-                if self.eof or self.pos < idn or ch == '}' or ch == ']':
+                if self.eof or self.col < idn or ch == '}' or ch == ']':
                     return 0
-                elif self.pos == idn:
+                elif self.col == idn:
                     pass
                 elif self.is_nl:
                     errors.error_indentation(self, idn)
@@ -1096,14 +1110,14 @@ class Loader:
                     self.skip_spaces()
 
                     if self.is_nl:
-                        if self.eof or self.pos <= idn:
+                        if self.eof or self.col <= idn:
                             if sequence is not None:
                                 val = self.builder.create_empty(name)
                                 sequence.append(val)
                             return 1
-                        elif self.pos > idn:
+                        elif self.col > idn:
                             if sequence is not None:
-                                val = self.get_complex_value(name, self.pos)
+                                val = self.get_complex_value(name, self.col)
                                 sequence.append(val)
                             return 1
                         else:
@@ -1148,9 +1162,9 @@ class Loader:
                 self.skip_spaces()
 
             if idn:
-                if self.eof or self.pos < idn or ch == '}' or ch == ']':
+                if self.eof or self.col < idn or ch == '}' or ch == ']':
                     return 0
-                if self.pos == idn:
+                if self.col == idn:
                     pass
                 elif self.is_nl: # self.pos > idn:
                     errors.error_indentation(self, idn)
@@ -1167,7 +1181,7 @@ class Loader:
                     self.skip_spaces()
 
                     if self.is_nl:
-                        if self.eof or self.pos <= idn:
+                        if self.eof or self.col <= idn:
                             val = self. builder.create_empty(name)
                             sequence.append(val)
                             continue

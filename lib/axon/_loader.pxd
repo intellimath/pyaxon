@@ -134,7 +134,7 @@ cdef class Loader:
 
     cdef public object line
     cdef bint eof
-    cdef public int pos
+    cdef public int pos, col
     cdef public int lnum
     cdef public object errto
     

@@ -101,6 +101,34 @@ aaa:
   2
   3''')
     #
+    def test_sequence_ident1(self):
+        v = loads('''
+aaa:
+\t1
+        2\t
+\t3
+''')[0]
+        self.assertEqual(v.name, 'aaa')
+        self.assertEqual(type(v), Sequence)
+        self.assertEqual(v.sequence, [1,2,3])
+        self.assertEqual(v.mapping, None)
+        s = dumps([v])
+        self.assertEqual(s, 'aaa{1 2 3}')
+    #
+    def test_sequence_ident2(self):
+        v = loads('''
+aaa:
+                1\t
+\t        2
+        \t3
+''')[0]
+        self.assertEqual(v.name, 'aaa')
+        self.assertEqual(type(v), Sequence)
+        self.assertEqual(v.sequence, [1,2,3])
+        self.assertEqual(v.mapping, None)
+        s = dumps([v])
+        self.assertEqual(s, 'aaa{1 2 3}')
+    #
 
 def suite():
     suite = unittest.TestSuite()

@@ -65,6 +65,40 @@ aaa:
             '\n  '.join("%s" % x for x in v.sequence)
             )
     #
+    def test_element_ident1(self):
+        v = loads('''
+aaa:
+\ta:1
+        b: 2
+        c : 3
+\t1
+        2\t
+\t3
+''')[0]
+        self.assertEqual(v.name, 'aaa')
+        self.assertEqual(type(v), Element)
+        self.assertEqual(v.sequence, [1,2,3])
+        self.assertEqual(v.mapping, {'a': 1, 'b': 2, 'c': 3})
+        s = dumps([v])
+        self.assertEqual(s, 'aaa{a:1 b:2 c:3 1 2 3}')
+    #
+    def test_element_ident2(self):
+        v = loads('''
+aaa:
+\t\ta:1
+        \tb: 2
+        \tc : 3
+                1\t
+\t        2
+        \t3
+''')[0]
+        self.assertEqual(v.name, 'aaa')
+        self.assertEqual(type(v), Element)
+        self.assertEqual(v.sequence, [1,2,3])
+        self.assertEqual(v.mapping, {'a': 1, 'b': 2, 'c': 3})
+        s = dumps([v])
+        self.assertEqual(s, 'aaa{a:1 b:2 c:3 1 2 3}')
+    #
 
 def suite():
     suite = unittest.TestSuite()

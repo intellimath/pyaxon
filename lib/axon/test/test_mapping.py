@@ -123,6 +123,34 @@ aaa:
         self.assertEqual(v.mapping, {'en.a':1, 'ru.a':2})
         self.assertEqual(v.name, 'example.aaa')
     #
+    def test_mapping_ident1(self):
+        v = loads('''
+aaa:
+\ta:1
+        b: 2
+        c : 3
+''')[0]
+        self.assertEqual(v.name, 'aaa')
+        self.assertEqual(type(v), Mapping)
+        self.assertEqual(v.sequence, None)
+        self.assertEqual(v.mapping, {'a': 1, 'b': 2, 'c': 3})
+        s = dumps([v])
+        self.assertEqual(s, 'aaa{a:1 b:2 c:3}')
+    #
+    def test_mapping_ident2(self):
+        v = loads('''
+aaa:
+\t\ta:1
+        \tb: 2
+        \tc : 3
+''')[0]
+        self.assertEqual(v.name, 'aaa')
+        self.assertEqual(type(v), Mapping)
+        self.assertEqual(v.sequence, None)
+        self.assertEqual(v.mapping, {'a': 1, 'b': 2, 'c': 3})
+        s = dumps([v])
+        self.assertEqual(s, 'aaa{a:1 b:2 c:3}')
+    #
 
 def suite():
     suite = unittest.TestSuite()
