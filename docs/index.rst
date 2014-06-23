@@ -134,7 +134,7 @@ Here is an example of ``AXON`` message:
         atomic_values:
             int: [0 -1 17]
             float: [3.1428 1.5e-17]
-            decimal: [10$ 1000.35$ -1.25e6$]
+            decimal: [10d 1000.35D -1.25e6d]
             bool: [true false]
             string: "abc абв 中文本"
             multiline_string: "one
@@ -178,7 +178,7 @@ Here is an example of ``AXON`` message:
         atomic_values {
             int: [0 -1 17]
             float: [3.1428 1.5e-17]
-            decimal: [10$ 1000.35$ -1.25e6$]
+            decimal: [10d 1000.35D -1.25e6d]
             bool: [true false]
             string: "abc абв 中文本"
             multiline_string: "one
@@ -228,7 +228,7 @@ Here is an example of ``AXON`` message:
     DsfCWkcW2Bdc0VNQCQVZCBhXxFGJBpSLGs3HGlcbSdgdH4ab34UBTwndTs2MXdSOxIGBgdYclFQYnlDH
     3NfUSI1LEcHDARDeFcDCBwiPTAZODU=
     bool:[true false] date:2012-12-31 datetime:[2012-12-31T12:30 2012-12-31T12:35+03]
-    decimal:[10$ 1000.35$ -1.25E+6$] float:[3.1428 1.5e-17] int:[0 -1 17] multiline_string:"one
+    decimal:[10d 1000.35D -1.25E+6d] float:[3.1428 1.5e-17] int:[0 -1 17] multiline_string:"one
     two
     three" string:"abc абв 中文本" time:[12:30:34 12:35:12.000120 12:35+03]}
     complex_values{anonymous{dict:{one:1 three:3 two:2} list:["one" "two" "three"]

@@ -1192,9 +1192,9 @@ class timezone(tzinfo):
 
     def __repr__(self):
         if self.name:
-            return "timezone(%s, %s)" % (self.offset, self.name)
+            return "timezone(%r, %s)" % (self.offset, self.name)
         else:
-            return "timezone(%s)" % (self.offset,)
+            return "timezone(%r)" % (self.offset,)
 
 # class Context(object):
 #     
