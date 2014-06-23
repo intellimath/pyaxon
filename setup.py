@@ -82,7 +82,7 @@ long_description = open('README.rst').read()
 
 setup(
     name = 'pyaxon',
-    version = '0.5.8',
+    version = '0.5.9',
     description = 'Python library for An eXtended Object Notation (AXON)',
     author = 'Zaur Shibzukhov',
     author_email = 'szport@gmail.com',
