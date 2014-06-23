@@ -29,6 +29,7 @@ History
 1. Some errors with processing of comment lines are fixed.
 2. It's possible now to use "d"/"D" suffix instead of "$" to indicate decimal values.
 3. Fix problem with mixing of tabs ('\t') with other spacing characters.
+4. Fix example of AXON in index.rst to use "d/D" suffix for decimal values.
 
 **0.5.8**
 
