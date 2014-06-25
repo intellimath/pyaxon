@@ -24,6 +24,10 @@ Features
 History
 -------
 
+**0.5.10**
+
+1. Make error messages in loader more useful.
+
 **0.5.9**
 
 1. Some errors with processing of comment lines are fixed.
