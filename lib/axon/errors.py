@@ -49,6 +49,9 @@ def error(self, msg):
 def error_unexpected_end(self):
     error(self, 'Unexpected end')
 #
+def error_unexpected_end_string(self):
+    error(self, 'Unexpected end of the string')
+#
 def error_getnumber(self):
     error(self, 'Invalid number')
 #

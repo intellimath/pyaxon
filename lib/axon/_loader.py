@@ -259,7 +259,7 @@ class Loader:
                 self.next_line()
                 self.is_nl = 1
                 if self.eof:
-                    errors.error_unexpected_end(self)
+                    errors.error(self, 'Unexpected end before start of next value')
                 ch = current_char(self)
             elif ch == '\t':
                 ch = next_char(self)
@@ -596,7 +596,7 @@ class Loader:
             ch = next_char(self)
 
         if self.pos == pos0:
-            errors.error_unexpected_value(self, 'after &')
+            errors.error_unexpected_value(self, ' after &')
 
         return get_token(self, pos0)
     #
@@ -648,7 +648,7 @@ class Loader:
 
                 self.next_line()
                 if self.eof:
-                    errors.error_unexpected_end(self)
+                    errors.error_unexpected_end_string(self)
 
                 #self.skip_whitespace()
 
@@ -675,7 +675,7 @@ class Loader:
 
                     self.next_line()
                     if self.eof:
-                        errors.error_unexpected_end(self)
+                        errors.error_unexpected_end_string(self)
                 elif ch == 'n':
                     text += "\n"
                     skip_char(self)
@@ -896,7 +896,7 @@ class Loader:
                     errors.error_unexpected_end(self)
                 val = self.get_value(idn)
             elif ch == '\0':
-                errors.error_unexpected_end(self)
+                errors.error(self, "Unexpected end after name ''" % name)
             else:
                 errors.error_unexpected_value(self, 'expected named complex value')
 
@@ -1003,7 +1003,7 @@ class Loader:
                 self.bs -= 1
                 return sequence
             elif ch == '\0':
-                errors.error_unexpected_end(self)
+                errors.error(self, "Unexpected end inside of the list")
 
             val = self.get_value(0)
             sequence.append(val)
@@ -1032,7 +1032,7 @@ class Loader:
                 self.bq -= 1
                 return tuple(sequence)
             elif ch == '\0':
-                errors.error_unexpected_end(self)
+                errors.error(self, "Unexpected end inside of the tuple")
 
             val = self.get_value(0)
             sequence.append(val)
@@ -1062,16 +1062,16 @@ class Loader:
                     val = self.get_value(0)
                     mapping[key] = val
                 else:
-                    errors.error_dict_value(self)
+                    errors.error(self, "Expected ':' after the key in the dict")
             else:
                 if ch == '}':
                     skip_char(self)
                     self.bc -= 1
                     return mapping
                 elif ch == '\0':
-                    errors.error_unexpected_end(self)
+                    errors.error(self, "Unexpected end inside of the dict")
                 else:
-                    errors.error_dict_value(self)
+                    errors.error(self, "Expected '}' or invalid part of the dict")
 
             ch = self.skip_spaces()
 
@@ -1098,7 +1098,7 @@ class Loader:
                 elif self.is_nl:
                     errors.error_indentation(self, idn)
             elif self.eof:
-                errors.error_unexpected_end(self)
+                errors.error(self, "Unexpected end inside of mapping part of the named structure")
 
             name = self.try_get_name()
 
@@ -1169,7 +1169,7 @@ class Loader:
                 elif self.is_nl: # self.pos > idn:
                     errors.error_indentation(self, idn)
             elif self.eof:
-                errors.error_unexpected_end(self)
+                errors.error(self, "Unexpected end inside of sequence part of the named structure")
 
             name = self.try_get_name()
 
