@@ -27,6 +27,7 @@ History
 **0.5.10**
 
 1. Make error messages in loader more useful.
+2. Refactoring of comment handling with addition of some tests.
 
 **0.5.9**
 
