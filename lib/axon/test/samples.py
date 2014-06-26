@@ -244,6 +244,36 @@ text_10c_2 = '''aaa:
   5
   6'''
 
+text_10cc_o = '''
+# comments
+# ...
+aaa {
+   # comment
+   a:1 # comment
+   # comment
+   b:2
+   # comment
+   # comment
+   c:3 # comment
+   # comment
+   4    5   6 }
+'''
+text_10cc_0 = '''aaa{a:1 b:2 c:3 4 5 6}'''
+text_10cc_1 = '''aaa {
+  a: 1
+  b: 2
+  c: 3
+  4
+  5
+  6}'''
+text_10cc_2 = '''aaa:
+  a: 1
+  b: 2
+  c: 3
+  4
+  5
+  6'''
+
 #################################
 
 text_11_o = '''aaa{bbb{} ccc{}}'''
@@ -314,6 +344,44 @@ text_12c_1 = '''aaa {
     c: 1
     ddd {}}}'''
 text_12c_2 = '''aaa:
+  a: 1
+  b: 2
+  bbb:
+    
+  ccc:
+    c: 1
+    ddd:
+      '''
+
+text_12cc_o = '''
+# comments
+# comments
+aaa {
+  # comments
+  a: 1 # comments
+  # comments
+  b:2 # comments
+  # comments
+  bbb {}
+    
+  # comments  
+  ccc {
+    # comments
+    c:1 # comments
+    # comments
+    ddd {}
+  }
+}
+      '''
+text_12cc_0 = '''aaa{a:1 b:2 bbb{} ccc{c:1 ddd{}}}'''
+text_12cc_1 = '''aaa {
+  a: 1
+  b: 2
+  bbb {}
+  ccc {
+    c: 1
+    ddd {}}}'''
+text_12cc_2 = '''aaa:
   a: 1
   b: 2
   bbb:

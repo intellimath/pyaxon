@@ -801,8 +801,11 @@ class Loader:
             errors.error_invalid_value_with_prefix(self, '-')
     #
     def get_value(self, idn):
-
         ch = current_char(self)
+        if ch == '#':
+            self.skip_comments()
+            ch = current_char(self)
+
         if (ch <= '9' and ch >= '0') or ch == '.':
             val = self.get_number()
             return val
@@ -890,11 +893,6 @@ class Loader:
 
                 val = self.get_value(pos0)
                 self.labeled_objects[label] = val
-            elif ch == '#':
-                self.skip_comments()
-                if self.eof:
-                    errors.error_unexpected_end(self)
-                val = self.get_value(idn)
             elif ch == '\0':
                 errors.error(self, "Unexpected end after name ''" % name)
             else:
@@ -996,7 +994,7 @@ class Loader:
         while 1:
             if ch == '#':
                 self.skip_comments()
-                ch = self.skip_spaces()
+                ch = current_char(self)
                 
             if ch == ']':
                 skip_char(self)
@@ -1025,7 +1023,7 @@ class Loader:
         while 1:
             if ch == '#':
                 self.skip_comments()
-                ch = self.skip_spaces()
+                ch = current_char(self)
         
             if ch == ')':
                 skip_char(self)
@@ -1048,7 +1046,6 @@ class Loader:
         
             if ch == '#':
                 self.skip_comments()
-                self.skip_spaces()
 
             key = self.try_get_key()
 
@@ -1088,7 +1085,6 @@ class Loader:
             
             if ch == '#':
                 self.skip_comments()
-                self.skip_spaces()
             
             if idn:
                 if self.eof or self.col < idn or ch == '}' or ch == ']':
@@ -1159,7 +1155,6 @@ class Loader:
 
             if ch == '#':
                 self.skip_comments()
-                self.skip_spaces()
 
             if idn:
                 if self.eof or self.col < idn or ch == '}' or ch == ']':
