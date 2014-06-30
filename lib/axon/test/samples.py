@@ -274,6 +274,38 @@ text_10cc_2 = '''aaa:
   5
   6'''
 
+text_10d_o = '''
+# comments
+# ...
+aaa {
+   # comment
+a:1 # comment
+  # comment
+  b:2
+   # comment
+ # comment
+        c:3 # comment
+                # comment
+   4    
+        5   
+            6 }
+'''
+text_10d_0 = '''aaa{a:1 b:2 c:3 4 5 6}'''
+text_10d_1 = '''aaa {
+  a: 1
+  b: 2
+  c: 3
+  4
+  5
+  6}'''
+text_10d_2 = '''aaa:
+  a: 1
+  b: 2
+  c: 3
+  4
+  5
+  6'''
+
 #################################
 
 text_11_o = '''aaa{bbb{} ccc{}}'''
