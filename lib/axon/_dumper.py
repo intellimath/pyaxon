@@ -4,7 +4,6 @@
 #cython: wraparound=False
 #cython: nonecheck=False
 #cython: language_level=3
-#cython: infer_types=True
 
 # The MIT License (MIT)
 #
@@ -29,9 +28,6 @@
 # THE SOFTWARE.
 
 import axon.types as types
-# from axon.types import unicode_type, str_type, int_type, long_type, decimal_type
-# from axon.types import bool_type, float_type, bytes_type, bytearray_type, none_type
-# from axon.types import date_type, time_type, datetime_type
 from axon.types import builtins
 
 unicode_type = types.unicode_type
@@ -106,24 +102,6 @@ def instance_reduce(o):
 #
 def empty_reduce(o):
     return o
-#
-
-# _set_name = 'set'
-# _tuple_name = 'tuple'
-# _list_name = 'list'
-# _dict_name = 'dict'
-#
-# def set_reduce(o):
-#     return _set_name, tuple(o)
-# #
-# def tuple_reduce(o):
-#     return _tuple_name, tuple(o)
-# #
-# def dict_reduce(o):
-#     return _dict_name, o
-# #
-# def list_reduce(o):
-#     return _list_name, o
 
 _c_type_reducers = {
     Mapping: mapping_reduce,
@@ -174,9 +152,6 @@ def c_new_pyptr(p):
     pyptr.ptr = p
     return pyptr
 
-# def _dump_undef(o):
-#     return '??'
-
 # cdef unicode _dump_Name(object o):
 #     return unicode(o)
 
@@ -194,36 +169,6 @@ def dump_default(v):
     return c_object_to_unicode(v)
 
 c_simple_dumpers = {}
-
-#    ###types.int_type: c_new_pyptr(_dump_int),
-#     types.long_type: c_new_pyptr(_dump_long),
-#     types.float_type: c_new_pyptr(_dump_float),
-#
-#     types.unicode_type: c_new_pyptr(_dump_unicode),
-#
-#     types.bytearray_type: c_new_pyptr(_dump_bytearray),
-#
-#     types.bool_type: c_new_pyptr(_dump_bool),
-#
-#     _decimal.Decimal: c_new_pyptr(_dump_decimal),
-#
-#     datetime.date: c_new_pyptr(_dump_date),
-#     datetime.time: c_new_pyptr(_dump_time),
-#     datetime.datetime: c_new_pyptr(_dump_datetime),
-#
-#     Undefined: c_new_pyptr(_dump_undef),
-#     type(None): c_new_pyptr(_dump_none),
-
-
-# if types.str_type != types.unicode_type:
-#     c_simple_dumpers[types.str_type] = c_new_pyptr(_dump_str)
-#
-# if types.bytes_type != types.str_type:
-#     c_simple_dumpers[types.bytes_type] = c_new_pyptr(_dump_bytes)
-#
-# if types.int_type != types.long_type:
-#     c_simple_dumpers[types.int_type] = c_new_pyptr(_dump_int)
-#
 
 class SimpleDumper:
 
@@ -1267,26 +1212,6 @@ class Dumper:
     #
     def _collect_empty(self, ob):
         pass
-    #
-    #def _collect_with_reducer(self, reducer, o):
-    #
-    #    results = reducer(o)
-    #    n = len(results)
-    #
-    #    if n == 1:
-    #        return 0
-    #
-    #    for i in range(1, n):
-    #        results_i = results[i]
-    #        tp = type(results_i)
-    #        if tp is list:
-    #            self._collect_list(results_i)
-    #        elif tp is dict:
-    #            self._collect_dict(results_i)
-    #        elif tp is tuple:
-    #            self._collect_tuple(results_i)
-    #        elif tp is set:
-    #            self._collect_set(results_i)
     #
     def collect(self, values):
         for v in values:

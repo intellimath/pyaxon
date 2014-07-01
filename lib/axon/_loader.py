@@ -4,7 +4,6 @@
 #cython: wraparound=False
 #cython: nonecheck=False
 #cython: language_level=3
-#cython: infer_types=True
 
 
 # The MIT License (MIT)
@@ -867,9 +866,6 @@ class Loader:
                     val = self.sbuilder.create_inf()
             elif ch == '?':
                 ch = next_char(self)
-                #if ch == '?':
-                #    skip_char(self)
-                #    val = c_undefined
                 if ch == 'D' or ch == 'd' or ch == '$':
                     skip_char(self)
                     val = self.sbuilder.create_decimal_nan()
