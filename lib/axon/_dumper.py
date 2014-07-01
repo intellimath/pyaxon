@@ -174,8 +174,8 @@ def c_new_pyptr(p):
     pyptr.ptr = p
     return pyptr
 
-def _dump_undef(o):
-    return '??'
+# def _dump_undef(o):
+#     return '??'
 
 # cdef unicode _dump_Name(object o):
 #     return unicode(o)
