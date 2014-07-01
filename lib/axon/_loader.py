@@ -867,10 +867,10 @@ class Loader:
                     val = self.sbuilder.create_inf()
             elif ch == '?':
                 ch = next_char(self)
-                if ch == '?':
-                    skip_char(self)
-                    val = c_undefined
-                elif ch == 'D' or ch == 'd' or ch == '$':
+                #if ch == '?':
+                #    skip_char(self)
+                #    val = c_undefined
+                if ch == 'D' or ch == 'd' or ch == '$':
                     skip_char(self)
                     val = self.sbuilder.create_decimal_nan()
                 else:
@@ -1087,7 +1087,7 @@ class Loader:
                 self.skip_comments()
             
             if idn:
-                if self.eof or self.col < idn or ch == '}' or ch == ']':
+                if self.eof or self.col < idn or ch == '}' or ch == ']' or ch == ')':
                     return 0
                 elif self.col == idn:
                     pass
@@ -1157,7 +1157,7 @@ class Loader:
                 self.skip_comments()
 
             if idn:
-                if self.eof or self.col < idn or ch == '}' or ch == ']':
+                if self.eof or self.col < idn or ch == '}' or ch == ']' or ch == ')':
                     return 0
                 if self.col == idn:
                     pass
