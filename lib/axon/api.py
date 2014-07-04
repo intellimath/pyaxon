@@ -28,14 +28,14 @@ from axon._objects import as_unicode, StringReader, StringWriter
 
 import io
 
-import sys
-_major_version = sys.version_info.major
-del sys
+#import sys
+#_major_version = sys.version_info.major
+#del sys
 
-try:
-    from io import StringIO
-except ImportError:
-    from cStringIO import StringIO
+#try:
+#    from io import StringIO
+#except ImportError:
+#    from cStringIO import StringIO
 
 class Reader(object):
     def __init__(self, fd, encoding):

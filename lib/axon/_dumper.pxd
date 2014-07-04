@@ -294,9 +294,10 @@ cdef public class Dumper[object Dumper, type DumperType]:
     cdef int sorted
 
     cdef bint crossref
-    cdef dict crossref_dict
-    cdef set crossref_set
-    cdef set crossref_set2
+    cdef public dict crossref_dict
+    cdef public set crossref_set
+    cdef public set crossref_set2
+    cdef bint collected
 
     cdef bint quote
     #

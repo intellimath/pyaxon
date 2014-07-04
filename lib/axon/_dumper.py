@@ -473,6 +473,7 @@ class Dumper:
         self.crossref_set = None
         self.crossref_set2 = None
         self.crossref_dict = None
+        self.collected = 0
 
         self.pretty = 0
         if pretty:
@@ -522,15 +523,13 @@ class Dumper:
     #
     def _dump_label(self, o):
         o_id = id(o)
-        if  o_id in self.crossref_set2:
+        if o_id in self.crossref_set2:
             self.write('*')
-#
             label = self.crossref_dict[o_id]
             self.write(label)
             return 1
-        elif  o_id in self.crossref_set:
+        elif o_id in self.crossref_set:
             self.write('&')
-#
             label = self.crossref_dict[o_id]
             self.write(label)
             self.write(' ')
@@ -542,13 +541,12 @@ class Dumper:
     #
     def _dump(self, o):
 
+        if self.crossref:
+            if self._dump_label(o) == 1:
+                return 0
+
         flag = self._dump_value(o)
         if not flag:
-            if self.crossref:
-                if self._dump_label(o) == 1:
-                    return 0
-
-            #self.write('\n')
             otype = type(o)
             if otype is list:
                 self.dump_list(o)
@@ -586,7 +584,7 @@ class Dumper:
                     elif obtype is Empty:
                         self.dump_empty(ob)
                     else:
-                        raise RuntimeError()
+                        raise RuntimeError('Reducer return wrong type: %r' % obtype)
     #
     def _pretty_dump(self, o, offset, use_offset):
         new_offset = offset + '  '
@@ -594,11 +592,12 @@ class Dumper:
         if use_offset:
             self.write(offset)
 
+        if self.crossref:
+            if self._dump_label(o) == 1:
+                return 0
+
         flag = self._dump_value(o)
         if not flag:
-            if self.crossref:
-                if self._dump_label(o) == 1:
-                    return 0
 
             otype = type(o)
             if otype is list:
@@ -639,7 +638,7 @@ class Dumper:
                     elif obtype is Empty:
                         self.pretty_dump_empty(ob, new_offset, use_offset)
                     else:
-                        raise RuntimeError()
+                        raise RuntimeError('Reducer return wrong type: %r' % obtype)
     #
     def _dump_value(self, o):
         otype = type(o)
@@ -1098,7 +1097,6 @@ class Dumper:
         '''
 
         if self.crossref:
-            self.crossref_dict = {}
             self.collect(seq)
             self.apply_crossref()
 
@@ -1141,7 +1139,8 @@ class Dumper:
     #
     def _collect(self, o):
 
-        if type(o) in simple_types:
+        otype = type(o)
+        if otype in simple_types:
             return 0
 
         ref_o = id(o)
@@ -1154,7 +1153,6 @@ class Dumper:
             self.crossref_dict[ref_o] = count
             return 0
 
-        otype = type(o)
         if otype is list:
             self._collect_list(o)
         elif otype is dict:
@@ -1172,13 +1170,26 @@ class Dumper:
         elif otype is Instance:
             self._collect_instance(o)
         elif otype is Empty:
-            self._collect_instance(o)
-        #else:
-        #    reducer = self.c_type_reducers.get(otype, None)
-        #    if reducer is None:
-        #        raise TypeError('There is no reducer for this type: ' + repr(otype))
-        #    else:
-        #        self._collect_with_reducer(reducer, o)
+            pass
+        else:
+            reducer = self.c_type_reducers.get(otype, None)
+            if reducer is None:
+                raise TypeError('There is no reducer for this type: ' + repr(otype))
+            else:
+                ro = reducer(o)
+                rotype = type(ro)
+                if rotype is Element:
+                    self._collect_element(ro)
+                elif rotype is Mapping:
+                    self._collect_mapping(ro)
+                elif rotype is Sequence:
+                    self._collect_sequence(ro)
+                elif rotype is Instance:
+                    self._collect_instance(ro)
+                elif rotype is Empty:
+                    pass
+                else:
+                    raise RuntimeError('Reducer return wrong type: %r' % rotype)
     #
     def _collect_list(self, lst):
         for v in lst:
@@ -1201,8 +1212,8 @@ class Dumper:
         self._collect_list(ob.sequence)
     #
     def _collect_instance(self, ob):
-        self._collect_dict(ob.mapping)
         self._collect_tuple(ob.sequence)
+        self._collect_dict(ob.mapping)
     #
     def _collect_mapping(self, ob):
         self._collect_dict(ob.mapping)
@@ -1214,6 +1225,7 @@ class Dumper:
         pass
     #
     def collect(self, values):
+        self.crossref_dict = {}
         for v in values:
             self._collect(v)
 
