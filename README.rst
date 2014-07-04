@@ -28,6 +28,7 @@ History
 
 1. Make error messages in loader more useful.
 2. Refactoring of comment handling with addition of some tests.
+3. Fix crossreference issue with unsafe mode of loading/dumping.
 
 **0.5.9**
 
