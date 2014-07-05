@@ -873,35 +873,35 @@ class StrictBuilder(Builder):
     def create_mapping(self, name, mapping):
         handler = c_factory_dict.get(name)
         if handler is None:
-            return c_undefined
+            errors.error_no_handler(name)
         else:
             return handler(mapping)
     #
     def create_sequence(self, name, sequence):
         handler = c_factory_dict.get(name)
         if handler is None:
-            return c_undefined
+            errors.error_no_handler(name)
         else:
             return handler(sequence)
     #
     def create_element(self, name, mapping, sequence):
         handler = c_factory_dict.get(name)
         if handler is None:
-            return c_undefined
+            errors.error_no_handler(name)
         else:
             return handler(mapping, sequence)
     #
     def create_instance(self, name, sequence, mapping):
         handler = c_factory_dict.get(name)
         if handler is None:
-            return c_undefined
+            errors.error_no_handler(name)
         else:
             return handler(sequence, mapping)
     #
     def create_empty(self, name):
         handler = c_factory_dict.get(name)
         if handler is None:
-            return c_undefined
+            errors.error_no_handler(name)
         else:
             return handler()
 
