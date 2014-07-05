@@ -110,7 +110,7 @@ _c_type_reducers = {
     Sequence: sequence_reduce,
     Instance: instance_reduce,
     Empty: empty_reduce,
-    #Collection: collection_reduce,
+
     #set: set_reduce,
     #tuple: tuple_reduce,
     #list: list_reduce,
@@ -506,7 +506,6 @@ class Dumper:
         o_id = id(o)
         if o_id in self.crossref_set:
             self.write(' &')
-
             label = self.crossref_dict[o_id]
             self.write(label)
             self.write(' ')
@@ -516,7 +515,6 @@ class Dumper:
         o_id = id(o)
         if o_id in self.crossref_set:
             self.write('&')
-
             label = self.crossref_dict[o_id]
             self.write(label)
             self.write(' ')
@@ -621,13 +619,13 @@ class Dumper:
                 self.pretty_dump_empty(o, new_offset, use_offset)
             else:
                 reducer = self.c_type_reducers.get(otype, None)
-                #print(repr(o))
+
                 if reducer is None:
                     errors.error_no_reducer(otype)
                 else:
                     ob = reducer(o)
                     obtype = type(ob)
-                    #print(obtype)
+
                     if obtype is Mapping:
                         self.pretty_dump_mapping(ob, new_offset, use_offset)
                     elif obtype is Sequence:
@@ -987,8 +985,6 @@ class Dumper:
         elif self.pretty == 2:
             self.write(' {')
 
-        #self.write('\n')
-        #self.write(w1)
 
         self._pretty_dump_attr_sequence(o.mapping, w, 1)
 
@@ -1002,11 +998,6 @@ class Dumper:
             self.write(':')
         elif self.pretty == 2:
             self.write(' {')
-
-        #w1 = w + '  '
-
-        #self.write('\n')
-        #self.write(w1)
 
         self._pretty_dump_attr_sequence(o.mapping, w, 1)
         if o.sequence:
@@ -1024,11 +1015,6 @@ class Dumper:
         elif self.pretty == 2:
             self.write(' {')
 
-        #w1 = w + '  '
-
-        #self.write('\n')
-        #self.write(w1)
-
         if self.pretty == 2 and len(o.sequence) == 1:
             self._pretty_dump_list_sequence(o.sequence, w, 0)
         else:
@@ -1045,14 +1031,8 @@ class Dumper:
         elif self.pretty == 2:
             self.write(' {')
 
-        #w1 = w + '  '
-
-        #self.write('\n')
-        #self.write(w1)
-
         self._pretty_dump_tuple_sequence(o.sequence, w, 1)
         if o.mapping:
-            #self.write(' ')
             self._pretty_dump_attr_sequence(o.mapping, w, 1)
 
         if self.pretty == 2:
