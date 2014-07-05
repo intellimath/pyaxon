@@ -28,15 +28,6 @@ from axon._objects import as_unicode, StringReader, StringWriter
 
 import io
 
-#import sys
-#_major_version = sys.version_info.major
-#del sys
-
-#try:
-#    from io import StringIO
-#except ImportError:
-#    from cStringIO import StringIO
-
 class Reader(object):
     def __init__(self, fd, encoding):
         self.fd = fd
@@ -106,13 +97,6 @@ def dumps(val, pretty=0, braces=0, sorted=1, hsize=1, crossref=0):
     :returns:
         unicode string of AXON representation of `val`.
     '''
-    #try:
-    #    from io import StringIO
-    #except ImportError:
-    #    from cStringIO import StringIO
-
-    fd = StringWriter()
-
     dumper = Dumper(fd, pretty, braces, sorted, hsize, crossref)
     dumper.dump(val)
     v = fd.getvalue()
@@ -178,7 +162,6 @@ def iloads(text, mode="safe", errto=None, json=0):
         iterator object.
     '''
     text = as_unicode(text)
-    #fd = StringIO(text)
     fd = StringReader(text)
 
     return iload(fd, mode, errto, json=json)
