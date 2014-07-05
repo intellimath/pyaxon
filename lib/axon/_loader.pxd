@@ -144,10 +144,6 @@ cdef class Loader:
     cdef int bs
     cdef int bq
     
-    #cdef list idn_stack
-    #cdef int idn
-    #cdef int idn_i
-
     cdef bint json
 
     cdef public Builder builder

@@ -134,8 +134,6 @@ class Loader:
 
         self.is_nl = 0
 
-        #self.idn_stack = []
-
         self.lnum = 0
         
         self.global_context = {}
@@ -1157,7 +1155,7 @@ class Loader:
                     return 0
                 if self.col == idn:
                     pass
-                elif self.is_nl: # self.pos > idn:
+                elif self.is_nl: # self.col > idn:
                     errors.error_indentation(self, idn)
             elif self.eof:
                 errors.error(self, "Unexpected end inside of sequence part of the named structure")
