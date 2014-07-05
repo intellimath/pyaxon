@@ -177,6 +177,7 @@ cdef class PyPointer:
 @cython.locals(pyptr=PyPointer)
 cdef PyPointer c_new_pyptr(unicode (*p)(object))
 
+@cython.final
 cdef class SimpleDumper:
 
     cdef inline unicode dump_int(SimpleDumper, object)
@@ -217,44 +218,6 @@ cdef public class SimpleDumpers[type SimpleDumpersType, object SimpleDumpers]:
 
     @cython.locals(sd=SimpleDumpers)
     cdef void update(self, object o)
-
-# @cython.locals(line=unicode, pos0=int, pos=int, text=unicode, n=int)
-# cdef unicode _dump_unicode(object ob)
-# 
-# cdef unicode _dump_str(object line)
-# 
-# cdef unicode _dump_bool(object o)
-# 
-# cdef unicode _dump_date(object o)
-# 
-# ###@cython.locals(sign=cython.bint)
-# cdef object _dump_tzinfo(object o)
-# 
-# @cython.locals(t=object)
-# cdef unicode _dump_time(object o)
-# 
-# @cython.locals(dt=object, sign=cython.bint)
-# cdef unicode _dump_datetime(object o)
-# 
-# cdef unicode _dump_none(object o)
-# 
-# cdef unicode _dump_int(object o)
-# 
-# @cython.locals(text=unicode)
-# cdef unicode _dump_bytes(object o)
-# 
-# @cython.locals(text=unicode)
-# cdef unicode _dump_bytearray(object o)
-# 
-# cdef unicode _dump_long(object o)
-# 
-# @cython.locals(d=double)
-# cdef unicode _dump_float(object o)
-# 
-# @cython.locals(val=unicode)
-# cdef unicode _dump_decimal(object d)
-# 
-# cdef unicode _dump_undef(object d)
 
 cdef unicode dump_default(object v)
 
@@ -385,18 +348,6 @@ cdef public class Dumper[object Dumper, type DumperType]:
     #
     @cython.locals(w1=unicode)
     cdef inline int pretty_dump_empty(Dumper self, Empty ob, unicode w, bint use_offset) except -1
-    #
-    #cdef int dump_collection(Dumper self, unicode name, list collection) except -1
-    #
-    #cdef int dump_content(Dumper self, tuple items) except -1
-    #
-    #@cython.locals(name=unicode, i=cython.uint, j=cython.uint,
-    #               n=cython.uint, flag=cython.uint)
-    #cdef int _dump_with_reducer(Dumper self, reducer, o) except -1
-    #
-    #@cython.locals(i=int, n=int, atext=list, vtext=list, name=unicode,
-    #               offset1=unicode, use_offset=bint)
-    #cdef int _pretty_dump_with_reducer(Dumper self, reducer, o, unicode offset) except -1
     #
     @cython.locals(count=PyInt, crossref_set=set, crossref_dict=dict, i=int)
     cdef void apply_crossref(Dumper self)
