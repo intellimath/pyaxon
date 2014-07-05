@@ -35,12 +35,6 @@ cdef extern from "math.h":
 cdef extern from "floatobject.h":
     double PyFloat_AS_DOUBLE(object)
 
-#cdef extern from "utils.h":
-#    inline int c_unicode_length(object text)
-#    inline unicode c_unicode_substr(object text, int start, int end)
-#    inline Py_UCS4 c_unicode_char(object text, int index)
-#    inline unicode c_object_to_unicode(object o)
-
 cdef extern from "utils.h":
     inline Py_UCS4 c_unicode_char(object text, int pos)
     inline unicode c_unicode_substr(object text, int start, int end)
@@ -146,25 +140,9 @@ cpdef element_reduce(Element o)
 #
 cpdef sequence_reduce(Sequence o)
 #
-#cpdef collection_reduce(Collection o)
-#
 cpdef instance_reduce(Instance o)
 #
 cpdef empty_reduce(Empty o)
-#
-
-# cdef unicode _set_name
-# cdef unicode _tuple_name
-# cdef unicode _list_name
-# cdef unicode _dict_name
-# 
-# cpdef set_reduce(o)
-# #
-# cpdef tuple_reduce(o)
-# #
-# cpdef dict_reduce(o)
-# #
-# cpdef list_reduce(o)
 
 cdef dict _c_type_reducers
 
@@ -372,9 +350,6 @@ cdef public class Dumper[object Dumper, type DumperType]:
     cdef int _collect_instance(Dumper self, Instance d) except -1
     #
     cdef int _collect_empty(Dumper self, Empty d) except -1
-    #
-    #@cython.locals(n=int)
-    #cdef int _collect_with_reducer(Dumper self, reducer, o) except -1
     #
     cdef int collect(Dumper self, values) except -1
 
