@@ -108,3 +108,10 @@ def error_expected_complex_value(self):
 #
 def error_expected_label(self):
     error(self, "Expected label of the value")
+#
+def error_no_reducer(self, tp):
+    error(self, 'There is no reducer for this type: %r' % tp)
+#
+def error_reducer_wrong_return(self, tp):
+    error(self, 'Reducer return wrong type: %r' % tp)
+

@@ -29,6 +29,7 @@
 
 import axon.types as types
 from axon.types import builtins
+import axon.errors as errors
 
 unicode_type = types.unicode_type
 str_type = types.str_type
@@ -569,7 +570,7 @@ class Dumper:
             else:
                 reducer = self.c_type_reducers.get(otype, None)
                 if reducer is None:
-                    raise TypeError('There is no reducer for this type: ' + repr(otype))
+                    errors.error_no_reducer(otype)
                 else:
                     ob = reducer(o)
                     obtype = type(ob)
@@ -584,7 +585,7 @@ class Dumper:
                     elif obtype is Empty:
                         self.dump_empty(ob)
                     else:
-                        raise RuntimeError('Reducer return wrong type: %r' % obtype)
+                        errors.error_reducer_wrong_type(obtype)
     #
     def _pretty_dump(self, o, offset, use_offset):
         new_offset = offset + '  '
@@ -622,7 +623,7 @@ class Dumper:
                 reducer = self.c_type_reducers.get(otype, None)
                 #print(repr(o))
                 if reducer is None:
-                    raise TypeError('There is no reducer for this type: %r %r' % (otype, o))
+                    errors.error_no_reducer(otype)
                 else:
                     ob = reducer(o)
                     obtype = type(ob)
@@ -638,7 +639,7 @@ class Dumper:
                     elif obtype is Empty:
                         self.pretty_dump_empty(ob, new_offset, use_offset)
                     else:
-                        raise RuntimeError('Reducer return wrong type: %r' % obtype)
+                        errors.error_reducer_wrong_type(obtype)
     #
     def _dump_value(self, o):
         otype = type(o)
@@ -1174,7 +1175,7 @@ class Dumper:
         else:
             reducer = self.c_type_reducers.get(otype, None)
             if reducer is None:
-                raise TypeError('There is no reducer for this type: ' + repr(otype))
+                errors.error_no_reducer(otype)
             else:
                 ro = reducer(o)
                 rotype = type(ro)
@@ -1189,7 +1190,7 @@ class Dumper:
                 elif rotype is Empty:
                     pass
                 else:
-                    raise RuntimeError('Reducer return wrong type: %r' % rotype)
+                    errors.error_reducer_wrong_type(rotype)
     #
     def _collect_list(self, lst):
         for v in lst:
