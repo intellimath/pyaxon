@@ -325,6 +325,8 @@ cdef class SafeBuilder(Builder):
     cdef public object create_empty(self, object)
 
 cdef class StrictBuilder(Builder):
+    cdef public dict c_factory_dict
+
     cdef public object create_mapping(self, object, dict)
     cdef public object create_element(self, object, dict, list)
     cdef public object create_sequence(self, object, list)
@@ -332,7 +334,8 @@ cdef class StrictBuilder(Builder):
     cdef public object create_empty(self, object)
 
 cdef class MixedBuilder(Builder):
-    cdef SafeBuilder builder
+    cdef public dict c_factory_dict
+    
     cdef public object create_mapping(self, object, dict)
     cdef public object create_element(self, object, dict, list)
     cdef public object create_sequence(self, object, list)

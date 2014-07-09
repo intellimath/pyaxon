@@ -867,39 +867,39 @@ class SafeBuilder(Builder):
 
 class StrictBuilder(Builder):
 
-    #def __init__(self):
-    #    self.builder = SafeBuilder()
+    def __init__(self):
+        self.c_factory_dict = c_factory_dict
 
     def create_mapping(self, name, mapping):
-        handler = c_factory_dict.get(name)
+        handler = self.c_factory_dict.get(name)
         if handler is None:
             errors.error_no_handler(name)
         else:
             return handler(mapping)
     #
     def create_sequence(self, name, sequence):
-        handler = c_factory_dict.get(name)
+        handler = self.c_factory_dict.get(name)
         if handler is None:
             errors.error_no_handler(name)
         else:
             return handler(sequence)
     #
     def create_element(self, name, mapping, sequence):
-        handler = c_factory_dict.get(name)
+        handler = self.c_factory_dict.get(name)
         if handler is None:
             errors.error_no_handler(name)
         else:
             return handler(mapping, sequence)
     #
     def create_instance(self, name, sequence, mapping):
-        handler = c_factory_dict.get(name)
+        handler = self.c_factory_dict.get(name)
         if handler is None:
             errors.error_no_handler(name)
         else:
             return handler(sequence, mapping)
     #
     def create_empty(self, name):
-        handler = c_factory_dict.get(name)
+        handler = self.c_factory_dict.get(name)
         if handler is None:
             errors.error_no_handler(name)
         else:
@@ -908,38 +908,38 @@ class StrictBuilder(Builder):
 class MixedBuilder(Builder):
 
     def __init__(self):
-        self.builder = SafeBuilder()
+        self.c_factory_dict = c_factory_dict
 
     def create_mapping(self, name, mapping):
-        handler = c_factory_dict.get(name)
+        handler = self.c_factory_dict.get(name)
         if handler is None:
             return c_new_mapping(name, mapping)
         else:
             return handler(mapping)
     #
     def create_sequence(self, name, sequence):
-        handler = c_factory_dict.get(name)
+        handler = self.c_factory_dict.get(name)
         if handler is None:
             return c_new_sequence(name, sequence)
         else:
             return handler(sequence)
     #
     def create_element(self, name, mapping, sequence):
-        handler = c_factory_dict.get(name)
+        handler = self.c_factory_dict.get(name)
         if handler is None:
             return c_new_element(name, mapping, sequence)
         else:
             return handler(mapping, sequence)
     #
     def create_instance(self, name, sequence, mapping):
-        handler = c_factory_dict.get(name)
+        handler = self.c_factory_dict.get(name)
         if handler is None:
             return c_new_instance(name, sequence, mapping)
         else:
             return handler(sequence, mapping)
     #
     def create_empty(self, name):
-        handler = c_factory_dict.get(name)
+        handler = self.c_factory_dict.get(name)
         if handler is None:
             return c_new_empty(name)
         else:

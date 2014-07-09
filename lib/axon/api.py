@@ -97,6 +97,8 @@ def dumps(val, pretty=0, braces=0, sorted=1, hsize=1, crossref=0):
     :returns:
         unicode string of AXON representation of `val`.
     '''
+    fd = StringWriter()
+
     dumper = Dumper(fd, pretty, braces, sorted, hsize, crossref)
     dumper.dump(val)
     v = fd.getvalue()

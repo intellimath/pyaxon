@@ -115,5 +115,6 @@ def error_no_reducer(self, tp):
 def error_reducer_wrong_return(self, tp):
     error(self, 'Reducer return wrong type: %r' % tp)
 #
+
 def error_no_handler(name):
-    error(self, 'Handler for name <%s> is not registered' % name)
+    sys.stderr.write('Handler for name <%s> is not registered' % name)
