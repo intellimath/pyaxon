@@ -123,16 +123,16 @@ cdef inline unicode c_as_name(object name):
         uname = n
     return uname
 
-cdef inline object py_as_name(object name):
-    n = name_cache.get(name, None)
-    if n is None:
-        uname = c_as_unicode(name)
-        name_cache[name] = uname
-    elif name is None:
-        uname = empty_name
-    else:
-        uname = n
-    return uname
+# cdef inline object py_as_name(object name):
+#     n = name_cache.get(name, None)
+#     if n is None:
+#         uname = c_as_unicode(name)
+#         name_cache[name] = uname
+#     elif name is None:
+#         uname = empty_name
+#     else:
+#         uname = n
+#     return uname
 
 # ----------------------------------------
 # Datatypes

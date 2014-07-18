@@ -456,9 +456,6 @@ _simple_types = {
     types.float_type, types.decimal_type, types.bool_type,
     types.date_type, types.time_type, types.datetime_type}
 
-def is_simple_type(self, o):
-    return type(o) in _simple_types or (self.crossref and id(o) in self.crossref_set2)
-
 
 class Dumper:
     '''
@@ -495,6 +492,10 @@ class Dumper:
             self.sfd = self.fd
 
         self.sdumper = SimpleDumper()
+    #
+    def is_simple_type(self, o):
+        return type(o) in _simple_types or \
+               (self.crossref and id(o) in self.crossref_set2)
     #
     def write(self, sval):
         if self.sfd is None:
@@ -539,10 +540,6 @@ class Dumper:
             return -1
     #
     def _dump(self, o):
-
-        if self.crossref:
-            if self._dump_label(o) == 1:
-                return 0
 
         flag = self._dump_value(o)
         if not flag:
@@ -591,10 +588,6 @@ class Dumper:
         if use_offset:
             self.write(offset)
 
-        if self.crossref:
-            if self._dump_label(o) == 1:
-                return 0
-
         flag = self._dump_value(o)
         if not flag:
 
@@ -640,8 +633,12 @@ class Dumper:
                         errors.error_reducer_wrong_type(obtype)
     #
     def _dump_value(self, o):
+    
+        if self.crossref:
+            if self._dump_label(o) == 1:
+                return 1
+    
         otype = type(o)
-        #print(otype)
         dumper = self.sdumper
         if otype is unicode_type:
             self.write('"')
@@ -837,7 +834,7 @@ class Dumper:
 
         j = 1
         for k,v in items:
-            flag = type(v) not in simple_types
+            flag = not self.is_simple_type(v)
             if not use_offset and flag:
                 use_offset = 1
                 j = 1
@@ -876,7 +873,7 @@ class Dumper:
 
         j = 1
         for k,v in items:
-            flag = type(v) not in simple_types
+            flag = not self.is_simple_type(v)
             if not use_offset and flag:
                 use_offset = 1
                 j = 1
@@ -885,9 +882,9 @@ class Dumper:
                 self.write('\n')
                 self.write(w)
             else:
-                use_offset = 0
+                #use_offset = 0
                 self.write(' ')
-                use_offset = 1
+                #use_offset = 1
 
             text = c_as_unicode(k)
             self.write(_dump_name(text))
@@ -908,14 +905,9 @@ class Dumper:
                 j = 1
     #
     def _pretty_dump_list_sequence(self, l, w, use_offset):
-        #if  self.pretty == 2 and len(l) == 1 and not use_offset:
-        #    v = l[0]
-        #    if type(v) in simple_types:
-        #        self._dump_value(v)
-        #        return 0
         j = 1
         for v in l:
-            flag = type(v) not in simple_types
+            flag = not self.is_simple_type(v)
             if not use_offset and flag:
                 use_offset = 1
                 j = 1
@@ -942,15 +934,9 @@ class Dumper:
                 j = 1
     #
     def _pretty_dump_tuple_sequence(self, l, w, use_offset):
-        if self.pretty == 2 and len(l) == 1:
-            v = l[0]
-            if type(v) in simple_types:
-                self._dump_value(v)
-                return 0
-
         j = 1
         for v in l:
-            flag = type(v) not in simple_types
+            flag = not self.is_simple_type(v)
             if not use_offset and flag:
                 use_offset = 1
                 j = 1

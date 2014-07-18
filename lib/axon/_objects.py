@@ -114,7 +114,13 @@ def _error_empty_sequence(self):
 
 def _error_invalid_name(name):
     return KeyError('Invalid name: %r' % type(name))
-
+    
+def _error_unsupported_comparison(self):
+    return TypeError('This type of comparison is not supported by %r' % type(self))
+    
+def _error_incomparable_types(self, other):
+    return TypeError('Types %r and %r are not comparable' % (type(self), type(other)))
+                 
 #####################################################
 # name cache
 #####################################################
@@ -341,20 +347,21 @@ class Empty(object):
     def a(self):
         return new_attrs(c_empty_dict)
     #
-    def __init__(self, name, sequences=None):
+    def __init__(self, name):
         self.name = c_as_name(name)
     #
-#     def __richcmp__(self, other, op):
-#         v = self.name == other.name and  \
-#             len(other.mapping) == 0 and \
-#             len(other.sequence) == 0
-#         if op == 2:
-#             return v
-#         elif op == 3:
-#             return not v
-#         else:
-#             raise TypeError('This type of comparison is not supported')
-#     #
+    def __richcmp__(self, other, op):
+        if type(self) is Empty:
+            v = self.name == other.name
+            if op == 2:
+                return v
+            elif op == 3:
+                return not v
+            else:
+                raise _error_unsupported_comparison(self)
+        else:
+            raise _error_incomparable_types(self, other)
+    #
     def __repr__(self):
         return 'empty(' + repr(self.name) + ')'
     #
@@ -411,19 +418,17 @@ class Sequence(object):
     def __setitem__(self, index, val):
         self.sequence[index] = val
     #
-#     def __richcmp__(self, other, op):
-#         if type(self) is Sequence:
-#             v = (self.name == other.name) and (self.sequence == other.sequence)
-#             if op == 2:
-#                 return v
-#             elif op == 3:
-#                 return not v
-#             else:
-#                 raise TypeError(
-#                     'This type of comparison is not supported')
-#         else:
-#             raise TypeError(
-#                 'Types %r and %r are not comparable at all' % (type(self), type(other)))
+    def __richcmp__(self, other, op):
+        if type(self) is Sequence:
+            v = (self.name == other.name) and (self.sequence == other.sequence)
+            if op == 2:
+                return v
+            elif op == 3:
+                return not v
+            else:
+                raise _error_unsupported_comparison(self)
+        else:
+            raise _error_incomparable_types(self, other)
     #
     def __repr__(self):
         return 'sequence(' + \
@@ -486,20 +491,18 @@ class Mapping(object):
     def __contains__(self, name):
         return name in self.mapping
     #
-#     def __richcmp__(self, other, op):
-#         if type(self) is Mapping:
-#             v = (self.name == other.name) and (self.mapping == other.mapping)
-#             if op == 2:
-#                 return v
-#             elif op == 3:
-#                 return not v
-#             else:
-#                 raise TypeError(
-#                     'This type of comparison is not supported')
-#         else:
-#             raise TypeError(
-#                 'Types %r and %r are not comparable at all' % (type(self), type(other)))
-#     #
+    def __richcmp__(self, other, op):
+        if type(self) is Mapping:
+            v = (self.name == other.name) and (self.mapping == other.mapping)
+            if op == 2:
+                return v
+            elif op == 3:
+                return not v
+            else:
+                raise _error_unsupported_comparison(self)
+        else:
+            raise _error_incomparable_types(self, other)
+    #
     def __repr__(self):
         return  'mapping(' + \
                 ', '.join([repr(x) for x in (self.name, self.mapping) if x]) + ')'
@@ -575,21 +578,19 @@ class Element(object):
         return  'element(' + \
                 ', '.join([repr(x) for x in (self.name, self.mapping, self.sequence) if x]) + ')'
     #
-#     def __richcmp__(self, other, op):
-#         if type(self) is Element:
-#             v = (self.name == other.name) and \
-#                 (self.sequence == other.sequence) and \
-#                 (self.mapping == other.mapping)
-#             if op == 2:
-#                 return v
-#             elif op == 3:
-#                 return not v
-#             else:
-#                 raise TypeError(
-#                     'This type of comparison is not supported')
-#         else:
-#             raise TypeError(
-#                 'Types %r and %r are not comparable at all' % (type(self), type(other)))
+    def __richcmp__(self, other, op):
+        if type(self) is Element:
+            v = (self.name == other.name) and \
+                (self.sequence == other.sequence) and \
+                (self.mapping == other.mapping)
+            if op == 2:
+                return v
+            elif op == 3:
+                return not v
+            else:
+                raise _error_unsupported_comparison(self)
+        else:
+            raise _error_incomparable_types(self, other)
     #
     def as_mapping(self):
         raise error("Element->Mapping convertion isn't available")
@@ -658,23 +659,19 @@ class Instance(object):
         return  'instance(' + \
                 ', '.join([repr(x) for x in (self.name, self.sequence, self.mapping) if x]) + ')'
     #
-#     def __richcmp__(self, other, op):
-#         if type(self) is Instance:
-#             s0 = self
-#             s = other
-#             v = (self.name == other.name) and \
-#                 (self.sequence == other.sequence) and \
-#                 (self.mapping == other.mapping)
-#             if op == 2:
-#                 return v
-#             elif op == 3:
-#                 return not v
-#             else:
-#                 raise TypeError(
-#                     'This type of comparison is not supported')
-#         else:
-#             raise TypeError(
-#                 'Types %r and %r are not comparable at all' % (type(self), type(other)))
+    def __richcmp__(self, other, op):
+        if type(self) is Instance:
+            v = (self.name == other.name) and \
+                (self.sequence == other.sequence) and \
+                (self.mapping == other.mapping)
+            if op == 2:
+                return v
+            elif op == 3:
+                return not v
+            else:
+                raise _error_unsupported_comparison(self)
+        else:
+            raise _error_incomparable_types(self, other)
     #
     def as_mapping(self):
         raise error("Instance->Mapping convertion isn't available")

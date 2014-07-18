@@ -59,7 +59,7 @@ cdef extern from "utils.h":
 
 
 from axon._objects cimport c_undefined, empty_name
-from axon._objects cimport name_cache, c_as_unicode, c_as_name, py_as_name
+from axon._objects cimport name_cache, c_as_unicode, c_as_name
 from axon._objects cimport c_as_tuple
 from axon._objects cimport c_new_instance, c_new_mapping, c_new_sequence, \
                            c_new_element, c_new_empty

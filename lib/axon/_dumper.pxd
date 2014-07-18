@@ -242,6 +242,8 @@ cdef public class Dumper[object Dumper, type DumperType]:
 
     cdef bint quote
     #
+    cdef inline bint is_simple_type(Dumper self, o)
+    #
     cdef inline void write(Dumper self, o)
     #
     cdef void _pretty_dump_crossref(Dumper self, o)
@@ -355,6 +357,6 @@ cdef public class Dumper[object Dumper, type DumperType]:
 
 
 cdef set _simple_types
-cdef bint is_simple_type(Dumper self, object tp)
+
 
 # cpdef object dump_tok(Token tok)
