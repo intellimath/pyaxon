@@ -464,8 +464,8 @@ class Dumper:
     #
     def __init__(self, fd, pretty=0, braces=0, sorted=1, hsize=1, crossref=0):
 
-        self.max_size = 65000
-        self.size = 0
+        #self.max_size = 65000
+        #self.size = 0
 
         self.crossref = 1 if crossref else 0
         self.crossref_set = None
@@ -695,7 +695,6 @@ class Dumper:
         for k,v in items:
             if i > 0:
                 self.write(' ')
-                #self.size += 1
 
             text = c_as_unicode(k)
             self.write(_dump_key(text))
@@ -716,20 +715,16 @@ class Dumper:
         for k,v in items:
             if i > 0:
                 self.write(' ')
-                #self.size += 1
 
             text = c_as_unicode(k)
             self.write(_dump_name(text))
-            #self.size += c_unicode_length(text)
 
             self.write(':')
-            #self.size += 1
             self._dump(v)
             i += 1
     #
     def _dump_list_sequence(self, l):
         i = 0
-
         for v in l:
             if i > 0:
                 self.write(' ')
@@ -738,93 +733,68 @@ class Dumper:
     #
     def _dump_set_sequence(self, l):
         i = 0
-
         for v in l:
             if i > 0:
                 self.write(' ')
-                #self.size += 1
             self._dump(v)
             i += 1
     #
     def _dump_tuple_sequence(self, l):
         i = 0
-
         for v in l:
             if i > 0:
                 self.write(' ')
-                #self.size += 1
             self._dump(v)
             i += 1
     #
     def dump_mapping(self, o):
         self.write(_dump_name(o.name))
-        #self.size += c_unicode_length(o.name)
         self.write('{')
-        #self.size += 1
         self._dump_attr_sequence(o.mapping)
         self.write('}')
-        #self.size += 1
     #
     def dump_element(self, o):
         self.write(_dump_name(o.name))
-        #self.size += c_unicode_length(o.name)
         self.write('{')
-        #self.size += 1
         self._dump_attr_sequence(o.mapping)
         if o.sequence:
             self.write(' ')
             self._dump_list_sequence(o.sequence)
         self.write('}')
-        #self.size += 1
     #
     def dump_sequence(self, o):
         self.write(_dump_name(o.name))
-        #self.size += c_unicode_length(o.name)
         self.write('{')
-        #self.size += 1
         self._dump_list_sequence(o.sequence)
         self.write('}')
-        #self.size += 1
     #
     def dump_instance(self, o):
         self.write(_dump_name(o.name))
-        #self.size += c_unicode_length(o.name)
         self.write('{')
-        #self.size += 1
         self._dump_tuple_sequence(o.sequence)
         if o.mapping:
             self.write(' ')
-            #self.size += 1
             self._dump_attr_sequence(o.mapping)
-        #self.size += 1
         self.write('}')
     #
     def dump_empty(self, o):
         self.write(_dump_name(o.name))
-        #self.size += c_unicode_length(o.name)
         self.write('{}')
-        #self.size += 2
     #
     def dump_list(self, l):
         self.write('[')
-        #self.size += 1
         self._dump_list_sequence(l)
         self.write(']')
-        #self.size += 1
     #
     def dump_dict(self, d):
         self.write('{')
-        #self.size += 1
         self._dump_dict_sequence(d)
         self.write('}')
-        #self.size += 1
     #
     def dump_tuple(self, d):
         self.write('(')
-        #self.size += 1
         self._dump_tuple_sequence(d)
         self.write(')')
-        #self.size += 1
     #
     def _pretty_dump_dict_sequence(self, d, w, use_offset):
         if self.sorted:
@@ -882,9 +852,7 @@ class Dumper:
                 self.write('\n')
                 self.write(w)
             else:
-                #use_offset = 0
                 self.write(' ')
-                #use_offset = 1
 
             text = c_as_unicode(k)
             self.write(_dump_name(text))
@@ -918,6 +886,7 @@ class Dumper:
             else:
                 if j > 1:
                     self.write(' ')
+                
                 if flag:
                     self._pretty_dump(v, w, 0)
                 else:

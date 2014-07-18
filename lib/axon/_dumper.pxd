@@ -224,7 +224,7 @@ cdef public class Dumper[object Dumper, type DumperType]:
     #
     cdef dict c_simple_dumpers
     cdef dict c_type_reducers
-    cdef long size, max_size
+    #cdef long size, max_size
     cdef int hsize
     cdef object fd
     cdef StringWriter sfd
