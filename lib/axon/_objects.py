@@ -39,9 +39,6 @@ import axon.errors as errors
 
 from axon.types import builtins
 
-from axon.types import str_type
-c_str_type = str_type
-
 import datetime
 import_datetime()
 
@@ -144,6 +141,15 @@ def as_dict(o):
 
 def as_tuple(o):
     return c_as_tuple(o)
+    
+c_constants = {
+    c_as_name(c_as_unicode('true')): True,
+    c_as_name(c_as_unicode('false')): False,
+    c_as_name(c_as_unicode('null')): None,
+    #c_as_name(c_as_unicode('NaN')): float('nan'),
+    #c_as_name(c_as_unicode('Infinity')): float('inf'),
+}
+    
 
 #
 # Readonly dict

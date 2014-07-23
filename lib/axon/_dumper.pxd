@@ -53,45 +53,16 @@ from cpython.object cimport PyObject
 from cpython.dict cimport PyDict_SetItem, PyDict_GetItem
 from cpython.unicode cimport PyUnicode_FromEncodedObject
 
-cdef inline object dict_get(object op, object key, object default):
-    cdef PyObject* val = <PyObject*>PyDict_GetItem(op, key)
-    if val == NULL:
-        return default
-    else:
-        return <object>val
-
-
 from axon._objects cimport Empty, Mapping, Element, Sequence, Instance, Undefined
-from axon._objects cimport c_undefined
-from axon._objects cimport name_cache, empty_name, c_as_unicode, c_as_name
+#from axon._objects cimport c_undefined
+#from axon._objects cimport name_cache, c_as_name
 from axon._objects cimport StringWriter
+
+from axon._common cimport c_as_unicode, c_as_list, c_as_dict, c_as_tuple, dict_get
 
 #from axon._objects cimport Token
 #from axon._objects cimport c_new_token, end_token, dict_token, tuple_token, list_token
 #from axon._objects cimport ATOMIC, END, COMPLEX, ATTRIBUTE, KEY, REFERENCE, LABEL, LIST, DICT, TUPLE
-
-# cdef inline unicode c_as_unicode(object ob):
-#     if type(ob) is unicode:
-#         return ob
-#
-#     if type(ob) == type(''):
-#         return unicode(ob)
-#
-#     if ob is None:
-#         return unicode('')
-#
-#     raise TypeError('This object %r is not unicode compatible' % ob)
-
-# cdef inline c_as_name(object name):
-#     n = name_cache.get(name, None)
-#     if n is None:
-#         uname = c_as_unicode(name)
-#         name_cache[name] = uname
-#     elif name is None:
-#         uname = empty_name
-#     else:
-#         uname = n
-#     return uname
 
 cdef inline Mapping as_mapping(object ob):
     return <Mapping>ob

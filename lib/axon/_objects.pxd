@@ -70,47 +70,20 @@ cdef extern from "bytesobject.h":
     #inline int PyBytes_GET_SIZE(object b)
 
 
-#cdef inline object dict_get(object op, object key, object default):
-#    cdef PyObject* val = <PyObject*>PyDict_GetItem(op, key)
-#    if val == NULL:
-#        return default
-#    else:
-#        return <object>val
+# ----------------------------------------
+# Datatypes
+# ----------------------------------------
 
-cdef inline dict c_as_dict(object ob):
-    if type(ob) is dict:
-        return <dict>ob
-    elif ob is None:
-        return {}
-    else:
-        return dict(ob)
 
-cdef inline list c_as_list(object ob):
-    if type(ob) is list:
-        return <list>ob
-    elif ob is None:
-        return []
-    else:
-        return list(ob)
+ctypedef PyObject* PyObjectPtr
 
-cdef inline tuple c_as_tuple(object ob):
-    if type(ob) is tuple:
-        return <tuple>ob
-    elif ob is None:
-        return ()
-    else:
-        return tuple(ob)
+cdef public unicode empty_name
+cdef public unicode c_undescore
+cdef public object c_undefined
 
-cdef inline unicode c_as_unicode(object ob):
-    tp = type(ob)
-    if tp is unicode:
-        return <unicode>ob
-    elif tp == c_str_type:
-        return c_object_to_unicode(ob)
-    elif ob is None:
-        return c_object_to_unicode('')
-    else:
-        raise TypeError('This object %r is not unicode compatible' % ob)
+from axon._common cimport c_as_unicode, c_as_list, c_as_dict, c_as_tuple, dict_get
+
+cdef public dict name_cache
 
 cdef inline unicode c_as_name(object name):
     n = name_cache.get(name, None)
@@ -123,31 +96,6 @@ cdef inline unicode c_as_name(object name):
         uname = n
     return uname
 
-# cdef inline object py_as_name(object name):
-#     n = name_cache.get(name, None)
-#     if n is None:
-#         uname = c_as_unicode(name)
-#         name_cache[name] = uname
-#     elif name is None:
-#         uname = empty_name
-#     else:
-#         uname = n
-#     return uname
-
-# ----------------------------------------
-# Datatypes
-# ----------------------------------------
-
-
-ctypedef PyObject* PyObjectPtr
-
-cdef public unicode empty_name
-cdef public unicode c_undescore
-cdef public object c_undefined
-
-cdef public dict name_cache
-
-cdef object c_str_type
 
 # cdef int ATOMIC = 1
 # cdef int DICT = 2
@@ -438,3 +386,5 @@ cdef public class timezone(tzinfo)[object TimeZoneUTCObject, type TimeZoneUTCTyp
 # 
 # @cython.locals(o=Context)
 # cdef inline Context new_context(Context parent)
+
+cdef dict c_constants

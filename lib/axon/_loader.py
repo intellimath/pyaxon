@@ -39,14 +39,6 @@ import array
 ###
 
 
-c_constants = {
-    c_as_name(c_as_unicode('true')): True,
-    c_as_name(c_as_unicode('false')): False,
-    c_as_name(c_as_unicode('null')): None,
-    #c_as_name(c_as_unicode('NaN')): float('nan'),
-    #c_as_name(c_as_unicode('Infinity')): float('inf'),
-}
-
 def as_name(name):
     return c_as_name(name)
 
@@ -136,7 +128,7 @@ class Loader:
 
         self.lnum = 0
         
-        self.global_context = {}
+        #self.global_context = {}
 
         self.next_line()
     #

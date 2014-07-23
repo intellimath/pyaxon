@@ -57,10 +57,8 @@ cdef extern from "utils.h":
 
     inline unicode get_token(Loader self, int pos0)
 
-
 from axon._objects cimport c_undefined, empty_name
-from axon._objects cimport name_cache, c_as_unicode, c_as_name
-from axon._objects cimport c_as_tuple
+from axon._objects cimport name_cache, c_as_name, c_constants
 from axon._objects cimport c_new_instance, c_new_mapping, c_new_sequence, \
                            c_new_element, c_new_empty
 
@@ -68,62 +66,14 @@ from axon._objects cimport Builder, SafeBuilder, StrictBuilder, MixedBuilder
 from axon._objects cimport get_builder
 from axon._objects cimport SimpleBuilder
 
+from axon._common cimport c_as_unicode, c_as_list, c_as_dict, c_as_tuple, dict_get
+
 #from axon._objects cimport c_new_token, c_new_token0, c_new_token1
 #from axon._objects cimport end_token, dict_token, tuple_token, list_token
 #from axon._objects cimport ATOMIC, END, COMPLEX, ATTRIBUTE, KEY, REFERENCE, LABEL, LIST, DICT, TUPLE
 
 cdef object unicode_type, str_type, int_type, long_type
 cdef object bool_type, float_type, bytes_type
-
-cdef dict c_constants
-
-cdef inline object dict_get(object op, object key, object default):
-    cdef PyObject* val = <PyObject*>PyDict_GetItem(op, key)
-    if val == NULL:
-        return default
-    else:
-        return <object>val
-
-# cdef inline unicode _as_name(object name):
-#     val = name_cache.get(name, None)
-#     if val is None:
-#         if name is None:
-#             return empty_name
-#         name_cache[name] = name
-#         return <unicode>name
-#     else:
-#         return <unicode>val
-#
-# cdef inline object c_as_name(object name):
-#     n = dict_get(name_cache, name, None)
-#     if n is None:
-#         uname = c_as_unicode(name)
-#         name_cache[name] = uname
-#     elif name is None:
-#         uname = empty_name
-#     else:
-#         uname = n
-#     return uname
-#
-# cdef inline tuple c_as_tuple(object ob):
-#     if type(ob) is tuple:
-#         return <tuple>ob
-#     elif ob is None:
-#         return ()
-#     else:
-#         return tuple(ob)
-
-
-# cdef inline unicode c_as_unicode(object ob):
-#     tp = type(ob)
-#     if tp is unicode:
-#         return <unicode>ob
-#     elif tp == type(''):
-#         return unicode(ob)
-#     elif ob is None:
-#         return unicode('')
-#     else:
-#         raise TypeError('This object %r is not unicode compatible' % ob)
 
 @cython.final
 cdef class Loader:
@@ -138,7 +88,7 @@ cdef class Loader:
     cdef public int lnum
     cdef public object errto
     
-    cdef dict global_context
+    #cdef dict global_context
 
     cdef int bc
     cdef int bs
@@ -157,7 +107,6 @@ cdef class Loader:
     cdef int[:] to
 
     cdef bint is_nl
-    cdef list idn_stack
     cdef public int idn
 
     cpdef _check_pairs(Loader self)
