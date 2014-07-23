@@ -11,3 +11,11 @@ __pycache__
 *.egg-info
 *~
 *.bak
+pyaxon.bbprojectd/*
+pyaxon.bbprojectd/*.*
+lib/axon/_objects.c
+lib/axon/_objects.h
+lib/axon/_dumper.c
+lib/axon/_dumper.h
+lib/axon/_loader.c
+lib/axon/_loader.h
