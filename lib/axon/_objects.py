@@ -424,6 +424,15 @@ class Sequence(object):
     def __setitem__(self, index, val):
         self.sequence[index] = val
     #
+    def get(self, name, default=None):
+        raise errors.error_no_attributes(Sequence)
+    #
+    def set(self, name, val):
+        raise errors.error_no_attributes(Sequence)
+    #
+    def update(self, map):
+        raise errors.error_no_attributes(Sequence)
+    #
     def __richcmp__(self, other, op):
         if type(self) is Sequence:
             v = (self.name == other.name) and (self.sequence == other.sequence)
@@ -493,6 +502,12 @@ class Mapping(object):
     #
     def update(self, map):
         self.mapping.update(map)
+    #
+    def __getitem__(self, index):
+        raise errors.error_no_handler(Mapping)
+    #
+    def __setitem__(self, index, val):
+        raise errors.error_no_handler(Mapping)
     #
     def __contains__(self, name):
         return name in self.mapping

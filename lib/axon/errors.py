@@ -118,3 +118,14 @@ def error_reducer_wrong_return(self, tp):
 
 def error_no_handler(name):
     sys.stderr.write('Handler for name <%s> is not registered' % name)
+
+
+def error2(msg, te):
+    self.errto.write(msg)
+    return te(msg)
+    
+def error_no_attributes(tp):
+    eror2('The type %r does not contain attributes' % tp)
+
+def error_no_children(tp):
+    eror2('The type %r does not contain child values' % tp)
