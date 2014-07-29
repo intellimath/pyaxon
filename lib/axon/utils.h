@@ -69,7 +69,7 @@
 #define skip_char(self) (self->pos)++
 #define next_char(self) c_unicode_char(self->line, ++(self->pos))
 
-#define get_token(self, pos0) c_unicode_substr(self->line, pos0, self->pos)
+#define get_chunk(self, pos0) c_unicode_substr(self->line, pos0, self->pos)
 
 #define Py_SET_SIZE(o, n) Py_SIZE(o) = n
 

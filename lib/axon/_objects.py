@@ -741,15 +741,13 @@ def c_new_empty(name):
 
 #####################################################################################
 
-#NAME_IS_EMPTY = 'Name is empty'
-
 def sequence(name, sequence=None):
     '''
     Factory function for creating named sequence.
 
     :param name:
 
-        name of sequence.
+        name of the sequence.
 
     :param sequence:
 
@@ -1237,3 +1235,4 @@ class timezone(tzinfo):
 #     o = Context.__new__(Context)
 #     o.parent = parent
 #     o._dict = {}
+       

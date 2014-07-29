@@ -55,7 +55,7 @@ cdef extern from "utils.h":
     inline void skip_char(Loader self)
     inline Py_UCS4 next_char(Loader self)
 
-    inline unicode get_token(Loader self, int pos0)
+    inline unicode get_chunk(Loader self, int pos0)
 
 from axon._objects cimport c_undefined, empty_name
 from axon._objects cimport name_cache, c_as_name, c_constants

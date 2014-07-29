@@ -97,9 +97,11 @@ class Loader:
         '''
         self.fd = fd
         self.readline = fd.readline
+        
         self.bc = 0
         self.bs = 0
         self.bq = 0
+        
         self.labeled_objects = {}
 
         if json:
@@ -521,7 +523,7 @@ class Loader:
             else:
                 errors.error_getnumber(self)
 
-        text = get_token(self, pos0)
+        text = get_chunk(self, pos0)
 
         if ch == 'd' or ch == 'D' or ch == '$':
             skip_char(self)
@@ -543,7 +545,7 @@ class Loader:
             while ch.isalnum() or ch == '_':
                 ch = next_char(self)
 
-        name0 = get_token(self, pos0)
+        name0 = get_chunk(self, pos0)
         name = dict_get(name_cache, name0, None)
         if name is None:
             name_cache[name0] = name0
@@ -557,7 +559,7 @@ class Loader:
         while ch.isalpha() or ch == '_':
             ch = next_char(self)
 
-        return get_token(self, pos0)
+        return get_chunk(self, pos0)
     #
     def try_get_name(self):
         ch = current_char(self)
@@ -587,7 +589,7 @@ class Loader:
         if self.pos == pos0:
             errors.error_unexpected_value(self, ' after &')
 
-        return get_token(self, pos0)
+        return get_chunk(self, pos0)
     #
     def get_unicode_hex(self):
 
@@ -622,17 +624,17 @@ class Loader:
         while 1:
             if ch == endch:
                 if text is None:
-                    text = get_token(self, pos0)
+                    text = get_chunk(self, pos0)
                 else:
-                    text += get_token(self, pos0)
+                    text += get_chunk(self, pos0)
                 skip_char(self)
                 return text
 
             elif ch == '\n' or ch == '\r':
                 if text is None:
-                    text = get_token(self, pos0)
+                    text = get_chunk(self, pos0)
                 else:
-                    text += get_token(self, pos0)
+                    text += get_chunk(self, pos0)
                 text += '\n'
 
                 self.next_line()
@@ -645,9 +647,9 @@ class Loader:
                 ch = current_char(self)
             elif ch == '\\':
                 if text is None:
-                    text = get_token(self, pos0)
+                    text = get_chunk(self, pos0)
                 else:
-                    text += get_token(self, pos0)
+                    text += get_chunk(self, pos0)
 
                 ch = next_char(self)
                 if ch == endch:
@@ -658,9 +660,9 @@ class Loader:
                     skip_char(self)
                 elif ch == '\n' or ch == '\r':
                     if text is None:
-                        text = get_token(self, pos0)
+                        text = get_chunk(self, pos0)
                     else:
-                        text += get_token(self, pos0)
+                        text += get_chunk(self, pos0)
 
                     self.next_line()
                     if self.eof:
@@ -700,9 +702,9 @@ class Loader:
                 ch = next_char(self)
             elif ch <= ' ':
                 if text is None:
-                    text = get_token(self, pos0)
+                    text = get_chunk(self, pos0)
                 else:
-                    text += get_token(self, pos0)
+                    text += get_chunk(self, pos0)
                 self.skip_spaces()
                 if self.eof:
                     errors.error(self, 'MIME Base64 string is not finished')
@@ -714,9 +716,9 @@ class Loader:
                     ch = next_char(self)
 
                 if text is None:
-                    text = get_token(self, pos0)
+                    text = get_chunk(self, pos0)
                 else:
-                    text += get_token(self, pos0)
+                    text += get_chunk(self, pos0)
                 return self.sbuilder.create_binary(text)
             else:
                 raise errors.error(self, 'Invalid character %r in MIME Base64 string' % ch)
