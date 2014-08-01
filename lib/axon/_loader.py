@@ -8,7 +8,7 @@
 
 # The MIT License (MIT)
 # 
-# Copyright (c) <2011-2013> <Shibzukhov Zaur, szport at gmail dot com>
+# Copyright (c) <2011-2014> <Shibzukhov Zaur, szport at gmail dot com>
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -871,7 +871,7 @@ class Loader:
                 if label is not None:
                     val = self.labeled_objects.get(label, c_undefined)
                 else:
-                    val = c_undefined
+                    errors.error(self, "Expected label here")
             elif ch == '&':
                 pos0 = self.pos
                 skip_char(self)
@@ -882,7 +882,7 @@ class Loader:
                 val = self.get_value(pos0)
                 self.labeled_objects[label] = val
             elif ch == '\0':
-                errors.error(self, "Unexpected end after name ''" % name)
+                errors.error(self, "Unexpected end after name %r" % name)
             else:
                 errors.error_unexpected_value(self, 'expected named complex value')
 
