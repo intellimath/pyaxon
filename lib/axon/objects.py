@@ -24,5 +24,6 @@
 
 from axon._objects import Empty, Instance, Element, Sequence, Mapping
 from axon._objects import empty, sequence, mapping, instance, element
-from axon._objects import GenericBuilder, register_builder
+from axon._objects import GenericBuilder
+from axon._loader import register_builder
 

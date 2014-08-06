@@ -297,13 +297,6 @@ cdef public class GenericBuilder(Builder)[object GenericBuilderObject, type Gene
     cdef public object create_instance(self, object, tuple, dict)
     cdef public object create_empty(self, object)
 
-cdef dict c_builder_dict
-
-cdef inline Builder c_get_builder(object mode):
-    return <Builder>c_builder_dict.get(mode, None)
-
-cpdef Builder get_builder(object)
-
 cdef object _str2decimal
 
 cdef object _inf

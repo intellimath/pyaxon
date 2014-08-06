@@ -33,7 +33,6 @@ import sys
 import axon.errors as errors
 import array
 
-
 ###
 ### Exceptions
 ###
@@ -52,6 +51,18 @@ if sys.version_info.major == 3:
     int_mode = 'i'
 else:
     int_mode = b'i'
+
+_builder_dict = {
+    'safe': SafeBuilder(),
+    'strict': StrictBuilder(),
+    'mixed': MixedBuilder()
+}
+
+def register_builder(mode, builder):
+    _builder_dict[mode] = builder
+
+def get_builder(mode):
+    return _builder_dict.get(mode, None)
 
 #
 # Loader
@@ -272,15 +283,6 @@ class Loader:
     #def valid_end_item(self):
     #    ch = current_char(self)
     #    return ch <= ' ' or ch == '}' or ch == ']' or ch == ')' or ch == 0
-    #
-    
-#     def get_dots(self):
-#         n = 1
-#         ch = next_char(self)
-#         while ch == '.':
-#             n += 1
-#             ch = next_char(self)
-#         return n == 3
     #
     def try_get_int(self, maxsize):
 

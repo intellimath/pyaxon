@@ -63,9 +63,7 @@ from axon._objects cimport c_new_instance, c_new_mapping, c_new_sequence, \
                            c_new_element, c_new_empty
 
 from axon._objects cimport Builder, SafeBuilder, StrictBuilder, MixedBuilder
-from axon._objects cimport get_builder
 from axon._objects cimport SimpleBuilder
-
 from axon._common cimport c_as_unicode, c_as_list, c_as_dict, c_as_tuple, dict_get
 
 #from axon._objects cimport c_new_token, c_new_token0, c_new_token1
@@ -129,9 +127,6 @@ cdef class Loader:
 
     @cython.locals(line=unicode, ch=Py_UCS4, n=int)
     cdef void next_line(Loader self)
-
-#     @cython.locals(ch=Py_UCS4, n=int)
-#     cdef bint get_dots(Loader self)
 
     #@cython.locals(ch=Py_UCS4)
     #cdef inline bint valid_end_item(Loader self)

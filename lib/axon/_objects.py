@@ -978,18 +978,6 @@ class GenericBuilder(Builder):
     def create_empty(self, name):
         return self.empty(name)
 
-c_builder_dict = {
-    'safe': SafeBuilder(),
-    'strict': StrictBuilder(),
-    'mixed': MixedBuilder()
-}
-
-def register_builder(mode, builder):
-    c_builder_dict[mode] = builder
-
-def get_builder(mode):
-    return c_get_builder(mode)
-
 _inf = float('inf')
 _ninf = float('-inf')
 _nan = float('nan')

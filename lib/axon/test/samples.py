@@ -642,7 +642,7 @@ text_15c_2 = '''aaa:
 
 text_16_o = '''aaa{1}'''
 text_16_0 = '''aaa{1}'''
-text_16_1 = '''aaa {1}'''
+text_16_1 = '''aaa { 1}'''
 text_16_2 = '''aaa:
   1'''
 
