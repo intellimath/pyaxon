@@ -128,7 +128,7 @@ Here is an example of ``AXON`` message:
     <tr>
     <td><pre>
     axon:
-        name: "An eXtended Object Notation"
+        name: "AXON is eXtended Object Notation"
         short_name: "AXON"
         python_library: "pyaxon"
         atomic_values:
@@ -172,7 +172,7 @@ Here is an example of ``AXON`` message:
     </pre></td>
     <td><pre>
     axon {
-        name: "An eXtended Object Notation"
+        name: "AXON is eXtended Object Notation"
         short_name: "AXON"
         python_library: "pyaxon"
         atomic_values {
@@ -223,7 +223,7 @@ Here is an example of ``AXON`` message:
     </tr>
     <tr><th colspan=2>compact expression form</th></tr>
     <tr><td colspan=2><pre>
-    axon{name:"An eXtended Object Notation" python_library:"pyaxon" short_name:"AXON"
+    axon{name:"AXON is eXtended Object Notation" python_library:"pyaxon" short_name:"AXON"
     atomic_values{binary:|UTcJFhV3cl97ZEk+BA0hWggDUj8lbE0bQH5rUy0nNjwmZDpANClsAj4We
     DsfCWkcW2Bdc0VNQCQVZCBhXxFGJBpSLGs3HGlcbSdgdH4ab34UBTwndTs2MXdSOxIGBgdYclFQYnlDH
     3NfUSI1LEcHDARDeFcDCBwiPTAZODU=
