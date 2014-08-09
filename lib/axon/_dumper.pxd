@@ -210,8 +210,6 @@ cdef public class Dumper[object Dumper, type DumperType]:
     cdef public set crossref_set
     cdef public set crossref_set2
     cdef bint collected
-
-    cdef bint quote
     #
     cdef inline bint is_simple_type(Dumper self, o)
     #
