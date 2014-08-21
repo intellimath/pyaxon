@@ -53,7 +53,7 @@ class Writer(object):
     def close(self):
         self.fd.close()
 
-def display(text, pretty=1, braces=0, sorted=1, hsize=1, crossref=0):
+def display(text, pretty=1, braces=0, sorted=1, hsize=0, crossref=0):
     '''
     Display AXON text in formatted form for easy read.
 
@@ -66,7 +66,7 @@ def display(text, pretty=1, braces=0, sorted=1, hsize=1, crossref=0):
     val = loads(text)
     print(dumps(val, pretty, braces, sorted, hsize, crossref))
 
-def dumps(val, pretty=0, braces=0, sorted=1, hsize=1, crossref=0):
+def dumps(val, pretty=0, braces=0, sorted=1, hsize=0, crossref=0):
     '''
     Dump value into unicode text.
 
@@ -105,7 +105,7 @@ def dumps(val, pretty=0, braces=0, sorted=1, hsize=1, crossref=0):
     fd.close()
     return v
 
-def dump(fpath, val, pretty=0, braces=0, sorted=1, hsize=1, crossref=0, encoding='utf-8'):
+def dump(fpath, val, pretty=0, braces=0, sorted=1, hsize=0, crossref=0, encoding='utf-8'):
     '''\
     Same as :py:func:`dumps` but for dumping into a file.
 

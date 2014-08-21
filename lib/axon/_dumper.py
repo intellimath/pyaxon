@@ -63,7 +63,6 @@ simple_types = {
 
 try:
     import cdecimal as _decimal
-
 except:
     import decimal as _decimal
 
@@ -462,7 +461,7 @@ class Dumper:
     Dumper class
     '''
     #
-    def __init__(self, fd, pretty=0, braces=0, sorted=1, hsize=1, crossref=0):
+    def __init__(self, fd, pretty=0, braces=0, sorted=1, hsize=0, crossref=0):
 
         #self.max_size = 65000
         #self.size = 0
@@ -681,7 +680,7 @@ class Dumper:
         self.write(text)
         return 1
     #
-    def _dump_dict_sequence(self, d):
+    def _dump_dict_sequence(self, d, is_key):
         i = 0
 
         if self.sorted:
@@ -694,32 +693,35 @@ class Dumper:
                 self.write(' ')
 
             text = c_as_unicode(k)
-            self.write(_dump_key(text))
+            if is_key:
+                self.write(_dump_key(text))
+            else:
+                self.write(_dump_name(text))
 
             self.write(':')
 
             self._dump(v)
             i += 1
     #
-    def _dump_attr_sequence(self, d):
-        i = 0
-
-        if self.sorted:
-            items = sorted(d.items())
-        else:
-            items = d.items()
-
-        for k,v in items:
-            if i > 0:
-                self.write(' ')
-
-            text = c_as_unicode(k)
-            self.write(_dump_name(text))
-
-            self.write(':')
-            self._dump(v)
-            i += 1
-    #
+#     def _dump_attr_sequence(self, d):
+#         i = 0
+# 
+#         if self.sorted:
+#             items = sorted(d.items())
+#         else:
+#             items = d.items()
+# 
+#         for k,v in items:
+#             if i > 0:
+#                 self.write(' ')
+# 
+#             text = c_as_unicode(k)
+#             self.write(_dump_name(text))
+# 
+#             self.write(':')
+#             self._dump(v)
+#             i += 1
+#     #
     def _dump_list_sequence(self, l):
         i = 0
         for v in l:
@@ -747,13 +749,13 @@ class Dumper:
     def dump_mapping(self, o):
         self.write(_dump_name(o.name))
         self.write('{')
-        self._dump_attr_sequence(o.mapping)
+        self._dump_dict_sequence(o.mapping, IS_NAME)
         self.write('}')
     #
     def dump_element(self, o):
         self.write(_dump_name(o.name))
         self.write('{')
-        self._dump_attr_sequence(o.mapping)
+        self._dump_dict_sequence(o.mapping, IS_NAME)
         if o.sequence:
             self.write(' ')
             self._dump_list_sequence(o.sequence)
@@ -771,7 +773,7 @@ class Dumper:
         self._dump_tuple_sequence(o.sequence)
         if o.mapping:
             self.write(' ')
-            self._dump_attr_sequence(o.mapping)
+            self._dump_dict_sequence(o.mapping, IS_NAME)
         self.write('}')
     #
     def dump_empty(self, o):
@@ -785,7 +787,7 @@ class Dumper:
     #
     def dump_dict(self, d):
         self.write('{')
-        self._dump_dict_sequence(d)
+        self._dump_dict_sequence(d, IS_KEY)
         self.write('}')
     #
     def dump_tuple(self, d):
@@ -793,57 +795,31 @@ class Dumper:
         self._dump_tuple_sequence(d)
         self.write(')')
     #
-    def _pretty_dump_dict_sequence(self, d, w, use_offset):
+    def _pretty_dump_dict_sequence(self, d, w, use_offset, is_key):
+        if len(d) == 0: 
+            return 0
+
         if self.sorted:
             items = sorted(d.items())
         else:
             items = d.items()
 
-        j = 1
+        i = 0
+        j = 0
         for k,v in items:
-            flag = not self.is_simple_type(v)
-            if not use_offset and flag:
+            flag = self.is_simple_type(v)
+        
+            if i == 0:
                 use_offset = 1
-                j = 1
-
-            if use_offset:
-                self.write('\n')
-                self.write(w)
             else:
-                use_offset = 0
-                self.write(' ')
-                use_offset = 1
-
-            text = c_as_unicode(k)
-            self.write(_dump_key(text))
-            self.write(': ')
-            if flag:
-                self._pretty_dump(v, w, 0)
-            else:
-                self._dump_value(v)
-
-            if j < self.hsize:
-                if flag:
-                    use_offset = 1
+                if self.hsize: 
+                    if j >= self.hsize:
+                        use_offset = 1
+                        j = 0
+                    else:
+                        use_offset = 1
                 else:
-                    use_offset = 0
-                j += 1
-            else:
-                use_offset = 1
-                j = 1
-    #
-    def _pretty_dump_attr_sequence(self, d, w, use_offset):
-        if self.sorted:
-            items = sorted(d.items())
-        else:
-            items = d.items()
-
-        j = 1
-        for k,v in items:
-            flag = not self.is_simple_type(v)
-            if not use_offset and flag:
-                use_offset = 1
-                j = 1
+                    use_offset = 1
 
             if use_offset:
                 self.write('\n')
@@ -852,126 +828,176 @@ class Dumper:
                 self.write(' ')
 
             text = c_as_unicode(k)
-            self.write(_dump_name(text))
+            if is_key:
+                self.write(_dump_key(text))
+            else:
+                self.write(_dump_name(text))
+            
             self.write(': ')
-            if flag:
-                self._pretty_dump(v, w, 0)
-            else:
-                self._dump_value(v)
+            
+            self._pretty_dump(v, w, 0)
 
-            if j < self.hsize:
-                if flag:
-                    use_offset = 1
-                else:
-                    use_offset = 0
-                j += 1
-            else:
-                use_offset = 1
-                j = 1
+            i += 1
+            j += 1
     #
+#     def _pretty_dump_attr_sequence(self, d, w, use_offset):
+#         if len(d) == 0: 
+#             return 0
+# 
+#         if self.sorted:
+#             items = sorted(d.items())
+#         else:
+#             items = d.items()
+#                         
+#         j = 0
+#         i = 0
+#         for k,v in items:
+#             flag = not self.is_simple_type(v)
+#             if i == 0:
+#                 use_offset = 1
+# 
+#             if use_offset:
+#                 self.write('\n')
+#                 self.write(w)
+#             else:
+#                 self.write(' ')
+# 
+#             text = c_as_unicode(k)
+#             self.write(_dump_name(text))
+#             self.write(': ')
+#             if flag:
+#                 self._pretty_dump(v, w, 1)
+#             else:
+#                 self._dump_value(v)
+# 
+#             if self.hsize and j < self.hsize:
+#                 if flag:
+#                     use_offset = 1
+#                 else:
+#                     use_offset = 0
+#                 j += 1
+#             else:
+#                 use_offset = 1
+#                 j = 0
+#             i += 1
+#     #
     def _pretty_dump_list_sequence(self, l, w, use_offset):
         n = len(l)
         if n == 0:
             return 0
-        
-        v = l[0]
-        flag = not self.is_simple_type(v)
+        elif n == 1:
+            v = l[0]
+            flag = self.is_simple_type(v)
+            if flag and not use_offset:
+                self._dump_value(v)
+            else:
+                self.write('\n')
+                self.write(w)
+                self._pretty_dump(v, w, 1)
+            return 0
+        elif n <= self.hsize:
+            use_offset2 = 0
+            for i in range(n):
+                v = l[i]
+                if not self.is_simple_type(v):
+                    use_offset2 = 1
+                    break
+            if not use_offset2: 
+                for i in range(n):
+                    v = l[i]
+                    if i > 0:
+                        self.write(' ')
+                    self._dump_value(v)
+                return 0
 
-        if use_offset:
-            self.write('\n')
-            self.write(w)
-        else:
-            self.write(' ')
-            
-        if flag:
-            self._pretty_dump(v, w, use_offset)
-        else:
-            self._dump_value(v)
-
-        i = 1
-        j = 2
-        for i in range(1, n):
+        j = 0
+        for i in range(n):
         
             v = l[i]
-            flag = not self.is_simple_type(v)
+            flag = self.is_simple_type(v)
 
-            if j > self.hsize:
-                use_offset = 1
-                j = 1
-            else:
-                if flag:
-                    use_offset = 1
-                    j = 1
+            if i > 0:
+                if self.hsize: 
+                    if j >= self.hsize:
+                        use_offset = 1
+                        j = 0
+                    else:
+                        if flag:
+                            use_offset = 0
+                        else:
+                            use_offset = 1
                 else:
-                    use_offset = 0
+                    use_offset = 1
 
             if use_offset:
                 self.write('\n')
                 self.write(w)
-                self._pretty_dump(v, w, 1)
             else:
-                if j > 1:
+                if j > 0:
                     self.write(' ')
                 
-                if flag:
-                    self._pretty_dump(v, w, 1)
-                else:
-                    self._dump_value(v)
+            self._pretty_dump(v, w, 1)
 
             j += 1
-            i += 1
     #
     def _pretty_dump_tuple_sequence(self, l, w, use_offset):
         n = len(l)
         if n == 0:
             return 0
-        
-        v = l[0]
-        flag = not self.is_simple_type(v)
-
-        if use_offset:
-            self.write('\n')
-            self.write(w)
-        else:
-            self.write(' ')
+        elif n == 1:
+            v = l[0]
+            flag = self.is_simple_type(v)
+            if flag and not use_offset:
+                self._dump_value(v)
+            else:
+                self.write('\n')
+                self.write(w)
+                self._pretty_dump(v, w, 1)
+            return 0
+        elif n <= self.hsize:
+            use_offset2 = 0
+            for i in range(n):
+                v = l[i]
+                if not self.is_simple_type(v):
+                    use_offset2 = 1
+                    break
+            if not use_offset2: 
+                for i in range(n):
+                    v = l[i]
+                    if i > 0:
+                        self.write(' ')
+                    self._dump_value(v)
+            return 0
             
-        if flag:
-            self._pretty_dump(v, w, 1)
-        else:
-            self._dump_value(v)
-
-        i = 1
-        j = 2
-        for i in range(1, n):
+        j = 0
+        for i in range(n):
         
             v = l[i]
-            flag = not self.is_simple_type(v)
+            flag = self.is_simple_type(v)
 
-            if j > self.hsize:
-                use_offset = 1
-                j = 1
-            else:
-                if flag:
-                    use_offset = 1
-                    j = 1
+            if i > 0:
+                if self.hsize: 
+                    if j >= self.hsize:
+                        use_offset = 1
+                        j = 0
+                    else:
+                        if flag:
+                            use_offset = 0
+                        else:
+                            use_offset = 1
                 else:
-                    use_offset = 0
+                    use_offset = 1
 
             if use_offset:
                 self.write('\n')
                 self.write(w)
-                self._pretty_dump(v, w, 1)
             else:
-                if j > 1:
+                if j > 0:
                     self.write(' ')
                 
-                if flag:
-                    self._pretty_dump(v, w, 1)
-                else:
-                    self._dump_value(v)
+            self._pretty_dump(v, w, 1)
 
             j += 1
-            i += 1
     #
     def pretty_dump_mapping(self, o, w, use_offset):
         self.write(_dump_name(o.name))
@@ -982,7 +1008,7 @@ class Dumper:
             self.write(' {')
 
 
-        self._pretty_dump_attr_sequence(o.mapping, w, 1)
+        self._pretty_dump_dict_sequence(o.mapping, w, 1, IS_NAME)
 
         if self.pretty == 2:
             self.write('}')
@@ -995,7 +1021,7 @@ class Dumper:
         elif self.pretty == 2:
             self.write(' {')
 
-        self._pretty_dump_attr_sequence(o.mapping, w, 1)
+        self._pretty_dump_dict_sequence(o.mapping, w, 1, IS_NAME)
         if o.sequence:
             #self.write(' ')
             self._pretty_dump_list_sequence(o.sequence, w, 1)
@@ -1029,7 +1055,7 @@ class Dumper:
 
         self._pretty_dump_tuple_sequence(o.sequence, w, 1)
         if o.mapping:
-            self._pretty_dump_attr_sequence(o.mapping, w, 1)
+            self._pretty_dump_dict_sequence(o.mapping, w, 1, IS_NAME)
 
         if self.pretty == 2:
             self.write('}')
@@ -1051,7 +1077,7 @@ class Dumper:
     #
     def pretty_dump_dict(self, d, w, use_offset):
         self.write('{')
-        self._pretty_dump_dict_sequence(d, w, use_offset)
+        self._pretty_dump_dict_sequence(d, w, use_offset, IS_KEY)
         self.write('}')
     #
     def pretty_dump_tuple(self, l, w, use_offset):

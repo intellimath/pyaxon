@@ -20,8 +20,8 @@
 What is AXON
 ------------
 
-AXON is eXtended Object Notation (``AXON``). It's a simple text based format for interchanging of
-objects, documents and data.
+AXON is eXtended Object Notation (``AXON``). It's a simple text based format
+for interchanging of objects, documents and data.
 
 It tries to combine the best of `JSON <http://www.json.org>`_,
 `XML <http://www.w3.org/XML/>`_ and `YAML <http://www.yaml.org>`_.

@@ -22,9 +22,10 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-import sys
-
 cimport cython
+
+cdef bint IS_KEY=1
+cdef bint IS_NAME=0
 
 cdef extern from "math.h":
     bint isnan(double x)
@@ -231,10 +232,10 @@ cdef public class Dumper[object Dumper, type DumperType]:
     cdef bint _dump_value(Dumper self, o) except -1
     #
     @cython.locals(i=int, text=unicode)
-    cdef int _dump_dict_sequence(Dumper self, dict d) except -1
+    cdef int _dump_dict_sequence(Dumper self, dict d, bint is_key) except -1
     #
-    @cython.locals(i=int, text=unicode)
-    cdef int _dump_attr_sequence(Dumper self, dict d) except -1
+    #@cython.locals(i=int, text=unicode)
+    #cdef int _dump_attr_sequence(Dumper self, dict d) except -1
     #
     @cython.locals(i=int)
     cdef int _dump_list_sequence(Dumper self, list l) except -1
@@ -264,15 +265,15 @@ cdef public class Dumper[object Dumper, type DumperType]:
     cdef int dump_empty(Dumper self, Empty ob) except -1
     #
     @cython.locals(text=unicode, i=int, j=int, flag=bint)
-    cdef inline int _pretty_dump_dict_sequence(Dumper self, dict d, unicode w, bint use_offset) except -1
+    cdef inline int _pretty_dump_dict_sequence(Dumper self, dict d, unicode w, bint use_offset, bint is_key) except -1
     #
-    @cython.locals(text=unicode, i=int, j=int, flag=bint)
-    cdef inline int _pretty_dump_attr_sequence(Dumper self, dict d, unicode w, bint use_offset) except -1
+    #@cython.locals(text=unicode, i=int, j=int, flag=bint)
+    #cdef inline int _pretty_dump_attr_sequence(Dumper self, dict d, unicode w, bint use_offset) except -1
     #
-    @cython.locals(i=int, j=int, flag=bint)
+    @cython.locals(i=int, j=int, flag=bint, use_offset2=bint)
     cdef inline int _pretty_dump_list_sequence(Dumper self, list l, unicode w, bint use_offset) except -1
     #
-    @cython.locals(i=int, j=int, flag=bint)
+    @cython.locals(i=int, j=int, flag=bint, use_offset2=bint)
     cdef inline int _pretty_dump_tuple_sequence(Dumper self, tuple l, unicode w, bint use_offset) except -1
     #
     cdef inline int pretty_dump_list(Dumper self, list l, unicode w, bint use_offset) except -1
