@@ -48,25 +48,18 @@ aaa:
         self.assertEqual(v.sequence, None)
         self.assertEqual(v.mapping, None)
         s = dumps([v], pretty=1)
-        self.assertEqual(s, '''\
-aaa:
-  ''')
+        self.assertEqual(s, '''aaa:''')
     #
     def test_empty5(self):
         v = loads('''
 aaa:
   bbb:
-    
-  ccc:
-
-''')[0]
+  ccc:''')[0]
         s = dumps([v], pretty=1)
         self.assertEqual(s, '''\
 aaa:
   bbb:
-    
-  ccc:
-    ''')
+  ccc:''')
     #
     def test_empty6(self):
         v = loads('''
@@ -86,11 +79,9 @@ aaa:
   a: 1
   b: 2
   bbb:
-    
   ccc:
     c: 1
-    ddd:
-      ''')
+    ddd:''')
     #
     def test_empty7(self):
         v = loads('''
@@ -111,12 +102,10 @@ aaa:
   b: 2
   c: 4
   bbb:
-    
   ccc:
     c: 1
     d: 23
-    ddd:
-      ''')
+    ddd:''')
     #
 
 

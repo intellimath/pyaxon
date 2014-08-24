@@ -1039,8 +1039,8 @@ class Dumper:
         self.write(_dump_name(o.name))
 
         if self.pretty == 1:
-            self.write(':\n')
-            self.write(w)
+            self.write(':')
+            #self.write(w)
         elif self.pretty == 2:
             self.write(' {}')
 
