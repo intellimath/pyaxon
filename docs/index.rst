@@ -258,6 +258,8 @@ There are introductory `IPython` notebooks:
 Repository for ``AXON`` and ``pyaxon`` is `here <https://bitbucket.org/intellimath/pyaxon>`_.
 Here is also `mirror <https://github.com/intellimath/pyaxon>`_.
 
+There is also `blog <http://intellimath.bitbucket.org/blog/categories/axon.html>`_ about AXON.
+
 API Reference
 -------------
 

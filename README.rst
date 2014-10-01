@@ -12,6 +12,8 @@ It tries to combine the best of `JSON <http://www.json.org>`_,
 Main repository for ``pyaxon`` is on `bitbucket <https://bitbucket.org/intellimath/pyaxon>`_.
 There is a mirror on `github <https://github.com/intellimath/pyaxon>`_
 
+There is also `blog <http://intellimath.bitbucket.org/blog/categories/axon.html>`_ about AXON.
+
 Features
 --------
 
