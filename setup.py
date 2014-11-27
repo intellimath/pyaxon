@@ -93,9 +93,11 @@ setup(
     ext_modules = ext_modules,
     package_dir = {'': 'lib'},
     packages = ['axon', 'axon.test', 'axon.test.benchmark'],
-    url = 'http://axon.intellimath.org',
+    url = 'http://intellimath.bitbucket.org/axon',
     download_url = 'https://bitbucket.org/intellimath/pyaxon',
     long_description = long_description,
+    platforms = 'Linux, Mac OS X, Windows',
+    keywords = ['Object Notation', 'Serialization'],
     classifiers = [
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
@@ -106,6 +108,7 @@ setup(
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.2',
         'Programming Language :: Python :: 3.3',
+        'Programming Language :: Python :: 3.4',
         'Operating System :: OS Independent',
         'Topic :: Software Development :: Libraries :: Python Modules'
     ],
