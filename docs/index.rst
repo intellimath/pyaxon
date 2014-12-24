@@ -260,7 +260,7 @@ There are introductory `IPython` notebooks:
 
 `Blog <http://intellimath.bitbucket.org/blog/categories/axon.html>`_ about AXON.
 
-History of `changes <http://intellimath.bitbucket.org/axon/changelog.rst>`_.
+History of `changes <http://intellimath.bitbucket.org/axon/changelog.html>`_.
 
 API Reference
 -------------
