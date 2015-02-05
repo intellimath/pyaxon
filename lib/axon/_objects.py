@@ -209,7 +209,7 @@ c_empty_list = rlist([])
 # Name
 #
 # @cython.final
-# cdef public class Name[type SimpleonNameType, object SimpleonName]:
+# cdef public class Name[type AxonNameType, object AxonName]:
 #     cdef unicode c_name
 #     #
 #     property name:

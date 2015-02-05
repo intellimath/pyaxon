@@ -109,23 +109,23 @@ def error_expected_complex_value(self):
 def error_expected_label(self):
     error(self, "Expected label of the value")
 #
-def error_no_reducer(self, tp):
-    error(self, 'There is no reducer for this type: %r' % tp)
-#
-def error_reducer_wrong_return(self, tp):
-    error(self, 'Reducer return wrong type: %r' % tp)
-#
 
 def error_no_handler(name):
     sys.stderr.write('Handler for name <%s> is not registered' % name)
 
 
-def error2(msg, te):
-    self.errto.write(msg)
-    return te(msg)
+def error2(msg):
+    sys.stderr.write('ERROR::' + msg)
+
+def error_no_reducer(tp):
+    error2('There is no reducer for this type: %r' % tp)
+#
+def error_reducer_wrong_type(tp):
+    error2('Reducer return wrong type: %r' % tp)
+#
     
 def error_no_attributes(tp):
-    eror2('The type %r does not contain attributes' % tp)
+    error2('The type %r does not contain attributes' % tp)
 
 def error_no_children(tp):
-    eror2('The type %r does not contain child values' % tp)
+    error2('The type %r does not contain child values' % tp)

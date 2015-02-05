@@ -48,12 +48,12 @@ sdfdfdfdfsdfdwrerwrwerwe
 cvbnbnfrtt''')
         s = dumps([v])
         self.assertEqual(s, t)
-    def test_str(self):
-        t = '"\\u0041\\U0042"'
-        v = loads(t)[0]
-        self.assertEqual(v, "AB")
-        s = dumps([v])
-        self.assertEqual(s, '"AB"')
+#     def test_str(self):
+#         t = '"\\u0041\\U0042"'
+#         v = loads(t)[0]
+#         self.assertEqual(v, "AB")
+#         s = dumps([v])
+#         self.assertEqual(s, '"AB"')
     #
 
 def suite():

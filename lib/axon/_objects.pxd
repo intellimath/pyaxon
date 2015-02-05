@@ -35,6 +35,8 @@ from cpython.unicode cimport PyUnicode_FromEncodedObject
 from cpython.bytes cimport PyBytes_AsString
 from cpython.long cimport PyLong_FromString
 #from cpython.dict cimport PyDict_SetItem, PyDict_GetItem
+from cpython.tuple import PyTuple_New, PyTuple_SETITEM
+from cpython.ref import Py_INCREF
 
 from cpython.datetime cimport import_datetime, tzinfo
 from cpython.datetime cimport time_new, timedelta_new, date_new, datetime_new
@@ -382,3 +384,17 @@ cdef public class timezone(tzinfo)[object TimeZoneUTCObject, type TimeZoneUTCTyp
 # cdef inline Context new_context(Context parent)
 
 cdef dict c_constants
+
+#
+# Python tuple utility functions
+#
+
+cdef inline tuple new_tuple(Py_ssize_t size):
+    return <tuple>PyTuple_New(size)
+	
+cdef inline int tuple_set(tuple t, Py_ssize_t i, object o):
+    cdef int r
+    r = PyTuple_SETITEM(t, i, o)
+    if r == 0:
+        Py_INCREF(o)
+    return r

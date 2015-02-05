@@ -669,18 +669,18 @@ class Loader:
                     self.next_line()
                     if self.eof:
                         errors.error_unexpected_end_string(self)
-                elif ch == 'n':
-                    text += "\n"
-                    skip_char(self)
-                elif ch == 'r':
-                    text += "\r"
-                    skip_char(self)
-                elif ch == 't':
-                    text += "\t"
-                    skip_char(self)
-                elif ch == 'u' or ch == 'U':
-                    skip_char(self)
-                    text += self.get_unicode_hex()
+#                 elif ch == 'n':
+#                     text += "\n"
+#                     skip_char(self)
+#                 elif ch == 'r':
+#                     text += "\r"
+#                     skip_char(self)
+#                 elif ch == 't':
+#                     text += "\t"
+#                     skip_char(self)
+#                 elif ch == 'u' or ch == 'U':
+#                     skip_char(self)
+#                     text += self.get_unicode_hex()
                 else:
                     text += '\\'
                 pos0 = self.pos
