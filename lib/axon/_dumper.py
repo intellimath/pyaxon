@@ -596,6 +596,10 @@ class Dumper:
                         self.dump_instance(ob)
                     elif obtype is Empty:
                         self.dump_empty(ob)
+                    elif obtype is dict:
+                        self.dump_dict(ob)
+                    elif obtype is list:
+                        self.dump_list(ob)
                     else:
                         errors.error_reducer_wrong_type(obtype)
     #
@@ -643,6 +647,10 @@ class Dumper:
                         self.pretty_dump_instance(ob, new_offset, use_offset)
                     elif obtype is Empty:
                         self.pretty_dump_empty(ob, new_offset, use_offset)
+                    elif obtype is dict:
+                        self.pretty_dump_dict(ob, new_offset, use_offset)
+                    elif obtype is list:
+                        self.pretty_dump_list(ob, new_offset, use_offset)
                     else:
                         errors.error_reducer_wrong_type(obtype)
     #
