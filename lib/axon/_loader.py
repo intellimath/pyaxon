@@ -558,7 +558,7 @@ class Loader:
     def get_key(self):
         pos0 = self.pos
         ch = next_char(self)
-        while ch.isalpha() or ch == '_':
+        while ch.isalnum() or ch == '_':
             ch = next_char(self)
 
         return get_chunk(self, pos0)
@@ -1040,7 +1040,7 @@ class Loader:
             key = self.try_get_key()
 
             ch = self.skip_spaces()
-
+            
             if key is not None:
                 if ch == ':':
                     skip_char(self)
