@@ -43,7 +43,7 @@ from cpython.datetime cimport time_new, timedelta_new, date_new, datetime_new
 
 cdef object _decimal2str
 
-cdef extern from "math.h":
+cdef extern from "math.h" nogil:
     bint isnan(double x)
     bint isinf(double x)
     bint signbit(double x)
@@ -254,6 +254,7 @@ cdef public object c_new_instance(object name, tuple args, dict mapping)
 cdef public object c_new_empty(object name)
 
 cdef public dict c_factory_dict
+cdef public dict c_type_factory_dict
 
 cdef class Builder:
     cdef public object create_mapping(self, object, dict)

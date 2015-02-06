@@ -27,7 +27,7 @@ cimport cython
 cdef bint IS_NAME=1
 cdef bint IS_KEY=0
 
-cdef extern from "math.h":
+cdef extern from "math.h" nogil:
     bint isnan(double x)
     bint isinf(double x)
     bint signbit(double x)

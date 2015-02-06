@@ -624,6 +624,7 @@ class Element(object):
     #
     def as_instance(self):
         return c_new_instance(self.name, tuple(self.sequence), self.mapping)
+    #
 
 #
 # Instance
@@ -818,8 +819,13 @@ def empty(name):
 #
 
 c_factory_dict = {}
+c_type_factory_dict = {}
+
 
 def reset_factory():
+    c_factory_dict = {}
+
+def reset_type_factory():
     c_factory_dict = {}
 
 def factory(name, factory_func=None):
@@ -831,6 +837,39 @@ def factory(name, factory_func=None):
         return _factory
     else:
         c_factory_dict[name] = factory_func
+
+def type_factory(tp, factory_func=None):
+    if factory_func is None:
+        def _factory(factory_func, tp=tp):
+            c_type_factory_dict[tp] = factory_func
+            return factory_func
+        return _factory
+    else:
+        c_type_factory_dict[tp] = factory_func
+        
+def convert(ob, to):
+    caller = c_type_factory_dict.get(to, None)
+    otype = type(ob)
+    if caller is None:
+        raise error("Object %s can't be converted to %s" % (otype, to))
+
+    if otype is Element:
+        return caller(ob.sequence, ob.mapping)
+    elif otype is Sequence:
+        return caller(ob.sequence)
+    elif otype is Mapping:
+        return caller(ob.mapping)
+    elif otype is Instance:
+        return caller(ob.sequence, ob.mapping)
+    elif otype is dict:
+        return caller(ob)
+    elif otype is list:
+        return caller(ob)
+    elif otype is tuple:
+        return caller(ob)
+    else:
+        raise error("Object %s do not support convertion" % otype)
+
 
 class Builder:
     def create_sequence(self, name, sequence):
@@ -885,7 +924,7 @@ class StrictBuilder(Builder):
 
     def __init__(self):
         self.c_factory_dict = c_factory_dict
-
+    #
     def create_mapping(self, name, mapping):
         handler = self.c_factory_dict.get(name)
         if handler is None:
