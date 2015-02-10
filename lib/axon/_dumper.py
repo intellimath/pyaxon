@@ -425,6 +425,11 @@ def _dump_key(ob):
     is_qname = 0
 
     n = c_unicode_length(ob)
+    ch = c_unicode_char(ob, pos)
+    if '0' <= ch <= '9' or ch == '-':
+        pos += 1
+        is_qname = 1
+        
     while pos < n:
         ch = c_unicode_char(ob, pos)
         if ch.isalnum() or ch == '_':
