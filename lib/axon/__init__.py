@@ -24,3 +24,5 @@ from axon.api import *
 from axon.objects import *
 from axon.utils import *
 from axon.types import *
+
+__version__ = '0.5.11'
