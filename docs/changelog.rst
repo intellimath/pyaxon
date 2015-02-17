@@ -5,6 +5,9 @@ Release Notes
 
 1. Add ability to dump custom class objects as dict, list or tuple.
 2. Add support (`axon.convert`) to convertion of safely loaded objects to given type.
+3. Fix several bugs.
+
+Special credit to `sbant <https://bitbucket.org/sbant1983>`_.
 
 **0.5.10**
 
