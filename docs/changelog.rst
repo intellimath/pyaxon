@@ -1,6 +1,11 @@
 Release Notes
 -------------
 
+**0.5.11**
+
+1. Add ability to dump custom class objects as dict, list or tuple.
+2. Add support (`axon.convert`) to convertion of safely loaded objects to given type.
+
 **0.5.10**
 
 1. Make error messages in loader more useful.

@@ -605,6 +605,8 @@ class Dumper:
                         self.dump_dict(ob)
                     elif obtype is list:
                         self.dump_list(ob)
+                    elif obtype is tuple:
+                        self.dump_tuple(ob)
                     else:
                         errors.error_reducer_wrong_type(obtype)
     #
@@ -656,6 +658,8 @@ class Dumper:
                         self.pretty_dump_dict(ob, new_offset, use_offset)
                     elif obtype is list:
                         self.pretty_dump_list(ob, new_offset, use_offset)
+                    elif obtype is tuple:
+                        self.pretty_dump_tuple(ob, new_offset, use_offset)
                     else:
                         errors.error_reducer_wrong_type(obtype)
     #
