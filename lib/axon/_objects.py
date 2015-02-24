@@ -851,12 +851,20 @@ def empty(name):
 #     def items(self):
 #         return ((key, dict.__getitem__(key)) for key in self._keys)
     
-c_factory_dict = {}
+c_mapping_factory_dict = {}
+c_element_factory_dict = {}
+c_sequence_factory_dict = {}
+c_instance_factory_dict = {}
+c_empty_factory_dict = {}
+
 c_type_factory_dict = {}
 
-
 def reset_factory():
-    c_factory_dict = {}
+    c_mapping_factory_dict = {}
+    c_element_factory_dict = {}
+    c_sequence_factory_dict = {}
+    c_instance_factory_dict = {}
+    c_empty_factory_dict = {}
 
 def reset_type_factory():
     c_factory_dict = {}
@@ -865,11 +873,69 @@ def factory(name, factory_func=None):
     name = c_as_unicode(name)
     if factory_func is None:
         def _factory(factory_func, name=name):
-            c_factory_dict[name] = factory_func
+            c_mapping_factory_dict[name] = factory_func
+            c_element_factory_dict[name] = factory_func
+            c_sequence_factory_dict[name] = factory_func
+            c_instance_factory_dict[name] = factory_func
+            c_empty_factory_dict[name] = factory_func
             return factory_func
         return _factory
     else:
-        c_factory_dict[name] = factory_func
+        c_mapping_factory_dict[name] = factory_func
+        c_element_factory_dict[name] = factory_func
+        c_sequence_factory_dict[name] = factory_func
+        c_instance_factory_dict[name] = factory_func
+        c_empty_factory_dict[name] = factory_func
+
+def mapping_factory(name, factory_func=None):
+    name = c_as_unicode(name)
+    if factory_func is None:
+        def _factory(factory_func, name=name):
+            c_mapping_factory_dict[name] = factory_func
+            return factory_func
+        return _factory
+    else:
+        c_mapping_factory_dict[name] = factory_func
+
+def element_factory(name, factory_func=None):
+    name = c_as_unicode(name)
+    if factory_func is None:
+        def _factory(factory_func, name=name):
+            c_element_factory_dict[name] = factory_func
+            return factory_func
+        return _factory
+    else:
+        c_element_factory_dict[name] = factory_func
+
+def sequence_factory(name, factory_func=None):
+    name = c_as_unicode(name)
+    if factory_func is None:
+        def _factory(factory_func, name=name):
+            c_sequence_factory_dict[name] = factory_func
+            return factory_func
+        return _factory
+    else:
+        c_sequence_factory_dict[name] = factory_func
+
+def instance_factory(name, factory_func=None):
+    name = c_as_unicode(name)
+    if factory_func is None:
+        def _factory(factory_func, name=name):
+            c_instance_factory_dict[name] = factory_func
+            return factory_func
+        return _factory
+    else:
+        c_instance_factory_dict[name] = factory_func
+
+def empty_factory(name, factory_func=None):
+    name = c_as_unicode(name)
+    if factory_func is None:
+        def _factory(factory_func, name=name):
+            c_empty_factory_dict[name] = factory_func
+            return factory_func
+        return _factory
+    else:
+        c_empty_factory_dict[name] = factory_func
 
 def type_factory(tp, factory_func=None):
     if factory_func is None:
@@ -956,38 +1022,42 @@ class SafeBuilder(Builder):
 class StrictBuilder(Builder):
 
     def __init__(self):
-        self.c_factory_dict = c_factory_dict
+        self.c_mapping_factory_dict = c_mapping_factory_dict
+        self.c_element_factory_dict = c_element_factory_dict
+        self.c_sequence_factory_dict = c_sequence_factory_dict
+        self.c_instance_factory_dict = c_instance_factory_dict
+        self.c_empty_factory_dict = c_empty_factory_dict
     #
     def create_mapping(self, name, mapping):
-        handler = self.c_factory_dict.get(name)
+        handler = self.c_mapping_factory_dict.get(name)
         if handler is None:
             errors.error_no_handler(name)
         else:
             return handler(mapping)
     #
     def create_sequence(self, name, sequence):
-        handler = self.c_factory_dict.get(name)
+        handler = self.c_sequence_factory_dict.get(name)
         if handler is None:
             errors.error_no_handler(name)
         else:
             return handler(sequence)
     #
     def create_element(self, name, mapping, sequence):
-        handler = self.c_factory_dict.get(name)
+        handler = self.c_element_factory_dict.get(name)
         if handler is None:
             errors.error_no_handler(name)
         else:
             return handler(mapping, sequence)
     #
     def create_instance(self, name, sequence, mapping):
-        handler = self.c_factory_dict.get(name)
+        handler = self.c_instance_factory_dict.get(name)
         if handler is None:
             errors.error_no_handler(name)
         else:
             return handler(sequence, mapping)
     #
     def create_empty(self, name):
-        handler = self.c_factory_dict.get(name)
+        handler = self.c_empty_factory_dict.get(name)
         if handler is None:
             errors.error_no_handler(name)
         else:
@@ -996,38 +1066,42 @@ class StrictBuilder(Builder):
 class MixedBuilder(Builder):
 
     def __init__(self):
-        self.c_factory_dict = c_factory_dict
+        self.c_mapping_factory_dict = c_mapping_factory_dict
+        self.c_element_factory_dict = c_element_factory_dict
+        self.c_sequence_factory_dict = c_sequence_factory_dict
+        self.c_instance_factory_dict = c_instance_factory_dict
+        self.c_empty_factory_dict = c_empty_factory_dict
 
     def create_mapping(self, name, mapping):
-        handler = self.c_factory_dict.get(name)
+        handler = self.c_mapping_factory_dict.get(name)
         if handler is None:
             return c_new_mapping(name, mapping)
         else:
             return handler(mapping)
     #
     def create_sequence(self, name, sequence):
-        handler = self.c_factory_dict.get(name)
+        handler = self.c_sequence_factory_dict.get(name)
         if handler is None:
             return c_new_sequence(name, sequence)
         else:
             return handler(sequence)
     #
     def create_element(self, name, mapping, sequence):
-        handler = self.c_factory_dict.get(name)
+        handler = self.c_element_factory_dict.get(name)
         if handler is None:
             return c_new_element(name, mapping, sequence)
         else:
             return handler(mapping, sequence)
     #
     def create_instance(self, name, sequence, mapping):
-        handler = self.c_factory_dict.get(name)
+        handler = self.c_instance_factory_dict.get(name)
         if handler is None:
             return c_new_instance(name, sequence, mapping)
         else:
             return handler(sequence, mapping)
     #
     def create_empty(self, name):
-        handler = self.c_factory_dict.get(name)
+        handler = self.c_empty_factory_dict.get(name)
         if handler is None:
             return c_new_empty(name)
         else:

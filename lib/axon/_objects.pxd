@@ -253,7 +253,11 @@ cdef public object c_new_instance(object name, tuple args, dict mapping)
 @cython.locals(e=Empty)
 cdef public object c_new_empty(object name)
 
-cdef public dict c_factory_dict
+cdef public dict c_mapping_factory_dict
+cdef public dict c_element_factory_dict
+cdef public dict c_sequence_factory_dict
+cdef public dict c_instance_factory_dict
+cdef public dict c_empty_factory_dict
 cdef public dict c_type_factory_dict
 
 cdef class Builder:
@@ -276,7 +280,12 @@ cdef class SafeBuilder(Builder):
     cdef public object create_empty(self, object)
 
 cdef class StrictBuilder(Builder):
-    cdef public dict c_factory_dict
+    cdef public dict c_mapping_factory_dict
+    cdef public dict c_element_factory_dict
+    cdef public dict c_sequence_factory_dict
+    cdef public dict c_instance_factory_dict
+    cdef public dict c_empty_factory_dict
+    cdef public dict c_type_factory_dict
 
     cdef public object create_mapping(self, object, dict)
     cdef public object create_element(self, object, dict, list)
@@ -285,7 +294,12 @@ cdef class StrictBuilder(Builder):
     cdef public object create_empty(self, object)
 
 cdef class MixedBuilder(Builder):
-    cdef public dict c_factory_dict
+    cdef public dict c_mapping_factory_dict
+    cdef public dict c_element_factory_dict
+    cdef public dict c_sequence_factory_dict
+    cdef public dict c_instance_factory_dict
+    cdef public dict c_empty_factory_dict
+    cdef public dict c_type_factory_dict
     
     cdef public object create_mapping(self, object, dict)
     cdef public object create_element(self, object, dict, list)
