@@ -34,7 +34,7 @@
 
 import cython
 
-from axon.errors import error
+#from axon.errors import error
 import axon.errors as errors
 
 from axon.types import builtins
@@ -450,7 +450,7 @@ class Sequence(object):
                 ', '.join([repr(x) for x in (self.name, self.sequence) if x]) + ')'
     #
     def as_mapping(self):
-        raise error("Sequence->Mapping convertion isn't available")
+        raise errors.error2("Sequence->Mapping convertion isn't available")
     #
     def as_sequence(self):
         return self
@@ -532,7 +532,7 @@ class Mapping(object):
         return self
     #
     def as_sequence(self):
-        raise error("Mapping->Sequence convertion isn't available")
+        raise errors.error2("Mapping->Sequence convertion isn't available")
     #
     def as_element(self, sequence=None):
         return c_new_element(self.name, self.mapping, c_as_list(sequence))
@@ -614,10 +614,10 @@ class Element(object):
             raise _error_incomparable_types(self, other)
     #
     def as_mapping(self):
-        raise error("Element->Mapping convertion isn't available")
+        raise errors.error2("Element->Mapping convertion isn't available")
     #
     def as_sequence(self):
-        raise error("Element->Sequence convertion isn't available")
+        raise errors.error2("Element->Sequence convertion isn't available")
     #
     def as_element(self):
         return self
@@ -696,10 +696,10 @@ class Instance(object):
             raise _error_incomparable_types(self, other)
     #
     def as_mapping(self):
-        raise error("Instance->Mapping convertion isn't available")
+        raise errors.error2("Instance->Mapping convertion isn't available")
     #
     def as_sequence(self):
-        raise error("Instance->Sequence convertion isn't available")
+        raise errors.error2("Instance->Sequence convertion isn't available")
     #
     def as_element(self):
         return c_new_element(self.name, self.mapping, list(self.sequence))
@@ -950,7 +950,7 @@ def convert(ob, to):
     caller = c_type_factory_dict.get(to, None)
     otype = type(ob)
     if caller is None:
-        raise error("Object %s can't be converted to %s" % (otype, to))
+        raise errors.error2("Object %s can't be converted to %s" % (otype, to))
 
     if otype is Element:
         return caller(ob.sequence, ob.mapping)
@@ -967,7 +967,7 @@ def convert(ob, to):
     elif otype is tuple:
         return caller(ob)
     else:
-        raise error("Object %s do not support convertion" % otype)
+        raise errors.error2("Object %s do not support convertion" % otype)
 
 
 class Builder:
