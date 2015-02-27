@@ -487,8 +487,11 @@ class Dumper:
             if braces:
                 self.pretty = 2
         #self.offset = '  '
-        self.hsize = hsize
-
+        if self.pretty and hsize <= 0:
+            self.hsize = 65000
+        else:
+            self.hsize = hsize
+            
         self.sorted = sorted
 
         self.c_simple_dumpers = c_simple_dumpers

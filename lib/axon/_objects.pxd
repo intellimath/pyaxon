@@ -233,7 +233,17 @@ cdef public class Instance[object InstanceObject, type InstanceType]:
     cdef public object name
     cdef public tuple sequence
     cdef public dict mapping
-    #
+
+#
+#
+# Node
+#
+# @cython.freelist(64)
+# @cython.final
+# cdef public class Node[object NodeObject, type NodeType]:
+#     cdef public object name
+#     cdef public dict mapping
+#     cdef public list sequence
 
 @cython.locals(s=Sequence)
 cdef public object c_new_sequence(object name, list sequence)
@@ -249,9 +259,13 @@ cdef public object c_new_element(object name, dict mapping, list sequence)
 #
 @cython.locals(e=Instance)
 cdef public object c_new_instance(object name, tuple args, dict mapping)
-
+#
 @cython.locals(e=Empty)
 cdef public object c_new_empty(object name)
+#
+# @cython.locals(e=Node)
+# cdef public object c_new_node(object name, dict mapping, list sequence)
+
 
 cdef public dict c_mapping_factory_dict
 cdef public dict c_element_factory_dict
@@ -259,6 +273,9 @@ cdef public dict c_sequence_factory_dict
 cdef public dict c_instance_factory_dict
 cdef public dict c_empty_factory_dict
 cdef public dict c_type_factory_dict
+
+cdef public dict c_node_factory_dict
+cdef public dict c_row_factory_dict
 
 cdef class Builder:
     cdef public object create_mapping(self, object, dict)

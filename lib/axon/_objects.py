@@ -818,6 +818,97 @@ def empty(name):
     return c_new_empty(c_as_name(name))
 #
 
+# class Node(object):
+#     #
+#     @property
+#     def a(self):
+#         return new_attrs(self.mapping)
+#     #
+#     def __init__(self, name, mapping=None, sequence=None):
+#         self.name = c_as_name(name)
+#         if mapping is None:
+#             self.mapping = None
+#         elif type(mapping) is dict:
+#             self.mapping = mapping
+#         else:
+#             self.mapping = dict(mapping)
+#         if sequence is None:
+#             self.sequence = None
+#         elif type(sequence) is list:
+#             self.sequence = sequence
+#         else:
+#             self.sequence = list(sequence)
+#     #
+#     def __getitem__(self, index):
+#         return self.sequence[index]
+#     #
+#     def __setitem__(self, index, val):
+#         if self.sequence is None:
+#             self.sequence = [val]
+#         else:
+#             self.sequence[index] = val
+#     #
+#     def __contains__(self, name):
+#         if self.mapping is None:
+#             return False
+#         else:
+#             return name in self.mapping
+#     #
+#     def get(self, name, default=None):
+#         if self.mapping is None:
+#             return default
+#         else:
+#             return self.mapping.get(name, default)
+#     #
+#     def set(self, name, val):
+#         if self.mapping is None:
+#             self.mapping = {name:val}
+#         else:
+#             self.mapping[name] = val
+#     #
+#     def update(self, map):
+#         if self.mapping is None:
+#             self.mapping = {}
+#         self.mapping.update(map)
+#     #
+#     def append(self, ob):
+#         if self.sequence is None:
+#             self.sequence = [ob]
+#         else:
+#             self.sequence.append(ob)
+#     #
+#     def extend(self, seq):
+#         if self.sequence is None:
+#             self.sequence = []
+#         self.sequence.extend(seq)
+#     #
+#     def __repr__(self):
+#         lst = [repr(x) for x in (self.name, self.mapping, self.sequence) if x]
+#         return  'node(' + ', '.join(lst) + ')'
+#     #
+#     def __richcmp__(self, other, op):
+#         if type(self) is Node:
+#             v = (self.name == other.name) and \
+#                 (self.sequence == other.sequence) and \
+#                 (self.mapping == other.mapping)
+#             if op == 2:
+#                 return v
+#             elif op == 3:
+#                 return not v
+#             else:
+#                 raise _error_unsupported_comparison(self)
+#         else:
+#             raise _error_incomparable_types(self, other)
+#     #
+# 
+# def c_new_node(name, mapping, sequence):
+#     e = Node.__new__(Node)
+#     e.name = name
+#     e.mapping = mapping
+#     e.sequence = sequence
+#     return e
+    
+
 # #
 # # OrderedDict
 # #
