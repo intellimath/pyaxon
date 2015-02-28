@@ -901,22 +901,14 @@ class Dumper:
         
             v = l[i]
 
+            use_offset = 0
             if i > 0:
-                if self.hsize: 
-                    if not flag:
-                        use_offset = 1
-                        flag = self.is_simple_type(v)
-                    elif j >= self.hsize:
-                        use_offset = 1
-                        flag = 0
-                        j = 0
-                    else:
-                        flag = self.is_simple_type(v)
-                        if flag:
-                            use_offset = 0
-                        else:
-                            use_offset = 1
-                else:
+                if not flag or j >= self.hsize:
+                    use_offset = 1
+                    j = 0
+                
+                flag = self.is_simple_type(v)
+                if not flag:
                     use_offset = 1
 
                 if use_offset:
@@ -927,7 +919,7 @@ class Dumper:
                         self.write(' ')
             else:
                 flag = self.is_simple_type(v)
-                
+                                
             self._pretty_dump(v, w, 1)
 
             j += 1
@@ -959,21 +951,14 @@ class Dumper:
         
             v = l[i]
 
+            use_offset = 0
             if i > 0:
-                if self.hsize: 
-                    if not flag:
-                        use_offset = 1
-                        flag = self.is_simple_type(v)
-                    elif j >= self.hsize:
-                        use_offset = 1
-                        j = 0
-                    else:
-                        flag = self.is_simple_type(v)
-                        if flag:
-                            use_offset = 0
-                        else:
-                            use_offset = 1
-                else:
+                if not flag or j >= self.hsize:
+                    use_offset = 1
+                    j = 0
+                
+                flag = self.is_simple_type(v)
+                if not flag:
                     use_offset = 1
 
                 if use_offset:
