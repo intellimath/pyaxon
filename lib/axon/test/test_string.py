@@ -26,7 +26,7 @@ def"'''
         v = loads(t)[0]
         self.assertEqual(v, 'abcdef')
         s = dumps([v])
-        self.assertEqual(s, '"abcdef"')
+        self.assertEqual(s, 'abcdef')
     def test_str4(self):
         v = loads('"abc абв"')[0]
         self.assertEqual(v, 'abc абв')

@@ -142,7 +142,8 @@ cdef class SimpleDumper:
     @cython.locals(text=unicode)
     cdef inline unicode dump_bytes(SimpleDumper, object)
 
-    @cython.locals(n=int, pos=int, pos0=int, text=unicode, ch=Py_UCS4, flag=bint)
+    @cython.locals(n=int, pos=int, pos0=int, text=unicode, ch=Py_UCS4, 
+                   flag=bint, is_id=bint)
     cdef inline unicode dump_unicode(SimpleDumper, object)
 
     cdef inline unicode dump_bool(SimpleDumper, object)

@@ -179,9 +179,9 @@ class SimpleDumper:
     def __call__(self, o):
         otype = type(o)
         if otype is unicode_type:
-            return '"' + self.dump_unicode(o) + '"'
+            return self.dump_unicode(o)
         elif otype is str_type:
-            return '"' + self.dump_str(o) + '"'
+            return self.dump_str(o)
         elif otype is long_type or otype is int_type:
             return self.dump_int(o)
         elif otype is float_type:
@@ -266,10 +266,23 @@ class SimpleDumper:
         pos = 0
         text = ''
         flag = 0
+        is_id = 1
 
         n = c_unicode_length(line)
+
+        if n == 0:
+            return '""'
+
+        ch = c_unicode_char(line, pos)
+        if ch.isalpha() or ch == '_':
+            pos += 1
+
         while pos < n:
             ch = c_unicode_char(line, pos)
+            if ch.isalnum() or ch == '_':
+                pos += 1
+                continue
+                
             if ch == '"':
                 if pos != pos0:
                     text += c_unicode_substr(line, pos0, pos)
@@ -279,13 +292,19 @@ class SimpleDumper:
                 flag = 1
             else:
                 pos += 1
+            
+            is_id = 0
 
         if pos != pos0:
             if flag:
                 text += c_unicode_substr(line, pos0, pos)
             else:
                 text = c_unicode_substr(line, pos0, pos)
-        return text
+        
+        if is_id:
+            return text
+        else:
+            return '"' + text + '"'
 
     def dump_bool(self, o):
         #return '⊤' if o else '⊥'
@@ -675,16 +694,12 @@ class Dumper:
         otype = type(o)
         dumper = self.sdumper
         if otype is unicode_type:
-            self.write('"')
             text = dumper.dump_unicode(o)
             self.write(text)
-            self.write('"')
             return 1
         elif otype is str_type:
-            self.write('"')
             text = dumper.dump_str(o)
             self.write(text)
-            self.write('"')
             return 1
         elif otype is long_type or otype is int_type:
             text = dumper.dump_int(o)
