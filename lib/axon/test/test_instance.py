@@ -39,9 +39,7 @@ class ObjectTestCase(unittest.TestCase):
         s = dumps([v], pretty=1)
         self.assertEqual(s, '''\
 aaa:
-  4
-  5
-  6
+  4 5 6
   a: 1
   b: 2
   c: 3''')

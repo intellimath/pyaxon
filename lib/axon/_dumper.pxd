@@ -270,16 +270,16 @@ cdef public class Dumper[object Dumper, type DumperType]:
     #
     cdef int dump_empty(Dumper self, Empty ob) except -1
     #
-    @cython.locals(text=unicode, i=int, j=int, flag=bint, use_offset=bint)
+    @cython.locals(text=unicode, i=int, j=int, flag=int, use_offset=bint)
     cdef inline int _pretty_dump_dict_sequence(Dumper self, dict d, unicode w, bint is_name) except -1
     #
     #@cython.locals(text=unicode, i=int, j=int, flag=bint)
     #cdef inline int _pretty_dump_attr_sequence(Dumper self, dict d, unicode w, bint use_offset) except -1
     #
-    @cython.locals(i=int, j=int, flag=bint, use_offset=bint)
+    @cython.locals(i=int, j=int, flag=int, use_offset=bint)
     cdef inline int _pretty_dump_list_sequence(Dumper self, list l, unicode w) except -1
     #
-    @cython.locals(i=int, j=int, flag=bint, use_offset=bint)
+    @cython.locals(i=int, j=int, flag=int, use_offset=bint)
     cdef inline int _pretty_dump_tuple_sequence(Dumper self, tuple l, unicode w) except -1
     #
     @cython.locals(n=int)

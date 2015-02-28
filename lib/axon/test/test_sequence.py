@@ -97,9 +97,7 @@ aaa:
         s = dumps([v], pretty=1)
         self.assertEqual(s, \
 '''aaa:
-  1
-  2
-  3''')
+  1 2 3''')
     #
     def test_sequence_ident1(self):
         v = loads('''

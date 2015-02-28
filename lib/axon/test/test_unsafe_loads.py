@@ -174,10 +174,7 @@ class UnsafeLoadsTestCase(unittest.TestCase):
   z: 2
 C:
   x: 1
-  y: [
-    *1
-    *2
-    *3]''')
+  y: [*1 *2 *3]''')
     #
     def test_usafe_6(self):
         text = """\

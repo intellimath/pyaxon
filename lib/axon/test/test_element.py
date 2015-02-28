@@ -62,7 +62,7 @@ aaa:
                       "%s: %s" % (k,x) \
                       for k,x in sorted(v.mapping.items())) + \
             '\n  ' + \
-            '\n  '.join("%s" % x for x in v.sequence)
+            ' '.join("%s" % x for x in v.sequence)
             )
     #
     def test_element_ident1(self):

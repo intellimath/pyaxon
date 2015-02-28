@@ -896,14 +896,19 @@ class Dumper:
             return 0
 
         j = 0
+        flag = 0
         for i in range(n):
         
             v = l[i]
 
             if i > 0:
                 if self.hsize: 
-                    if j >= self.hsize:
+                    if not flag:
                         use_offset = 1
+                        flag = self.is_simple_type(v)
+                    elif j >= self.hsize:
+                        use_offset = 1
+                        flag = 0
                         j = 0
                     else:
                         flag = self.is_simple_type(v)
@@ -920,6 +925,8 @@ class Dumper:
                 else:
                     if j > 0:
                         self.write(' ')
+            else:
+                flag = self.is_simple_type(v)
                 
             self._pretty_dump(v, w, 1)
 
@@ -947,13 +954,17 @@ class Dumper:
                 return 0
             
         j = 0
+        flag = 0
         for i in range(n):
         
             v = l[i]
 
             if i > 0:
                 if self.hsize: 
-                    if j >= self.hsize:
+                    if not flag:
+                        use_offset = 1
+                        flag = self.is_simple_type(v)
+                    elif j >= self.hsize:
                         use_offset = 1
                         j = 0
                     else:
@@ -971,6 +982,8 @@ class Dumper:
                 else:
                     if j > 0:
                         self.write(' ')
+            else:
+                flag = self.is_simple_type(v)
                 
             self._pretty_dump(v, w, 1)
 
