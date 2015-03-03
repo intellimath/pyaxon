@@ -69,4 +69,4 @@ cdef inline unicode c_as_unicode(object ob):
     elif ob is None:
         return c_object_to_unicode('')
     else:
-        raise TypeError('This object %r is not unicode compatible' % ob)
+        raise TypeError(' Object %r is not unicode compatible' % ob)
