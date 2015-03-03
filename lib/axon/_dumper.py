@@ -276,6 +276,10 @@ class SimpleDumper:
         ch = c_unicode_char(line, pos)
         if ch.isalpha() or ch == '_':
             pos += 1
+        elif ch >= '0' or ch <= '9':
+            pos += 1
+            is_id = 0
+            
 
         while pos < n:
             ch = c_unicode_char(line, pos)
