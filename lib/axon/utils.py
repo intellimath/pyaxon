@@ -23,7 +23,7 @@
 # THE SOFTWARE.
 
 from axon._loader import as_name
-from axon._objects import undef, factory, type_factory, convert
+from axon._objects import undef, factory, type_factory, convert, dict_as_sequence, reset_factory
 from axon._objects import mapping_factory, sequence_factory, element_factory, instance_factory, empty_factory
 from axon._objects import as_unicode, as_list, as_dict, as_tuple
 from axon._dumper import reduce, dump_as_str

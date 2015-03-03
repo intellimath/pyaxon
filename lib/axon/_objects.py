@@ -941,6 +941,12 @@ def empty(name):
 # 
 #     def items(self):
 #         return ((key, dict.__getitem__(key)) for key in self._keys)
+
+def dict_as_sequence_factory(items):
+    return dict(items)
+
+# def dict_as_mapping_factory(d):
+#     return d
     
 c_mapping_factory_dict = {}
 c_element_factory_dict = {}
@@ -950,12 +956,17 @@ c_empty_factory_dict = {}
 
 c_type_factory_dict = {}
 
+c_sequence_factory_dict['dict'] = dict_as_sequence_factory
+# c_mapping_factory_dict['dict'] = dict_as_mapping_factory
+
 def reset_factory():
     c_mapping_factory_dict = {}
     c_element_factory_dict = {}
     c_sequence_factory_dict = {}
     c_instance_factory_dict = {}
     c_empty_factory_dict = {}
+    c_sequence_factory_dict['dict'] = dict_as_sequence_factory
+#    c_mapping_factory_dict['dict'] = dict_as_mapping_factory
 
 def reset_type_factory():
     c_factory_dict = {}
@@ -1060,6 +1071,8 @@ def convert(ob, to):
     else:
         raise errors.error2("Object %s do not support convertion" % otype)
 
+def dict_as_sequence(d):
+    return c_new_sequence(c_as_name('dict'), [(k,v) for k,v in d.items()])
 
 class Builder:
     def create_sequence(self, name, sequence):
