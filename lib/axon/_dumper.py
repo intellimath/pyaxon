@@ -266,23 +266,23 @@ class SimpleDumper:
         pos = 0
         text = ''
         flag = 0
-        is_id = 1
+#         is_id = 1
 
         n = c_unicode_length(line)
 
         if n == 0:
             return '""'
 
-        ch = c_unicode_char(line, pos)
-        pos += 1
-        if not ch.isalpha() and not ch == '_':
-            is_id = 0
+#         ch = c_unicode_char(line, pos)
+#         pos += 1
+#         if not ch.isalpha() and not ch == '_':
+#             is_id = 0
             
         while pos < n:
             ch = c_unicode_char(line, pos)
-            if ch.isalnum() or ch == '_':
-                pos += 1
-                continue
+#             if ch.isalnum() or ch == '_':
+#                 pos += 1
+#                 continue
                 
             if ch == '"':
                 if pos != pos0:
@@ -294,7 +294,7 @@ class SimpleDumper:
             else:
                 pos += 1
             
-            is_id = 0
+#             is_id = 0
 
         if pos != pos0:
             if flag:
@@ -302,10 +302,11 @@ class SimpleDumper:
             else:
                 text = c_unicode_substr(line, pos0, pos)
         
-        if is_id:
-            return text
-        else:
-            return '"' + text + '"'
+#         if is_id:
+#             return text
+#         else:
+#             return '"' + text + '"'
+        return '"' + text + '"'
 
     def dump_bool(self, o):
         #return '⊤' if o else '⊥'
