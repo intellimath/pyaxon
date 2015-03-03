@@ -734,7 +734,7 @@ class Dumper:
         self.write(text)
         return 1
     #
-    def _dump_dict_sequence(self, d, is_name):
+    def _dump_attributes(self, d):
         i = 0
 
         if self.sorted:
@@ -747,35 +747,33 @@ class Dumper:
                 self.write(' ')
 
             text = c_as_unicode(k)
-            if is_name:
-                self.write(_dump_name(text))
-            else:
-                self.write(_dump_key(text))
+            self.write(_dump_name(text))
 
             self.write(':')
 
             self._dump(v)
             i += 1
     #
-#     def _dump_attr_sequence(self, d):
-#         i = 0
-# 
-#         if self.sorted:
-#             items = sorted(d.items())
-#         else:
-#             items = d.items()
-# 
-#         for k,v in items:
-#             if i > 0:
-#                 self.write(' ')
-# 
-#             text = c_as_unicode(k)
-#             self.write(_dump_name(text))
-# 
-#             self.write(':')
-#             self._dump(v)
-#             i += 1
-#     #
+    def _dump_dict_values(self, d):
+        i = 0
+
+        if self.sorted:
+            items = sorted(d.items())
+        else:
+            items = d.items()
+
+        for k,v in items:
+            if i > 0:
+                self.write(' ')
+
+            text = c_as_unicode(k)
+            self.write(_dump_key(text))
+
+            self.write(':')
+
+            self._dump(v)
+            i += 1
+    #
     def _dump_list_sequence(self, l):
         i = 0
         for v in l:
@@ -803,13 +801,13 @@ class Dumper:
     def dump_mapping(self, o):
         self.write(_dump_name(o.name))
         self.write('{')
-        self._dump_dict_sequence(o.mapping, IS_NAME)
+        self._dump_attributes(o.mapping)
         self.write('}')
     #
     def dump_element(self, o):
         self.write(_dump_name(o.name))
         self.write('{')
-        self._dump_dict_sequence(o.mapping, IS_NAME)
+        self._dump_attributes(o.mapping)
         if o.sequence:
             self.write(' ')
             self._dump_list_sequence(o.sequence)
@@ -827,7 +825,7 @@ class Dumper:
         self._dump_tuple_sequence(o.sequence)
         if o.mapping:
             self.write(' ')
-            self._dump_dict_sequence(o.mapping, IS_NAME)
+            self._dump_attributes(o.mapping)
         self.write('}')
     #
     def dump_empty(self, o):
@@ -841,7 +839,7 @@ class Dumper:
     #
     def dump_dict(self, d):
         self.write('{')
-        self._dump_dict_sequence(d, IS_KEY)
+        self._dump_dict_values(d)
         self.write('}')
     #
     def dump_tuple(self, d):
@@ -849,7 +847,7 @@ class Dumper:
         self._dump_tuple_sequence(d)
         self.write(')')
     #
-    def _pretty_dump_dict_sequence(self, d, w, is_name):
+    def _pretty_dump_attributes(self, d, w):
         if len(d) == 0: 
             return 0
 
@@ -861,7 +859,6 @@ class Dumper:
         i = 0
         j = 0
         for k,v in items:
-            #flag = self.is_simple_type(v)
         
             if i > 0:
                 if self.hsize: 
@@ -880,10 +877,46 @@ class Dumper:
                     self.write(' ')
 
             text = c_as_unicode(k)
-            if is_name:
-                self.write(_dump_name(text))
-            else:
-                self.write(_dump_key(text))
+            self.write(_dump_name(text))
+            
+            self.write(': ')
+            
+            self._pretty_dump(v, w, 0)
+
+            i += 1
+            j += 1
+    #
+    def _pretty_dump_dict_values(self, d, w):
+        if len(d) == 0: 
+            return 0
+
+        if self.sorted:
+            items = sorted(d.items())
+        else:
+            items = d.items()            
+
+        i = 0
+        j = 0
+        for k,v in items:
+        
+            if i > 0:
+                if self.hsize: 
+                    if j >= self.hsize:
+                        use_offset = 1
+                        j = 0
+                    else:
+                        use_offset = 1
+                else:
+                    use_offset = 1
+
+                if use_offset:
+                    self.write('\n')
+                    self.write(w)
+                else:
+                    self.write(' ')
+
+            text = c_as_unicode(k)
+            self.write(_dump_key(text))
             
             self.write(': ')
             
@@ -1002,7 +1035,7 @@ class Dumper:
             self.write(w)
 
 
-        self._pretty_dump_dict_sequence(o.mapping, w, IS_NAME)
+        self._pretty_dump_attributes(o.mapping, w)
 
         if self.pretty == 2:
             self.write('}')
@@ -1017,7 +1050,7 @@ class Dumper:
             self.write(' {\n')
             self.write(w)
 
-        self._pretty_dump_dict_sequence(o.mapping, w, IS_NAME)
+        self._pretty_dump_attributes(o.mapping, w)
         if o.sequence:
             self.write('\n')
             self.write(w)
@@ -1064,7 +1097,7 @@ class Dumper:
         self.write('\n')
         self.write(w)
         if o.mapping:
-            self._pretty_dump_dict_sequence(o.mapping, w, IS_NAME)
+            self._pretty_dump_attributes(o.mapping, w)
 
         if self.pretty == 2:
             self.write('}')
@@ -1108,7 +1141,7 @@ class Dumper:
             else:
                 self.write('\n')
                 self.write(w)
-        self._pretty_dump_dict_sequence(d, w, IS_KEY)
+        self._pretty_dump_dict_values(d, w)
         self.write('}')
     #
     def pretty_dump_tuple(self, l, w, use_offset):

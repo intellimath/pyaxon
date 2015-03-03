@@ -238,11 +238,11 @@ cdef public class Dumper[object Dumper, type DumperType]:
     @cython.locals(text=unicode, ptr=PyPointer)
     cdef bint _dump_value(Dumper self, o) except -1
     #
-    @cython.locals(i=int, text=unicode)
-    cdef int _dump_dict_sequence(Dumper self, dict d, bint is_name) except -1
+    @cython.locals(i=int)
+    cdef int _dump_attributes(Dumper self, dict d) except -1
     #
-    #@cython.locals(i=int, text=unicode)
-    #cdef int _dump_attr_sequence(Dumper self, dict d) except -1
+    @cython.locals(i=int)
+    cdef int _dump_dict_values(Dumper self, dict d) except -1
     #
     @cython.locals(i=int)
     cdef int _dump_list_sequence(Dumper self, list l) except -1
@@ -271,8 +271,11 @@ cdef public class Dumper[object Dumper, type DumperType]:
     #
     cdef int dump_empty(Dumper self, Empty ob) except -1
     #
-    @cython.locals(text=unicode, i=int, j=int, flag=int, use_offset=bint)
-    cdef inline int _pretty_dump_dict_sequence(Dumper self, dict d, unicode w, bint is_name) except -1
+    @cython.locals(i=int, j=int, flag=int, use_offset=bint)
+    cdef inline int _pretty_dump_dict_values(Dumper self, dict d, unicode w) except -1
+    #
+    @cython.locals(i=int, j=int, flag=int, use_offset=bint)
+    cdef inline int _pretty_dump_attributes(Dumper self, dict d, unicode w) except -1
     #
     #@cython.locals(text=unicode, i=int, j=int, flag=bint)
     #cdef inline int _pretty_dump_attr_sequence(Dumper self, dict d, unicode w, bint use_offset) except -1
