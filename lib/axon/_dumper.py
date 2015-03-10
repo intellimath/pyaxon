@@ -494,7 +494,6 @@ class Dumper:
     def __init__(self, fd, pretty=0, braces=0, sorted=1, hsize=0, crossref=0):
 
         #self.max_size = 65000
-        #self.size = 0
 
         self.crossref = 1 if crossref else 0
         self.crossref_set = None

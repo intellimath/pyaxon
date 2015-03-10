@@ -84,9 +84,10 @@ _decimal2str = default_decimal_context.to_eng_string
 
 class Undefined:
     def __repr__(self):
-        return '?'
+        return '??'
     def __str__(self):
         return '??'
+
 
 def isundef(o):
     return type(o) is Undefined

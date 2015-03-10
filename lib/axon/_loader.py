@@ -827,6 +827,11 @@ class Loader:
         else:
             name = self.try_get_name()
             if name is not None:
+
+                val = c_constants.get(name, None)
+                if val is not None:
+                    return val
+            
                 ch = self.skip_spaces()
                 if ch == '{':
                     self.bc += 1
@@ -902,8 +907,12 @@ class Loader:
 
         if aname is not None:
 
-            ch = self.skip_spaces()
+            val = c_constants.get(aname, None)
+            if val is not None:
+                return val
 
+            ch = self.skip_spaces()
+            
             if ch == ':':
                 skip_char(self)
                 self.skip_spaces()
@@ -1089,6 +1098,11 @@ class Loader:
             name = self.try_get_name()
 
             if name is not None:
+
+                val = c_constants.get(name, None)
+                if val is not None:
+                    return val
+
                 ch = self.skip_spaces()
 
                 if ch == ':':
@@ -1159,6 +1173,10 @@ class Loader:
             name = self.try_get_name()
 
             if name is not None:
+                val = c_constants.get(name, None)
+                if val is not None:
+                    return val
+
                 ch = self.skip_spaces()
 
                 if ch == ':':
