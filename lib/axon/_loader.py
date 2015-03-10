@@ -763,7 +763,7 @@ class Loader:
             else:
                 return self.sbuilder.create_nan()
             
-        name2 = self.c_constants.get(name, c_undefined)
+        name2 = dict_get(self.c_constants, name, c_undefined)
         if name2 is c_undefined:
             return name
         else:
@@ -828,7 +828,7 @@ class Loader:
             name = self.try_get_name()
             if name is not None:
 
-                val = c_constants.get(name, None)
+                val = dict_get(self.c_constants, name, None)
                 if val is not None:
                     return val
             
@@ -907,7 +907,7 @@ class Loader:
 
         if aname is not None:
 
-            val = c_constants.get(aname, None)
+            val = dict_get(self.c_constants, aname, None)
             if val is not None:
                 return val
 
@@ -1099,7 +1099,7 @@ class Loader:
 
             if name is not None:
 
-                val = c_constants.get(name, None)
+                val = dict_get(self.c_constants, name, None)
                 if val is not None:
                     return val
 
@@ -1173,7 +1173,7 @@ class Loader:
             name = self.try_get_name()
 
             if name is not None:
-                val = c_constants.get(name, None)
+                val = dict_get(self.c_constants, name, None)
                 if val is not None:
                     return val
 
