@@ -88,7 +88,6 @@ class Undefined:
     def __str__(self):
         return '??'
 
-
 def isundef(o):
     return type(o) is Undefined
 
@@ -126,7 +125,7 @@ def _error_incomparable_types(self, other):
 c_undescore = '_'
 empty_name = ''
 
-name_cache = {None: empty_name, c_undescore: c_undescore}
+name_cache = {empty_name: empty_name, c_undescore: c_undescore}
 
 def clear_all_names():
     name_cache = {}
