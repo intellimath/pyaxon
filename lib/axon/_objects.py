@@ -53,7 +53,7 @@ except:
     from base64 import encodestring as encodebytes, decodestring as decodebytes
 
 try:
-    import cdecimal as _decimal
+    import _decimal
 except:
     import decimal as _decimal
 
