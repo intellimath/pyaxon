@@ -31,6 +31,8 @@ import axon.types as types
 from axon.types import builtins
 import axon.errors as errors
 
+from collections import OrderedDict as odict
+
 IS_NAME=1
 IS_KEY=0
 
@@ -595,6 +597,8 @@ class Dumper:
                 self.dump_dict(o)
             elif otype is tuple:
                 self.dump_tuple(o)
+            elif otype is odict:
+                self.dump_odict(o)
             #elif otype is set:
             #    self.dump_set(o)
             elif otype is Mapping:
@@ -630,6 +634,8 @@ class Dumper:
                         self.dump_list(ob)
                     elif obtype is tuple:
                         self.dump_tuple(ob)
+                    elif obtype is odict:
+                        self.dump_odict(ob)
                     else:
                         errors.error_reducer_wrong_type(obtype)
     #
@@ -646,6 +652,8 @@ class Dumper:
                 self.pretty_dump_dict(o, new_offset, use_offset)
             elif otype is tuple:
                 self.pretty_dump_tuple(o, new_offset, use_offset)
+            elif otype is odict:
+                self.pretty_dump_odict(o, new_offset, use_offset)
             #elif otype is set:
             #    self.pretty_dump_set(o, new_offset, not use_offset)
             elif otype is Mapping:
@@ -683,6 +691,8 @@ class Dumper:
                         self.pretty_dump_list(ob, new_offset, use_offset)
                     elif obtype is tuple:
                         self.pretty_dump_tuple(ob, new_offset, use_offset)
+                    elif otype is odict:
+                        self.pretty_dump_odict(o, new_offset, use_offset)
                     else:
                         errors.error_reducer_wrong_type(obtype)
     #
@@ -774,6 +784,21 @@ class Dumper:
             self._dump(v)
             i += 1
     #
+    def _dump_odict_values(self, d):
+        i = 0
+
+        for k,v in d.items():
+            if i > 0:
+                self.write(' ')
+
+            text = c_as_unicode(k)
+            self.write(_dump_key(text))
+
+            self.write(':')
+
+            self._dump(v)
+            i += 1
+    #
     def _dump_list_sequence(self, l):
         i = 0
         for v in l:
@@ -842,6 +867,11 @@ class Dumper:
         self._dump_dict_values(d)
         self.write('}')
     #
+    def dump_odict(self, d):
+        self.write('<')
+        self._dump_odict_values(d)
+        self.write('>')
+    #
     def dump_tuple(self, d):
         self.write('(')
         self._dump_tuple_sequence(d)
@@ -898,6 +928,40 @@ class Dumper:
         i = 0
         j = 0
         for k,v in items:
+        
+            if i > 0:
+                if self.hsize: 
+                    if j >= self.hsize:
+                        use_offset = 1
+                        j = 0
+                    else:
+                        use_offset = 1
+                else:
+                    use_offset = 1
+
+                if use_offset:
+                    self.write('\n')
+                    self.write(w)
+                else:
+                    self.write(' ')
+
+            text = c_as_unicode(k)
+            self.write(_dump_key(text))
+            
+            self.write(': ')
+            
+            self._pretty_dump(v, w, 0)
+
+            i += 1
+            j += 1
+    #
+    def _pretty_dump_odict_values(self, d, w):
+        if len(d) == 0: 
+            return 0
+
+        i = 0
+        j = 0
+        for k,v in d.items():
         
             if i > 0:
                 if self.hsize: 
@@ -1143,6 +1207,18 @@ class Dumper:
                 self.write(w)
         self._pretty_dump_dict_values(d, w)
         self.write('}')
+    #
+    def pretty_dump_odict(self, d, w, use_offset):
+        self.write('<')
+        n = len(d)
+        if n > 1:
+            if use_offset:
+                self.write(' ')
+            else:
+                self.write('\n')
+                self.write(w)
+        self._pretty_dump_odict_values(d, w)
+        self.write('>')
     #
     def pretty_dump_tuple(self, l, w, use_offset):
         self.write('(')

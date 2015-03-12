@@ -32,6 +32,7 @@ import sys
 
 import axon.errors as errors
 import array
+from collections import OrderedDict as odict
 
 ###
 ### Exceptions
@@ -63,6 +64,7 @@ def register_builder(mode, builder):
 
 def get_builder(mode):
     return _builder_dict.get(mode, None)
+        
 
 #
 # Loader
@@ -112,6 +114,7 @@ class Loader:
         self.bc = 0
         self.bs = 0
         self.bq = 0
+        self.ba = 0
         
         self.labeled_objects = {}
 
@@ -163,14 +166,21 @@ class Loader:
             errors.error(self, 'Missed closing }')
         elif self.bc < 0:
             errors.error(self, 'Extra closing }')
+        
         if self.bs > 0:
             errors.error(self, 'Missed closing ]')
         elif self.bs < 0:
             errors.error(self, 'Extra closing ]')
+        
         if self.bq > 0:
             errors.error(self, 'Missed closing )')
         elif self.bq < 0:
             errors.error(self, 'Extra closing )')
+        
+        if self.ba > 0:
+            errors.error(self, 'Missed closing >')
+        elif self.ba < 0:
+            errors.error(self, 'Extra closing >')
     #
     def load(self):
         '''
@@ -824,6 +834,10 @@ class Loader:
             self.bq += 1
             skip_char(self)
             val = self.get_tuple_value()
+        elif ch == '<':
+            self.ba += 1
+            skip_char(self)
+            val = self.get_odict_value()
         else:
             name = self.try_get_name()
             if name is not None:
@@ -1076,6 +1090,41 @@ class Loader:
                 if ch == ',':
                     skip_char(self)
                     ch = self.skip_spaces()
+    #
+    def get_odict_value(self):
+        sequence = []
+
+        ch = self.skip_spaces()
+
+        while 1:
+        
+            if ch == '#':
+                self.skip_comments()
+
+            key = self.try_get_key()
+
+            ch = self.skip_spaces()
+            
+            if key is not None:
+                if ch == ':':
+                    skip_char(self)
+                    self.skip_spaces()
+
+                    val = self.get_value(0)
+                    sequence.append((key,val))
+                else:
+                    errors.error(self, "Expected ':' after the key in the ordered dict")
+            else:
+                if ch == '>':
+                    skip_char(self)
+                    self.ba -= 1
+                    return odict(sequence)
+                elif ch == '\0':
+                    errors.error(self, "Unexpected end inside of the ordered dict")
+                else:
+                    errors.error(self, "Expected '>' or invalid part of the ordered dict")
+
+            ch = self.skip_spaces()
     #
     def get_mapping_part(self, mapping, sequence, idn):
 

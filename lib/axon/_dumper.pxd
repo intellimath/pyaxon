@@ -245,6 +245,9 @@ cdef public class Dumper[object Dumper, type DumperType]:
     cdef int _dump_dict_values(Dumper self, dict d) except -1
     #
     @cython.locals(i=int)
+    cdef int _dump_odict_values(Dumper self, object d) except -1
+    #
+    @cython.locals(i=int)
     cdef int _dump_list_sequence(Dumper self, list l) except -1
     #
     #@cython.locals(i=int)
@@ -258,6 +261,8 @@ cdef public class Dumper[object Dumper, type DumperType]:
     #cdef int dump_set(Dumper self, set l) except -1
     #
     cdef int dump_dict(Dumper self, dict d) except -1
+    #
+    cdef int dump_odict(Dumper self, object d) except -1
     #
     cdef int dump_tuple(Dumper self, tuple d) except -1
     #
@@ -273,6 +278,9 @@ cdef public class Dumper[object Dumper, type DumperType]:
     #
     @cython.locals(i=int, j=int, flag=int, use_offset=bint)
     cdef inline int _pretty_dump_dict_values(Dumper self, dict d, unicode w) except -1
+    #
+    @cython.locals(i=int, j=int, flag=int, use_offset=bint)
+    cdef inline int _pretty_dump_odict_values(Dumper self, object d, unicode w) except -1
     #
     @cython.locals(i=int, j=int, flag=int, use_offset=bint)
     cdef inline int _pretty_dump_attributes(Dumper self, dict d, unicode w) except -1
@@ -292,6 +300,8 @@ cdef public class Dumper[object Dumper, type DumperType]:
     #cdef int pretty_dump_set(Dumper self, set l, unicode w, bint use_offset) except -1
     #
     cdef inline int pretty_dump_dict(Dumper self, dict d, unicode w, bint use_offset) except -1
+    #
+    cdef inline int pretty_dump_odict(Dumper self, object d, unicode w, bint use_offset) except -1
     #
     @cython.locals(n=int)
     cdef int pretty_dump_tuple(Dumper self, tuple l, unicode w, bint use_offset) except -1

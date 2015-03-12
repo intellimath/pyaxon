@@ -73,9 +73,6 @@ def error_invalid_value(self, vtype=''):
 def error_invalid_value_with_prefix(self, prefix):
     error(self, "Invalid value with prefix '%s'" % prefix)
 #
-def error_invalid_value_star(self):
-    error(self, 'Invalid value before *')
-#
 def error_dict_value(self):
     error(self, 'dict can contain only key:value pairs')
 #

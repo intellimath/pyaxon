@@ -91,6 +91,7 @@ cdef class Loader:
     cdef int bc
     cdef int bs
     cdef int bq
+    cdef int ba
     
     cdef bint json
 
@@ -210,6 +211,9 @@ cdef class Loader:
 
     @cython.locals(ch=Py_UCS4, mapping=dict)
     cdef object get_dict_value(Loader self)
+
+    @cython.locals(ch=Py_UCS4, sequence=list)
+    cdef object get_odict_value(Loader self)
 
     @cython.locals(ch=Py_UCS4, is_multi=bint)
     cdef bint get_mapping_part(Loader self, dict mapping, list sequence, int idn) except -1
