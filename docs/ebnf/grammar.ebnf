@@ -1,0 +1,70 @@
+axon ::= data-item*
+
+data-item ::= ('&' label)? value | '*' label
+label ::= ([A-Z] | [a-z] | [0-9] | '_' )+
+
+value ::= complex-value | atomic-value
+
+complex-value ::= anonymous-complex-value | named-complex-value
+
+anonymous-complex-value ::= dict | list | tuple
+named-complex-value ::= mapping | element | sequence | instance | empty
+
+dict ::= '{' dict-item* '}'
+dict-item ::= key ':' data-item
+key ::= identifier | text
+
+list ::= '[' data-item* ']'
+
+tuple ::= '(' data-item* ')'
+
+mapping ::= name '{' data-attr+ '}'
+element ::= name '{' data-attr+ data-item+ '}'
+sequence ::= name '{' data-item+ '}'
+instance ::= name '{' data-item+ data-attr+ '}'
+empty ::= name '{' '}'
+
+data-attr ::= name ':' data-item
+
+name ::= identifier | string-key
+
+identifier ::= ( 'unicode alphabetic char' | '_') ('unicode alphanumeric char' | '_')*
+string-key ::= "'" ( " any unicode character except ' " | "\'" ) "'"
+
+atomic-value ::= number | text | date-time | constant
+
+number ::= int | float | decimal
+int ::= '-'? [0-9]+
+
+float ::= fixed-point exp? | int exp
+fixed-point ::= '-'? [0-9]+ '.' [0-9]* | '-'? '.' [0-9]+
+exp ::= ('E' | 'e') ('+' | '-')? [0-9]+
+
+decimal ::= (int | float) ('d' | 'D')
+
+text ::= '"' ( ' any unicode character except " ' | '\"' ) '"'
+
+date-time ::= date | time | datetime
+
+date ::= year '-' month '-' day
+
+year ::= 'unsigned int value: year > 0'
+month ::= 'unsigned int value: 1 <= month <= 12'
+day ::= 'unsigned int value: 1 <= day <= 31'
+
+time ::= hours ':' minutes (':' seconds ('.' microseconds)? )? time-offset?
+
+hours ::= 'unsigned int value: 0 <= hours <= 23'
+minutes ::= 'unsigned int value: 0 <= minutes <= 59'
+seconds ::= 'unsigned int value: 0 <= seconds <= 59'
+microseconds ::= 'unsigned int value: 0 <= microseconds <= 999999'
+
+time-offset ::= ('+'|'-') hours (':' minutes)?
+
+datetime ::= date 'T' time time-offset?
+
+constant ::= 'null' | 'true' | 'false' | '-'? constant-infinity | constant-nan
+onstant-infinity ::= 'Infinity' | '∞'
+constant-nan ::= 'NaN' | '?'
+
+binary-data ::= '|' 'Base64 encoded multiline ascii string'

@@ -1,0 +1,1114 @@
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+      <meta name="generator" content="Railroad Diagram Generator 1.39.959"><style type="text/css" xml:space="preserve">
+    ::-moz-selection
+    {
+      color: #FFFCF0;
+      background: #0F0C00;
+    }
+    ::selection
+    {
+      color: #FFFCF0;
+      background: #0F0C00;
+    }      
+    .ebnf a
+    {
+      text-decoration: none;
+    }
+    .ebnf a:hover
+    {
+      color: #050400;
+      text-decoration: underline;
+    }    
+    .signature
+    {
+      color: #806600;
+      font-size: 11px;
+      text-align: right;
+    }
+    body
+    {
+      font: normal 12px Verdana, sans-serif;
+      color: #0F0C00;
+      background: #FFFCF0;
+    }
+    a:link, a:visited
+    {
+      color: #0F0C00;
+    }
+    a:link.signature, a:visited.signature
+    {
+      color: #806600;
+    }
+    a.button, #tabs li a
+    {
+      padding: 0.25em 0.5em;
+      border: 1px solid #806600;
+      background: #F1E8C6;
+      color: #806600;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    a.button:hover, #tabs li a:hover
+    {
+      color: #050400;
+      background: #FFF6D1;
+      border-color: #050400;       
+    }     
+    #tabs
+    {
+      padding: 3px 10px;
+      margin-left: 0;
+      margin-top: 58px;
+      border-bottom: 1px solid #0F0C00;
+    }  
+    #tabs li
+    {
+      list-style: none;
+      margin-left: 5px;
+      display: inline;
+    }
+    #tabs li a
+    {     
+      border-bottom: 1px solid #0F0C00;
+    }
+    #tabs li a.active
+    {
+      color: #0F0C00;
+      background: #FFFCF0;
+      border-color: #0F0C00;
+      border-bottom: 1px solid #FFFCF0;
+      outline: none;
+    }
+    #divs div
+    {
+      display: none;
+      overflow:auto;
+    }
+    #divs div.active
+    {
+      display: block;
+    }
+    #text
+    {
+      border-color: #806600;
+      background: #FFFEFA;
+      color: #050400;
+    }
+    .small
+    {
+      vertical-align: top;
+      text-align: right;
+      font-size: 9px;
+      font-weight: normal;
+      line-height: 120%;
+    }
+    td.small
+    {
+      padding-top: 0px;
+    }
+    .hidden
+    {
+      visibility: hidden;
+    }
+    td:hover .hidden 
+    {
+      visibility: visible;
+    }
+    div.download
+    {
+      display: none;
+      background: #FFFCF0;
+      position: absolute;
+      right: 34px;
+      top: 94px;
+      padding: 10px;
+      border: 1px dotted #0F0C00;
+    }
+    #divs div.ebnf, div.ebnf
+    {
+      display: block;
+      padding-left: 16px;
+      padding-top: 2px; 
+      padding-bottom: 2px; 
+      background: #FFF6D1;
+    }
+    table.palette
+    {
+      border-top: 1px solid #050400;
+      border-right: 1px solid #050400;
+      margin-bottom: 4px
+    }
+    td.palette
+    {
+      border-bottom: 1px solid #050400;
+      border-left: 1px solid #050400;
+    }
+    a.palette
+    {
+      padding: 2px 3px 2px 10px;
+      text-decoration: none;
+    }
+    .palette
+    {
+      -webkit-user-select: none;
+      -khtml-user-select: none;
+      -moz-user-select: none;
+      -o-user-select: none;
+      -ms-user-select: none;
+    }
+  </style></head>
+   <body>
+      
+      <p style="font-size: 14px; font-weight:bold"><a name="axon">axon:</a></p>
+      <img border="0" src="diagram/axon.png" height="56" width="178" usemap="#axon.map"><map name="axon.map">
+         <area shape="rect" coords="49,1,129,33" href="#data-item" title="data-item"></map>
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#axon" title="axon" shape="rect">axon</a>     ::= <a href="#data-item" title="data-item" shape="rect">data-item</a>*</pre></div>
+         
+      </p>
+      
+      <p>no references</p><br><p style="font-size: 14px; font-weight:bold"><a name="data-item">data-item:</a></p>
+      <img border="0" src="diagram/data-item.png" height="102" width="312" usemap="#data-item.map"><map name="data-item.map">
+         <area shape="rect" coords="119,1,169,33" href="#label" title="label">
+         <area shape="rect" coords="209,1,263,33" href="#value" title="value">
+         <area shape="rect" coords="97,67,147,99" href="#label" title="label"></map>
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#data-item" title="data-item" shape="rect">data-item</a>
+         ::= ( '&amp;' <a href="#label" title="label" shape="rect">label</a> )? <a href="#value" title="value" shape="rect">value</a>
+           | '*' <a href="#label" title="label" shape="rect">label</a></pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#axon" title="axon">axon</a></li>
+            
+            <li><a href="#data-attr" title="data-attr">data-attr</a></li>
+            
+            <li><a href="#dict-item" title="dict-item">dict-item</a></li>
+            
+            <li><a href="#element" title="element">element</a></li>
+            
+            <li><a href="#instance" title="instance">instance</a></li>
+            
+            <li><a href="#list" title="list">list</a></li>
+            
+            <li><a href="#sequence" title="sequence">sequence</a></li>
+            
+            <li><a href="#tuple" title="tuple">tuple</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="label">label:</a></p>
+      <img border="0" src="diagram/label.png" height="184" width="198">
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#label" title="label" shape="rect">label</a>    ::= ( [A-Z] | [a-z] | [0-9] | '_' )+</pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#data-item" title="data-item">data-item</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="value">value:</a></p>
+      <img border="0" src="diagram/value.png" height="80" width="208" usemap="#value.map"><map name="value.map">
+         <area shape="rect" coords="49,1,159,33" href="#complex-value" title="complex-value">
+         <area shape="rect" coords="49,45,149,77" href="#atomic-value" title="atomic-value"></map>
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#value" title="value" shape="rect">value</a>    ::= <a href="#complex-value" title="complex-value" shape="rect">complex-value</a>
+           | <a href="#atomic-value" title="atomic-value" shape="rect">atomic-value</a></pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#data-item" title="data-item">data-item</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="complex-value">complex-value:</a></p>
+      <img border="0" src="diagram/complex-value.png" height="80" width="286" usemap="#complex-value.map"><map name="complex-value.map">
+         <area shape="rect" coords="49,1,237,33" href="#anonymous-complex-value" title="anonymous-complex-value">
+         <area shape="rect" coords="49,45,207,77" href="#named-complex-value" title="named-complex-value"></map>
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#complex-value" title="complex-value" shape="rect">complex-value</a>
+         ::= <a href="#anonymous-complex-value" title="anonymous-complex-value" shape="rect">anonymous-complex-value</a>
+           | <a href="#named-complex-value" title="named-complex-value" shape="rect">named-complex-value</a></pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#value" title="value">value</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="anonymous-complex-value">anonymous-complex-value:</a></p>
+      <img border="0" src="diagram/anonymous-complex-value.png" height="168" width="150" usemap="#anonymous-complex-value.map"><map name="anonymous-complex-value.map">
+         <area shape="rect" coords="49,1,91,33" href="#dict" title="dict">
+         <area shape="rect" coords="49,45,87,77" href="#list" title="list">
+         <area shape="rect" coords="49,89,101,121" href="#tuple" title="tuple">
+         <area shape="rect" coords="49,133,99,165" href="#odict" title="odict"></map>
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#anonymous-complex-value" title="anonymous-complex-value" shape="rect">anonymous-complex-value</a>
+         ::= <a href="#dict" title="dict" shape="rect">dict</a>
+           | <a href="#list" title="list" shape="rect">list</a>
+           | <a href="#tuple" title="tuple" shape="rect">tuple</a>
+           | <a href="#odict" title="odict" shape="rect">odict</a></pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#complex-value" title="complex-value">complex-value</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="named-complex-value">named-complex-value:</a></p>
+      <img border="0" src="diagram/named-complex-value.png" height="212" width="178" usemap="#named-complex-value.map"><map name="named-complex-value.map">
+         <area shape="rect" coords="49,1,123,33" href="#mapping" title="mapping">
+         <area shape="rect" coords="49,45,119,77" href="#element" title="element">
+         <area shape="rect" coords="49,89,129,121" href="#sequence" title="sequence">
+         <area shape="rect" coords="49,133,121,165" href="#instance" title="instance">
+         <area shape="rect" coords="49,177,107,209" href="#empty" title="empty"></map>
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#named-complex-value" title="named-complex-value" shape="rect">named-complex-value</a>
+         ::= <a href="#mapping" title="mapping" shape="rect">mapping</a>
+           | <a href="#element" title="element" shape="rect">element</a>
+           | <a href="#sequence" title="sequence" shape="rect">sequence</a>
+           | <a href="#instance" title="instance" shape="rect">instance</a>
+           | <a href="#empty" title="empty" shape="rect">empty</a></pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#complex-value" title="complex-value">complex-value</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="dict">dict:</a></p>
+      <img border="0" src="diagram/dict.png" height="70" width="268" usemap="#dict.map"><map name="dict.map">
+         <area shape="rect" coords="97,1,171,33" href="#dict-item" title="dict-item"></map>
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#dict" title="dict" shape="rect">dict</a>     ::= '{' <a href="#dict-item" title="dict-item" shape="rect">dict-item</a>* '}'</pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#anonymous-complex-value" title="anonymous-complex-value">anonymous-complex-value</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="odict">odict:</a></p>
+      <img border="0" src="diagram/odict.png" height="70" width="272" usemap="#odict.map"><map name="odict.map">
+         <area shape="rect" coords="99,1,173,33" href="#dict-item" title="dict-item"></map>
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#odict" title="odict" shape="rect">odict</a>    ::= '&lt;' <a href="#dict-item" title="dict-item" shape="rect">dict-item</a>* '&gt;'</pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#anonymous-complex-value" title="anonymous-complex-value">anonymous-complex-value</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="dict-item">dict-item:</a></p>
+      <img border="0" src="diagram/dict-item.png" height="36" width="244" usemap="#dict-item.map"><map name="dict-item.map">
+         <area shape="rect" coords="29,1,71,33" href="#key" title="key">
+         <area shape="rect" coords="135,1,215,33" href="#data-item" title="data-item"></map>
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#dict-item" title="dict-item" shape="rect">dict-item</a>
+         ::= <a href="#key" title="key" shape="rect">key</a> ':' <a href="#data-item" title="data-item" shape="rect">data-item</a></pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#dict" title="dict">dict</a></li>
+            
+            <li><a href="#odict" title="odict">odict</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="key">key:</a></p>
+      <img border="0" src="diagram/key.png" height="80" width="172" usemap="#key.map"><map name="key.map">
+         <area shape="rect" coords="49,1,123,33" href="#identifier" title="identifier">
+         <area shape="rect" coords="49,45,93,77" href="#text" title="text"></map>
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#key" title="key" shape="rect">key</a>      ::= <a href="#identifier" title="identifier" shape="rect">identifier</a>
+           | <a href="#text" title="text" shape="rect">text</a></pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#dict-item" title="dict-item">dict-item</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="list">list:</a></p>
+      <img border="0" src="diagram/list.png" height="70" width="270" usemap="#list.map"><map name="list.map">
+         <area shape="rect" coords="95,1,175,33" href="#data-item" title="data-item"></map>
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#list" title="list" shape="rect">list</a>     ::= '[' <a href="#data-item" title="data-item" shape="rect">data-item</a>* ']'</pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#anonymous-complex-value" title="anonymous-complex-value">anonymous-complex-value</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="tuple">tuple:</a></p>
+      <img border="0" src="diagram/tuple.png" height="70" width="270" usemap="#tuple.map"><map name="tuple.map">
+         <area shape="rect" coords="95,1,175,33" href="#data-item" title="data-item"></map>
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#tuple" title="tuple" shape="rect">tuple</a>    ::= '(' <a href="#data-item" title="data-item" shape="rect">data-item</a>* ')'</pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#anonymous-complex-value" title="anonymous-complex-value">anonymous-complex-value</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="mapping">mapping:</a></p>
+      <img border="0" src="diagram/mapping.png" height="52" width="344" usemap="#mapping.map"><map name="mapping.map">
+         <area shape="rect" coords="29,17,83,49" href="#name" title="name">
+         <area shape="rect" coords="171,17,247,49" href="#data-attr" title="data-attr"></map>
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#mapping" title="mapping" shape="rect">mapping</a>  ::= <a href="#name" title="name" shape="rect">name</a> '{' <a href="#data-attr" title="data-attr" shape="rect">data-attr</a>+ '}'</pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#named-complex-value" title="named-complex-value">named-complex-value</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="element">element:</a></p>
+      <img border="0" src="diagram/element.png" height="52" width="484" usemap="#element.map"><map name="element.map">
+         <area shape="rect" coords="29,17,83,49" href="#name" title="name">
+         <area shape="rect" coords="171,17,247,49" href="#data-attr" title="data-attr">
+         <area shape="rect" coords="307,17,387,49" href="#data-item" title="data-item"></map>
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#element" title="element" shape="rect">element</a>  ::= <a href="#name" title="name" shape="rect">name</a> '{' <a href="#data-attr" title="data-attr" shape="rect">data-attr</a>+ <a href="#data-item" title="data-item" shape="rect">data-item</a>+ '}'</pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#named-complex-value" title="named-complex-value">named-complex-value</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="sequence">sequence:</a></p>
+      <img border="0" src="diagram/sequence.png" height="52" width="348" usemap="#sequence.map"><map name="sequence.map">
+         <area shape="rect" coords="29,17,83,49" href="#name" title="name">
+         <area shape="rect" coords="171,17,251,49" href="#data-item" title="data-item"></map>
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#sequence" title="sequence" shape="rect">sequence</a> ::= <a href="#name" title="name" shape="rect">name</a> '{' <a href="#data-item" title="data-item" shape="rect">data-item</a>+ '}'</pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#named-complex-value" title="named-complex-value">named-complex-value</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="instance">instance:</a></p>
+      <img border="0" src="diagram/instance.png" height="52" width="484" usemap="#instance.map"><map name="instance.map">
+         <area shape="rect" coords="29,17,83,49" href="#name" title="name">
+         <area shape="rect" coords="171,17,251,49" href="#data-item" title="data-item">
+         <area shape="rect" coords="311,17,387,49" href="#data-attr" title="data-attr"></map>
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#instance" title="instance" shape="rect">instance</a> ::= <a href="#name" title="name" shape="rect">name</a> '{' <a href="#data-item" title="data-item" shape="rect">data-item</a>+ <a href="#data-attr" title="data-attr" shape="rect">data-attr</a>+ '}'</pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#named-complex-value" title="named-complex-value">named-complex-value</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="empty">empty:</a></p>
+      <img border="0" src="diagram/empty.png" height="36" width="208" usemap="#empty.map"><map name="empty.map">
+         <area shape="rect" coords="29,1,83,33" href="#name" title="name"></map>
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#empty" title="empty" shape="rect">empty</a>    ::= <a href="#name" title="name" shape="rect">name</a> '{' '}'</pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#named-complex-value" title="named-complex-value">named-complex-value</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="data-attr">data-attr:</a></p>
+      <img border="0" src="diagram/data-attr.png" height="36" width="256" usemap="#data-attr.map"><map name="data-attr.map">
+         <area shape="rect" coords="29,1,83,33" href="#name" title="name">
+         <area shape="rect" coords="147,1,227,33" href="#data-item" title="data-item"></map>
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#data-attr" title="data-attr" shape="rect">data-attr</a>
+         ::= <a href="#name" title="name" shape="rect">name</a> ':' <a href="#data-item" title="data-item" shape="rect">data-item</a></pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#element" title="element">element</a></li>
+            
+            <li><a href="#instance" title="instance">instance</a></li>
+            
+            <li><a href="#mapping" title="mapping">mapping</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="name">name:</a></p>
+      <img border="0" src="diagram/name.png" height="80" width="180" usemap="#name.map"><map name="name.map">
+         <area shape="rect" coords="49,1,123,33" href="#identifier" title="identifier">
+         <area shape="rect" coords="49,45,131,77" href="#string-key" title="string-key"></map>
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#name" title="name" shape="rect">name</a>     ::= <a href="#identifier" title="identifier" shape="rect">identifier</a>
+           | <a href="#string-key" title="string-key" shape="rect">string-key</a></pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#data-attr" title="data-attr">data-attr</a></li>
+            
+            <li><a href="#element" title="element">element</a></li>
+            
+            <li><a href="#empty" title="empty">empty</a></li>
+            
+            <li><a href="#instance" title="instance">instance</a></li>
+            
+            <li><a href="#mapping" title="mapping">mapping</a></li>
+            
+            <li><a href="#sequence" title="sequence">sequence</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="identifier">identifier:</a></p>
+      <img border="0" src="diagram/identifier.png" height="158" width="530">
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#identifier" title="identifier" shape="rect">identifier</a>
+         ::= ( 'unicode alphabetic char' | '_' ) ( 'unicode alphanumeric char' | '_' )*</pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#key" title="key">key</a></li>
+            
+            <li><a href="#name" title="name">name</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="string-key">string-key:</a></p>
+      <img border="0" src="diagram/string-key.png" height="80" width="416">
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#string-key" title="string-key" shape="rect">string-key</a>
+         ::= "'" ( " any unicode character except ' " | "\'" ) "'"</pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#name" title="name">name</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="atomic-value">atomic-value:</a></p>
+      <img border="0" src="diagram/atomic-value.png" height="168" width="178" usemap="#atomic-value.map"><map name="atomic-value.map">
+         <area shape="rect" coords="49,1,117,33" href="#number" title="number">
+         <area shape="rect" coords="49,45,93,77" href="#text" title="text">
+         <area shape="rect" coords="49,89,129,121" href="#date-time" title="date-time">
+         <area shape="rect" coords="49,133,123,165" href="#constant" title="constant"></map>
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#atomic-value" title="atomic-value" shape="rect">atomic-value</a>
+         ::= <a href="#number" title="number" shape="rect">number</a>
+           | <a href="#text" title="text" shape="rect">text</a>
+           | <a href="#date-time" title="date-time" shape="rect">date-time</a>
+           | <a href="#constant" title="constant" shape="rect">constant</a></pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#value" title="value">value</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="number">number:</a></p>
+      <img border="0" src="diagram/number.png" height="124" width="164" usemap="#number.map"><map name="number.map">
+         <area shape="rect" coords="49,1,85,33" href="#int" title="int">
+         <area shape="rect" coords="49,45,97,77" href="#float" title="float">
+         <area shape="rect" coords="49,89,115,121" href="#decimal" title="decimal"></map>
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#number" title="number" shape="rect">number</a>   ::= <a href="#int" title="int" shape="rect">int</a>
+           | <a href="#float" title="float" shape="rect">float</a>
+           | <a href="#decimal" title="decimal" shape="rect">decimal</a></pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#atomic-value" title="atomic-value">atomic-value</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="int">int:</a></p>
+      <img border="0" src="diagram/int.png" height="68" width="244">
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#int" title="int" shape="rect">int</a>      ::= '-'? [0-9]+</pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#decimal" title="decimal">decimal</a></li>
+            
+            <li><a href="#float" title="float">float</a></li>
+            
+            <li><a href="#number" title="number">number</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="float">float:</a></p>
+      <img border="0" src="diagram/float.png" height="102" width="286" usemap="#float.map"><map name="float.map">
+         <area shape="rect" coords="49,1,135,33" href="#fixed-point" title="fixed-point">
+         <area shape="rect" coords="175,1,217,33" href="#exp" title="exp">
+         <area shape="rect" coords="49,67,85,99" href="#int" title="int">
+         <area shape="rect" coords="105,67,147,99" href="#exp" title="exp"></map>
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#float" title="float" shape="rect">float</a>    ::= <a href="#fixed-point" title="fixed-point" shape="rect">fixed-point</a> <a href="#exp" title="exp" shape="rect">exp</a>?
+           | <a href="#int" title="int" shape="rect">int</a> <a href="#exp" title="exp" shape="rect">exp</a></pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#decimal" title="decimal">decimal</a></li>
+            
+            <li><a href="#number" title="number">number</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="fixed-point">fixed-point:</a></p>
+      <img border="0" src="diagram/fixed-point.png" height="168" width="448">
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#fixed-point" title="fixed-point" shape="rect">fixed-point</a>
+         ::= '-'? [0-9]+ '.' [0-9]*
+           | '-'? '.' [0-9]+</pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#float" title="float">float</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="exp">exp:</a></p>
+      <img border="0" src="diagram/exp.png" height="112" width="336">
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#exp" title="exp" shape="rect">exp</a>      ::= ( 'E' | 'e' ) ( '+' | '-' )? [0-9]+</pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#float" title="float">float</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="decimal">decimal:</a></p>
+      <img border="0" src="diagram/decimal.png" height="80" width="236" usemap="#decimal.map"><map name="decimal.map">
+         <area shape="rect" coords="49,1,85,33" href="#int" title="int">
+         <area shape="rect" coords="49,45,97,77" href="#float" title="float"></map>
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#decimal" title="decimal" shape="rect">decimal</a>  ::= ( <a href="#int" title="int" shape="rect">int</a> | <a href="#float" title="float" shape="rect">float</a> ) ( 'd' | 'D' )</pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#number" title="number">number</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="text">text:</a></p>
+      <img border="0" src="diagram/text.png" height="80" width="422">
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#text" title="text" shape="rect">text</a>     ::= '"' ( ' any unicode character except " ' | '\"' ) '"'</pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#atomic-value" title="atomic-value">atomic-value</a></li>
+            
+            <li><a href="#key" title="key">key</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="date-time">date-time:</a></p>
+      <img border="0" src="diagram/date-time.png" height="124" width="174" usemap="#date-time.map"><map name="date-time.map">
+         <area shape="rect" coords="49,1,97,33" href="#date" title="date">
+         <area shape="rect" coords="49,45,95,77" href="#time" title="time">
+         <area shape="rect" coords="49,89,125,121" href="#datetime" title="datetime"></map>
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#date-time" title="date-time" shape="rect">date-time</a>
+         ::= <a href="#date" title="date" shape="rect">date</a>
+           | <a href="#time" title="time" shape="rect">time</a>
+           | <a href="#datetime" title="datetime" shape="rect">datetime</a></pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#atomic-value" title="atomic-value">atomic-value</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="date">date:</a></p>
+      <img border="0" src="diagram/date.png" height="36" width="340" usemap="#date.map"><map name="date.map">
+         <area shape="rect" coords="29,1,77,33" href="#year" title="year">
+         <area shape="rect" coords="143,1,203,33" href="#month" title="month">
+         <area shape="rect" coords="269,1,311,33" href="#day" title="day"></map>
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#date" title="date" shape="rect">date</a>     ::= <a href="#year" title="year" shape="rect">year</a> '-' <a href="#month" title="month" shape="rect">month</a> '-' <a href="#day" title="day" shape="rect">day</a></pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#date-time" title="date-time">date-time</a></li>
+            
+            <li><a href="#datetime" title="datetime">datetime</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="year">year:</a></p>
+      <img border="0" src="diagram/year.png" height="36" width="264">
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#year" title="year" shape="rect">year</a>     ::= 'unsigned int value: year &gt; 0'</pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#date" title="date">date</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="month">month:</a></p>
+      <img border="0" src="diagram/month.png" height="36" width="330">
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#month" title="month" shape="rect">month</a>    ::= 'unsigned int value: 1 &lt;= month &lt;= 12'</pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#date" title="date">date</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="day">day:</a></p>
+      <img border="0" src="diagram/day.png" height="36" width="314">
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#day" title="day" shape="rect">day</a>      ::= 'unsigned int value: 1 &lt;= day &lt;= 31'</pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#date" title="date">date</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="time">time:</a></p>
+      <img border="0" src="diagram/time.png" height="68" width="780" usemap="#time.map"><map name="time.map">
+         <area shape="rect" coords="29,1,85,33" href="#hours" title="hours">
+         <area shape="rect" coords="149,1,219,33" href="#minutes" title="minutes">
+         <area shape="rect" coords="303,1,375,33" href="#seconds" title="seconds">
+         <area shape="rect" coords="459,1,563,33" href="#microseconds" title="microseconds">
+         <area shape="rect" coords="643,1,731,33" href="#time-offset" title="time-offset"></map>
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#time" title="time" shape="rect">time</a>     ::= <a href="#hours" title="hours" shape="rect">hours</a> ':' <a href="#minutes" title="minutes" shape="rect">minutes</a> ( ':' <a href="#seconds" title="seconds" shape="rect">seconds</a> ( '.' <a href="#microseconds" title="microseconds" shape="rect">microseconds</a> )? )? <a href="#time-offset" title="time-offset" shape="rect">time-offset</a>?</pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#date-time" title="date-time">date-time</a></li>
+            
+            <li><a href="#datetime" title="datetime">datetime</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="hours">hours:</a></p>
+      <img border="0" src="diagram/hours.png" height="36" width="326">
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#hours" title="hours" shape="rect">hours</a>    ::= 'unsigned int value: 0 &lt;= hours &lt;= 23'</pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#time" title="time">time</a></li>
+            
+            <li><a href="#time-offset" title="time-offset">time-offset</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="minutes">minutes:</a></p>
+      <img border="0" src="diagram/minutes.png" height="36" width="342">
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#minutes" title="minutes" shape="rect">minutes</a>  ::= 'unsigned int value: 0 &lt;= minutes &lt;= 59'</pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#time" title="time">time</a></li>
+            
+            <li><a href="#time-offset" title="time-offset">time-offset</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="seconds">seconds:</a></p>
+      <img border="0" src="diagram/seconds.png" height="36" width="342">
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#seconds" title="seconds" shape="rect">seconds</a>  ::= 'unsigned int value: 0 &lt;= seconds &lt;= 59'</pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#time" title="time">time</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="microseconds">microseconds:</a></p>
+      <img border="0" src="diagram/microseconds.png" height="36" width="416">
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#microseconds" title="microseconds" shape="rect">microseconds</a>
+         ::= 'unsigned int value: 0 &lt;= microseconds &lt;= 999999'</pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#time" title="time">time</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="time-offset">time-offset:</a></p>
+      <img border="0" src="diagram/time-offset.png" height="80" width="378" usemap="#time-offset.map"><map name="time-offset.map">
+         <area shape="rect" coords="119,1,175,33" href="#hours" title="hours">
+         <area shape="rect" coords="259,1,329,33" href="#minutes" title="minutes"></map>
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#time-offset" title="time-offset" shape="rect">time-offset</a>
+         ::= ( '+' | '-' ) <a href="#hours" title="hours" shape="rect">hours</a> ( ':' <a href="#minutes" title="minutes" shape="rect">minutes</a> )?</pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#datetime" title="datetime">datetime</a></li>
+            
+            <li><a href="#time" title="time">time</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="datetime">datetime:</a></p>
+      <img border="0" src="diagram/datetime.png" height="52" width="368" usemap="#datetime.map"><map name="datetime.map">
+         <area shape="rect" coords="29,1,77,33" href="#date" title="date">
+         <area shape="rect" coords="145,1,191,33" href="#time" title="time">
+         <area shape="rect" coords="231,1,319,33" href="#time-offset" title="time-offset"></map>
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#datetime" title="datetime" shape="rect">datetime</a> ::= <a href="#date" title="date" shape="rect">date</a> 'T' <a href="#time" title="time" shape="rect">time</a> <a href="#time-offset" title="time-offset" shape="rect">time-offset</a>?</pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#date-time" title="date-time">date-time</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="constant">constant:</a></p>
+      <img border="0" src="diagram/constant.png" height="234" width="304" usemap="#constant.map"><map name="constant.map">
+         <area shape="rect" coords="135,133,255,165" href="#constant-infinity" title="constant-infinity">
+         <area shape="rect" coords="49,199,153,231" href="#constant-nan" title="constant-nan"></map>
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#constant" title="constant" shape="rect">constant</a> ::= 'null'
+           | 'true'
+           | 'false'
+           | '-'? <a href="#constant-infinity" title="constant-infinity" shape="rect">constant-infinity</a>
+           | <a href="#constant-nan" title="constant-nan" shape="rect">constant-nan</a></pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#atomic-value" title="atomic-value">atomic-value</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="onstant-infinity">onstant-infinity:</a></p>
+      <img border="0" src="diagram/onstant-infinity.png" height="80" width="166">
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#onstant-infinity" title="onstant-infinity" shape="rect">onstant-infinity</a>
+         ::= 'Infinity'
+           | '∞'</pre></div>
+         
+      </p>
+      
+      <p>no references</p><br><p style="font-size: 14px; font-weight:bold"><a name="constant-nan">constant-nan:</a></p>
+      <img border="0" src="diagram/constant-nan.png" height="80" width="146">
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#constant-nan" title="constant-nan" shape="rect">constant-nan</a>
+         ::= 'NaN'
+           | '?'</pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#constant" title="constant">constant</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="binary-data">binary-data:</a></p>
+      <img border="0" src="diagram/binary-data.png" height="36" width="370">
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#binary-data" title="binary-data" shape="rect">binary-data</a>
+         ::= '|' 'Base64 encoded multiline ascii string'</pre></div>
+         
+      </p>
+      
+      <p>no references</p><br><hr>
+      
+      <p>
+         
+         <table border="0" class="signature">
+            
+            <tr>
+               
+               <td style="width: 100%">&nbsp;</td>
+               
+               <td valign="top">
+                  
+                  <nobr class="signature">... generated by <a name="Railroad-Diagram-Generator" class="signature" title="http://www.bottlecaps.de/rr/ui" href="http://www.bottlecaps.de/rr/ui" target="_blank">Railroad Diagram Generator</a></nobr>
+                  
+               </td>
+               
+               <td><a name="Railroad-Diagram-Generator" title="http://www.bottlecaps.de/rr/ui" href="http://www.bottlecaps.de/rr/ui" target="_blank">
+                     <img border="0" src="diagram/Railroad-Diagram-Generator.png" height="16" width="16"></a></td>
+               
+            </tr>
+            
+         </table>
+         
+      </p>
+      
+   </body>
+</html>
