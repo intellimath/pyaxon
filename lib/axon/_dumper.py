@@ -597,7 +597,7 @@ class Dumper:
                 self.dump_dict(o)
             elif otype is tuple:
                 self.dump_tuple(o)
-            elif otype is odict:
+            elif otype is axon_odict or otype is odict:
                 self.dump_odict(o)
             #elif otype is set:
             #    self.dump_set(o)
@@ -634,7 +634,7 @@ class Dumper:
                         self.dump_list(ob)
                     elif obtype is tuple:
                         self.dump_tuple(ob)
-                    elif obtype is odict:
+                    elif otype is axon_odict or obtype is odict:
                         self.dump_odict(ob)
                     else:
                         errors.error_reducer_wrong_type(obtype)
@@ -652,7 +652,7 @@ class Dumper:
                 self.pretty_dump_dict(o, new_offset, use_offset)
             elif otype is tuple:
                 self.pretty_dump_tuple(o, new_offset, use_offset)
-            elif otype is odict:
+            elif otype is axon_odict or otype is odict:
                 self.pretty_dump_odict(o, new_offset, use_offset)
             #elif otype is set:
             #    self.pretty_dump_set(o, new_offset, not use_offset)
@@ -691,7 +691,7 @@ class Dumper:
                         self.pretty_dump_list(ob, new_offset, use_offset)
                     elif obtype is tuple:
                         self.pretty_dump_tuple(ob, new_offset, use_offset)
-                    elif otype is odict:
+                    elif otype is axon_odict or otype is odict:
                         self.pretty_dump_odict(o, new_offset, use_offset)
                     else:
                         errors.error_reducer_wrong_type(obtype)

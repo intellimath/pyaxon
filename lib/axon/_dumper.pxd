@@ -65,6 +65,9 @@ from axon._common cimport c_as_unicode, c_as_list, c_as_dict, c_as_tuple, dict_g
 #from axon._objects cimport c_new_token, end_token, dict_token, tuple_token, list_token
 #from axon._objects cimport ATOMIC, END, COMPLEX, ATTRIBUTE, KEY, REFERENCE, LABEL, LIST, DICT, TUPLE
 
+from axon.odict cimport OrderedDict as axon_odict
+
+
 cdef inline Mapping as_mapping(object ob):
     return <Mapping>ob
 

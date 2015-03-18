@@ -1118,7 +1118,7 @@ class Loader:
                 if ch == '>':
                     skip_char(self)
                     self.ba -= 1
-                    return odict(sequence)
+                    return axon_odict(sequence)
                 elif ch == '\0':
                     errors.error(self, "Unexpected end inside of the ordered dict")
                 else:
