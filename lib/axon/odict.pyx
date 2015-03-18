@@ -466,3 +466,28 @@ cdef public class OrderedDict[object OrderedDictObject, type OrderedDictType]:
 
 
 collections.MutableMapping.register(OrderedDict)
+
+cdef OrderedDict c_new_odict(list args):
+    cdef OrderedDict od
+    cdef Link root, last, link
+    
+    od = OrderedDict.__new__(OrderedDict)
+    od.map = {}
+    root = <Link>Link.__new__(Link)
+    root.prev = root.next = <cython.void*>root
+    od.root = root
+
+    if args is not None:    
+        for key, value in args:
+            root = od.root
+            last = <Link>root.prev
+
+            link = <Link>Link.__new__(Link)
+
+            link.prev, link.next = <cython.void*>last, <cython.void*>root
+            link.key, link.value = key, value
+            last.next =  root.prev = <cython.void*>link
+            
+            dict.__setitem__(od.map, key, link)
+    return od
+            
