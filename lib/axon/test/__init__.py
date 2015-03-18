@@ -20,6 +20,7 @@ from axon.test.test_crossref import *
 from axon.test.test_base64 import *
 from axon.test.test_errors import *
 from axon.test.test_samples import *
+from axon.test.test_odict import *
 
 def test_all():
     import unittest

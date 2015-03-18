@@ -55,11 +55,13 @@ except:
 try:
     import _decimal
 except:
-    import decimal as _decimal
+    import decimal as _decimal    
 
 default_decimal_context = _decimal.getcontext()
 _str2decimal = default_decimal_context.create_decimal
 _decimal2str = default_decimal_context.to_eng_string
+
+from _weakref import proxy as _proxy
 
 # ATOMIC = 1
 # DICT = 2
@@ -907,40 +909,6 @@ def empty(name):
 #     e.mapping = mapping
 #     e.sequence = sequence
 #     return e
-    
-
-# #
-# # OrderedDict
-# #
-# cdef class OrderedDict(dict):
-#     cdef list _keys
-#     
-#     def __init__(self, *args, **kw):
-#         if args:
-#             for key, value in args:
-#                 self[key] = value
-#         if kw:
-#             for key, value in kw.items():
-#                 self[key] = value
-#     
-#     def __setitem__(self, key, value):
-#         if key not in self:
-#             self._keys.append(key)
-#         dict.__setitem__(self, key, value)
-#         
-#     def __delitem__(self, key):
-#         if key in self:
-#             self._keys.remove(key)
-#         dict.__delitem__(self, key)
-#         
-#     def keys(self):
-#         return (key for key in self._keys)
-#         
-#     def values(self):
-#         return (dict.__getitem__(key) for key in self._keys)
-# 
-#     def items(self):
-#         return ((key, dict.__getitem__(key)) for key in self._keys)
 
 def dict_as_sequence_factory(items):
     return dict(items)
@@ -1474,3 +1442,4 @@ class timezone(tzinfo):
 #     o.parent = parent
 #     o._dict = {}
        
+

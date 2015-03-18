@@ -7,10 +7,12 @@ value ::= complex-value | atomic-value
 
 complex-value ::= anonymous-complex-value | named-complex-value
 
-anonymous-complex-value ::= dict | list | tuple
+anonymous-complex-value ::= dict | list | tuple | odict
 named-complex-value ::= mapping | element | sequence | instance | empty
 
 dict ::= '{' dict-item* '}'
+odict ::= '<' dict-item* '>'
+
 dict-item ::= key ':' data-item
 key ::= identifier | text
 
