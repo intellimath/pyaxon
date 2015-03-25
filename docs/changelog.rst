@@ -1,6 +1,13 @@
 Release Notes
 -------------
 
+**0.6**
+
+1. Use compiled `decimal` module when possible.
+2. Add syntax "< ... key:value ... >" to AXON in order to load/dump ordered dicts.
+3. Add cython implementation of ordered dict `axon.odict` (API compatible with `collections.OrderedDict`).
+4. Fix bug with number-like string keys in dicts.
+
 **0.5.11**
 
 1. Add ability to dump custom class objects as dict, list or tuple.

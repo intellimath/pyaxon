@@ -80,13 +80,17 @@ else:
             "axon._dumper",
             sources=["lib/axon/_dumper.c"]
         ),
+        Extension(
+            "axon.odict",
+            ["lib/axon/odict.c"]
+        ),
     ]
 
 long_description = open('README.rst').read()
 
 setup(
     name = 'pyaxon',
-    version = '0.5.11',
+    version = '0.6',
     description = 'Python library for AXON',
     author = 'Zaur Shibzukhov',
     author_email = 'szport@gmail.com',
