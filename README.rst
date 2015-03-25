@@ -19,7 +19,7 @@ History of `changes <http://intellimath.bitbucket.org/axon/changelog.html>`_.
 Features
 --------
 
-1. Provide simple API for loading and dumping of objects in textual form.
+1. Provide simple API for loading and dumping of objects in textual AXON format.
 2. Provide safe loading and dumping by default.
 3. Provide unsafe loading and dumping of objects on the base of registration of factory/reduce callables.
 4. Provide a way for fully controlled by application/framework/library unsafe loading and dumping.
