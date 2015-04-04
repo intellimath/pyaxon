@@ -1,7 +1,7 @@
 
 ..
     =================================
-    AXON: An eXtended Object Notation
+    AXON is eXtended Object Notation
     =================================
 
 .. Contents:
@@ -22,6 +22,8 @@ What is AXON
 
 AXON is eXtended Object Notation (``AXON``). It's a simple text based format
 for interchanging of objects, documents and data.
+There is `railroad diagram <http://intellimath.bitbucket.org/axon/ebnf/index.html>`_ 
+in order to describe `AXON`.
 
 It tries to combine the best of `JSON <http://www.json.org>`_,
 `XML <http://www.w3.org/XML/>`_ and `YAML <http://www.yaml.org>`_.
@@ -237,6 +239,7 @@ Here is an example of ``AXON`` message:
     sequence:primes{2 3 5 7 11 13 17 19 23 29 31}}}}
     </pre></td></tr>
     </table>                    
+
 
 
 Python pyaxon library

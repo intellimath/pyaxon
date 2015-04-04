@@ -7,7 +7,7 @@
 
 # The MIT License (MIT)
 # 
-# Copyright (c) <2011-2014> <Shibzukhov Zaur, szport at gmail dot com>
+# Copyright (c) <2011-2015> <Shibzukhov Zaur, szport at gmail dot com>
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -33,12 +33,6 @@ from cpython.object cimport Py_EQ, Py_NE
 from operator import eq as _eq
 import sys as _sys
 import collections
-#from collections import Mapping, MutableMapping, MappingView, KeysView, 
-
-# try:
-#     from thread import get_ident as _get_ident
-# except ImportError:
-#     from dummy_thread import get_ident as _get_ident
     
 cdef dict _repr_running = {}
 
@@ -317,13 +311,13 @@ cdef public class OrderedDict[object OrderedDictObject, type OrderedDictType]:
                             len(args))
         if args:
             other = args[0]
-#             tp = type(other) 
-#             if tp is list:
-#                 for key, value in <list>other:
-#                     self[key] = value
-#             elif tp is dict:
-#                 for key, value in (<dict>other).items():
-#                     self[key] = value
+            tp = type(other) 
+            if tp is list:
+                for key, value in <list>other:
+                    self[key] = value
+            elif tp is dict:
+                for key, value in (<dict>other).items():
+                    self[key] = value
             if isinstance(other, collections.Mapping):
                 for key in other:
                     self[key] = other[key]
@@ -491,3 +485,4 @@ cdef OrderedDict c_new_odict(list args):
             dict.__setitem__(od.map, key, link)
     return od
             
+

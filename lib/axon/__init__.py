@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 # 
-# Copyright (c) <2011-2014> <Shibzukhov Zaur, szport at gmail dot com>
+# Copyright (c) <2011-2015> <Shibzukhov Zaur, szport at gmail dot com>
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -25,4 +25,4 @@ from axon.objects import *
 from axon.utils import *
 from axon.types import *
 
-__version__ = '0.5.11'
+__version__ = '0.6'

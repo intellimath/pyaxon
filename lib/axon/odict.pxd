@@ -7,7 +7,7 @@
 
 # The MIT License (MIT)
 # 
-# Copyright (c) <2011-2014> <Shibzukhov Zaur, szport at gmail dot com>
+# Copyright (c) <2011-2015> <Shibzukhov Zaur, szport at gmail dot com>
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -82,4 +82,6 @@ cdef public class OrderedDict[object OrderedDictObject, type OrderedDictType]:
     cdef Link root
     cdef dict map
 
-cdef OrderedDict c_new_odict(list args)
+cdef OrderedDict c_new_odict(object args)
+
+cpdef object odict(object args)

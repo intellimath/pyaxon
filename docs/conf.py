@@ -41,14 +41,14 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'AXON'
-copyright = u'2011-2013, Zaur Shibzukhov'
+copyright = u'2011-2015, Zaur Shibzukhov'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
 # built documents.
 #
 # The short X.Y version.
-version = u'0.5β'
+version = u'0.6β'
 # The full version, including alpha/beta/rc tags.
 release = version
 
