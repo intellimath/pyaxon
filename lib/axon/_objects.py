@@ -384,6 +384,9 @@ class Empty(object):
             #
     def as_instance(self, sequence=None, mapping=None):
         return c_new_instance(self.name, c_as_tuple(sequence), c_as_dict(mapping))
+    #
+    def __reduce__(self):
+        return empty, (self.name,)
 
 
 
@@ -462,6 +465,9 @@ class Sequence(object):
     #
     def as_instance(self, mapping=None):
         return c_new_instance(self.name, tuple(self.sequence), c_as_dict(mapping))
+    #
+    def __reduce__(self):
+        return sequence, (self.name, self.sequence)
 
 #
 # Mapping
@@ -541,6 +547,9 @@ class Mapping(object):
     #
     def as_instance(self, sequence=None):
         return c_new_instance(self.name, c_as_tuple(sequence), self.mapping)
+    #
+    def __reduce__(self):
+        return mapping, (self.name, self.mapping)
 
 #
 #
@@ -627,6 +636,8 @@ class Element(object):
     def as_instance(self):
         return c_new_instance(self.name, tuple(self.sequence), self.mapping)
     #
+    def __reduce__(self):
+        return element, (self.name, self.mapping, self.sequence)
 
 #
 # Instance
@@ -708,6 +719,9 @@ class Instance(object):
     #
     def as_instance(self):
         return self
+    #
+    def __reduce__(self):
+        return instance, (self.name, self.sequence, self.mapping)
 
 ####################################################################
 

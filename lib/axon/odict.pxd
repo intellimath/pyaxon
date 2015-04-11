@@ -82,6 +82,6 @@ cdef public class OrderedDict[object OrderedDictObject, type OrderedDictType]:
     cdef Link root
     cdef dict map
 
-cdef OrderedDict c_new_odict(object args)
+cdef OrderedDict c_new_odict(list args)
 
-cpdef object odict(object args)
+#cpdef object odict(object args)
