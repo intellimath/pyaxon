@@ -411,7 +411,7 @@ cdef public class OrderedDict[object OrderedDictObject, type OrderedDictType]:
         # no need to pickle the instance dict because it doesn't exist here
         #items = [(k, v) for k, v in self.items()]
         #return self.__class__, (items,)
-        return self.__class__, (), None, None, iter(self.items())        
+        return odict, (list(self.items()),)
 
     def copy(self):
         'od.copy() -> a shallow copy of od'
@@ -484,5 +484,7 @@ cdef OrderedDict c_new_odict(list args):
             
             dict.__setitem__(od.map, key, link)
     return od
-            
+
+def odict(args):
+    return c_new_odict(c_as_list(args))            
 

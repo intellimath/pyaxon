@@ -35,6 +35,8 @@ import sys as _sys
 import collections
 #from collections import Mapping, MutableMapping, MappingView, KeysView, 
 
+from axon._common cimport c_as_unicode, c_as_list, c_as_dict, c_as_tuple, dict_get
+
 # try:
 #     from thread import get_ident as _get_ident
 # except ImportError:
