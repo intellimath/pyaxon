@@ -126,7 +126,7 @@ collections.ValuesView.register(_ValuesView)
 ################################################################################
 
 @cython.final
-cdef class Link:
+cdef public class Link[object LinkObject, type LinkType]:
     #cdef cython.void *prev
     #cdef cython.void *next
     #cdef object key
@@ -135,12 +135,6 @@ cdef class Link:
     def __iter__(self):
         yield self.key
         yield self.value
-
-#cdef inline Link link_new(Link prev, Link next):
-#    cdef Link link = Link.__new__(Link)
-#    link.prev = <cython.void*>prev
-#    link.next = <cython.void*>next
-#    return link
 
 cdef Link link_marker = Link()
 
@@ -305,7 +299,7 @@ cdef public class OrderedDict[object OrderedDictObject, type OrderedDictType]:
         size += _sizeof(self.root) * n         # link objects
         return size
     
-    def __update(self, args, kwds):
+    cdef void __update(self, args, kwds):
         if len(args) > 1:
             raise TypeError('update expected at most 1 arguments, got %d' %
                             len(args))
@@ -428,34 +422,34 @@ cdef public class OrderedDict[object OrderedDictObject, type OrderedDictType]:
             self[key] = value
         return self
 
-    def _eq__(self, other):
+    cdef bint __eq(self, other):
         '''od.__eq__(y) <==> od==y.  Comparison to another OD is order-sensitive
         while comparison to a regular mapping is order-insensitive.
         '''
         if len(self) != len(other):
-            return False
+            return 0
         if isinstance(other, OrderedDict):
             for item_self, item_other in zip(self.items(), other.items()):
                 if item_self == item_other:
                     continue
                 else:
-                    return False
+                    return 0
         else:
             for key in self.map:
                 if key in other:
                     if self[key] == other[key]:
                         continue
                     else:
-                        return False
+                        return 0
                 else:
-                    return False    
-        return True
+                    return 0    
+        return 1
 
     def __richcmp__(self, other, int op):
         if op == Py_EQ:
-            return self._eq__(other)
+            return self.__eq(other)
         elif op == Py_NE:
-            return not self._eq__(other)
+            return not self.__eq(other)
         return NotImplemented
 
 
