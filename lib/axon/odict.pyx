@@ -406,8 +406,8 @@ cdef public class OrderedDict[object OrderedDictObject, type OrderedDictType]:
         # return odict, (items,)
         try:
             inst_dict = vars(self).copy()
-            for k in vars(OrderedDict()):
-                inst_dict.pop(k, None)
+            #for k in vars(OrderedDict()):
+            #    inst_dict.pop(k, None)
         except:
             inst_dict = None
         return self.__class__, (), inst_dict, None, iter(self.items())
