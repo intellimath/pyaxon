@@ -84,7 +84,5 @@ cdef public class OrderedDict[object OrderedDictObject, type OrderedDictType]:
     cdef Link root
     cdef dict map
     
-    cdef void __update(self, args, kwds)    
-    cdef bint __eq(self, other)
     
 cdef OrderedDict c_new_odict(list args)

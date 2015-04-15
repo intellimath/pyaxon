@@ -299,7 +299,7 @@ cdef public class OrderedDict[object OrderedDictObject, type OrderedDictType]:
         size += _sizeof(self.root) * n         # link objects
         return size
     
-    cdef void __update(self, args, kwds):
+    def __update(self, args, kwds):
         if len(args) > 1:
             raise TypeError('update expected at most 1 arguments, got %d' %
                             len(args))
@@ -402,11 +402,16 @@ cdef public class OrderedDict[object OrderedDictObject, type OrderedDictType]:
 
     def __reduce__(self):
         'Return state information for pickling'
-        # no need to pickle the instance dict because it doesn't exist here
-        #items = [(k, v) for k, v in self.items()]
-        #return self.__class__, (items,)
-        return odict, (list(self.items()),)
-
+        # items = [(k, self[k]) for k in self]
+        # return odict, (items,)
+        try:
+            inst_dict = vars(self).copy()
+            for k in vars(OrderedDict()):
+                inst_dict.pop(k, None)
+        except:
+            inst_dict = None
+        return self.__class__, (), inst_dict, None, iter(self.items())
+        
     def copy(self):
         'od.copy() -> a shallow copy of od'
         return self.__class__(self)
@@ -422,7 +427,7 @@ cdef public class OrderedDict[object OrderedDictObject, type OrderedDictType]:
             self[key] = value
         return self
 
-    cdef bint __eq(self, other):
+    def __eq(self, other):
         '''od.__eq__(y) <==> od==y.  Comparison to another OD is order-sensitive
         while comparison to a regular mapping is order-insensitive.
         '''

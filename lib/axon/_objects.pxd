@@ -225,7 +225,7 @@ cdef public class Element[object ElementObject, type ElementType]:
     cdef public list sequence
     #
 #
-# Construct
+# Instance
 #
 @cython.freelist(64)
 @cython.final
@@ -266,16 +266,33 @@ cdef public object c_new_empty(object name)
 # @cython.locals(e=Node)
 # cdef public object c_new_node(object name, dict mapping, list sequence)
 
+cdef FactoryRegister default_factory_register
+# cdef public object mapping_factory
+# cdef public object element_factory
+# cdef public object sequence_factory
+# cdef public object instance_factory
+# cdef public object empty_factory
+# cdef public object type_factory
 
-cdef public dict c_mapping_factory_dict
-cdef public dict c_element_factory_dict
-cdef public dict c_sequence_factory_dict
-cdef public dict c_instance_factory_dict
-cdef public dict c_empty_factory_dict
-cdef public dict c_type_factory_dict
+cdef class FactoryRegister:
+    cdef dict c_mapping_factory_dict
+    cdef dict c_element_factory_dict
+    cdef dict c_sequence_factory_dict
+    cdef dict c_instance_factory_dict
+    cdef dict c_empty_factory_dict
 
-cdef public dict c_node_factory_dict
-cdef public dict c_row_factory_dict
+    cdef dict c_type_factory_dict
+    
+
+# cdef public dict c_mapping_factory_dict
+# cdef public dict c_element_factory_dict
+# cdef public dict c_sequence_factory_dict
+# cdef public dict c_instance_factory_dict
+# cdef public dict c_empty_factory_dict
+# cdef public dict c_type_factory_dict
+#
+# cdef public dict c_node_factory_dict
+# cdef public dict c_row_factory_dict
 
 cdef class Builder:
     cdef public object create_mapping(self, object, dict)
@@ -297,12 +314,13 @@ cdef class SafeBuilder(Builder):
     cdef public object create_empty(self, object)
 
 cdef class StrictBuilder(Builder):
+    cdef FactoryRegister register
     cdef public dict c_mapping_factory_dict
     cdef public dict c_element_factory_dict
     cdef public dict c_sequence_factory_dict
     cdef public dict c_instance_factory_dict
     cdef public dict c_empty_factory_dict
-    cdef public dict c_type_factory_dict
+    cdef public dict c_type_factory_dict    
 
     cdef public object create_mapping(self, object, dict)
     cdef public object create_element(self, object, dict, list)
@@ -311,6 +329,7 @@ cdef class StrictBuilder(Builder):
     cdef public object create_empty(self, object)
 
 cdef class MixedBuilder(Builder):
+    cdef FactoryRegister register
     cdef public dict c_mapping_factory_dict
     cdef public dict c_element_factory_dict
     cdef public dict c_sequence_factory_dict

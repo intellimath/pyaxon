@@ -236,7 +236,8 @@ class TestOrderedDict(unittest.TestCase):
         # do not save instance dictionary if not needed
         pairs = [('c', 1), ('b', 2), ('a', 3), ('d', 4), ('e', 5), ('f', 6)]
         od = OrderedDict(pairs)
-        self.assertEqual(list(od.__reduce__()[-1]), pairs)
+        _, _, _, _, args = od.__reduce__()
+        self.assertEqual(list(args), pairs)
         # cyordereddict: remove this test because extension types don't allow
         # assigning arbitrary attributes
         # od.x = 10

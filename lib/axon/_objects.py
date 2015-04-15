@@ -927,131 +927,135 @@ def empty(name):
 def dict_as_sequence_factory(items):
     return dict(items)
 
-# def dict_as_mapping_factory(d):
-#     return d
-    
-c_mapping_factory_dict = {}
-c_element_factory_dict = {}
-c_sequence_factory_dict = {}
-c_instance_factory_dict = {}
-c_empty_factory_dict = {}
+class FactoryRegister:
 
-c_type_factory_dict = {}
+    def __init__(self):
+        self.reset()
+        self.reset_types()
 
-c_sequence_factory_dict['dict'] = dict_as_sequence_factory
-# c_mapping_factory_dict['dict'] = dict_as_mapping_factory
+    def reset(self):
+        self.c_mapping_factory_dict = {}
+        self.c_element_factory_dict = {}
+        self.c_sequence_factory_dict = {}
+        self.c_instance_factory_dict = {}
+        self.c_empty_factory_dict = {}
+        self.c_sequence_factory_dict['dict'] = dict_as_sequence_factory
 
-def reset_factory():
-    c_mapping_factory_dict = {}
-    c_element_factory_dict = {}
-    c_sequence_factory_dict = {}
-    c_instance_factory_dict = {}
-    c_empty_factory_dict = {}
-    c_sequence_factory_dict['dict'] = dict_as_sequence_factory
-#    c_mapping_factory_dict['dict'] = dict_as_mapping_factory
+    def reset_types(self):
+        self.c_type_factory_dict = {}
 
-def reset_type_factory():
-    c_factory_dict = {}
+    def all(self, name, factory_func=None):
+        name = c_as_unicode(name)
+        if factory_func is None:
+            def _factory(factory_func, name=name):
+                self.c_mapping_factory_dict[name] = factory_func
+                self.c_element_factory_dict[name] = factory_func
+                self.c_sequence_factory_dict[name] = factory_func
+                self.c_instance_factory_dict[name] = factory_func
+                self.c_empty_factory_dict[name] = factory_func
+                return factory_func
+            return _factory
+        else:
+            self.c_mapping_factory_dict[name] = factory_func
+            self.c_element_factory_dict[name] = factory_func
+            self.c_sequence_factory_dict[name] = factory_func
+            self.c_instance_factory_dict[name] = factory_func
+            self.c_empty_factory_dict[name] = factory_func
 
-def factory(name, factory_func=None):
-    name = c_as_unicode(name)
-    if factory_func is None:
-        def _factory(factory_func, name=name):
-            c_mapping_factory_dict[name] = factory_func
-            c_element_factory_dict[name] = factory_func
-            c_sequence_factory_dict[name] = factory_func
-            c_instance_factory_dict[name] = factory_func
-            c_empty_factory_dict[name] = factory_func
-            return factory_func
-        return _factory
-    else:
-        c_mapping_factory_dict[name] = factory_func
-        c_element_factory_dict[name] = factory_func
-        c_sequence_factory_dict[name] = factory_func
-        c_instance_factory_dict[name] = factory_func
-        c_empty_factory_dict[name] = factory_func
+    def mapping(self, name, factory_func=None):
+        name = c_as_unicode(name)
+        if factory_func is None:
+            def _factory(factory_func, name=name):
+                self.c_mapping_factory_dict[name] = factory_func
+                return factory_func
+            return _factory
+        else:
+            self.c_mapping_factory_dict[name] = factory_func
 
-def mapping_factory(name, factory_func=None):
-    name = c_as_unicode(name)
-    if factory_func is None:
-        def _factory(factory_func, name=name):
-            c_mapping_factory_dict[name] = factory_func
-            return factory_func
-        return _factory
-    else:
-        c_mapping_factory_dict[name] = factory_func
+    def element(self, name, factory_func=None):
+        name = c_as_unicode(name)
+        if factory_func is None:
+            def _factory(factory_func, name=name):
+                self.c_element_factory_dict[name] = factory_func
+                return factory_func
+            return _factory
+        else:
+            self.c_element_factory_dict[name] = factory_func
 
-def element_factory(name, factory_func=None):
-    name = c_as_unicode(name)
-    if factory_func is None:
-        def _factory(factory_func, name=name):
-            c_element_factory_dict[name] = factory_func
-            return factory_func
-        return _factory
-    else:
-        c_element_factory_dict[name] = factory_func
+    def sequence(self, name, factory_func=None):
+        name = c_as_unicode(name)
+        if factory_func is None:
+            def _factory(factory_func, name=name):
+                self.c_sequence_factory_dict[name] = factory_func
+                return factory_func
+            return _factory
+        else:
+            self.c_sequence_factory_dict[name] = factory_func
 
-def sequence_factory(name, factory_func=None):
-    name = c_as_unicode(name)
-    if factory_func is None:
-        def _factory(factory_func, name=name):
-            c_sequence_factory_dict[name] = factory_func
-            return factory_func
-        return _factory
-    else:
-        c_sequence_factory_dict[name] = factory_func
+    def instance(self, name, factory_func=None):
+        name = c_as_unicode(name)
+        if factory_func is None:
+            def _factory(factory_func, name=name):
+                self.c_instance_factory_dict[name] = factory_func
+                return factory_func
+            return _factory
+        else:
+            self.c_instance_factory_dict[name] = factory_func
 
-def instance_factory(name, factory_func=None):
-    name = c_as_unicode(name)
-    if factory_func is None:
-        def _factory(factory_func, name=name):
-            c_instance_factory_dict[name] = factory_func
-            return factory_func
-        return _factory
-    else:
-        c_instance_factory_dict[name] = factory_func
+    def empty(self, name, factory_func=None):
+        name = c_as_unicode(name)
+        if factory_func is None:
+            def _factory(factory_func, name=name):
+                self.c_empty_factory_dict[name] = factory_func
+                return factory_func
+            return _factory
+        else:
+            self.c_empty_factory_dict[name] = factory_func
 
-def empty_factory(name, factory_func=None):
-    name = c_as_unicode(name)
-    if factory_func is None:
-        def _factory(factory_func, name=name):
-            c_empty_factory_dict[name] = factory_func
-            return factory_func
-        return _factory
-    else:
-        c_empty_factory_dict[name] = factory_func
+    def type(self, tp, factory_func=None):
+        if factory_func is None:
+            def _factory(factory_func, tp=tp):
+                self.c_type_factory_dict[tp] = factory_func
+                return factory_func
+            return _factory
+        else:
+            self.c_type_factory_dict[tp] = factory_func
 
-def type_factory(tp, factory_func=None):
-    if factory_func is None:
-        def _factory(factory_func, tp=tp):
-            c_type_factory_dict[tp] = factory_func
-            return factory_func
-        return _factory
-    else:
-        c_type_factory_dict[tp] = factory_func
-        
-def convert(ob, to):
-    caller = c_type_factory_dict.get(to, None)
-    otype = type(ob)
-    if caller is None:
-        raise errors.error2("Object %s can't be converted to %s" % (otype, to))
+    def convert(self, ob, to):
+        caller = self.c_type_factory_dict.get(to, None)
+        otype = type(ob)
+        if caller is None:
+            raise errors.error2("Object %s can't be converted to %s" % (otype, to))
 
-    if otype is Element:
-        return caller(ob.sequence, ob.mapping)
-    elif otype is Sequence:
-        return caller(ob.sequence)
-    elif otype is Mapping:
-        return caller(ob.mapping)
-    elif otype is Instance:
-        return caller(ob.sequence, ob.mapping)
-    elif otype is dict:
-        return caller(ob)
-    elif otype is list:
-        return caller(ob)
-    elif otype is tuple:
-        return caller(ob)
-    else:
-        raise errors.error2("Object %s do not support convertion" % otype)
+        if otype is Element:
+            return caller(ob.sequence, ob.mapping)
+        elif otype is Sequence:
+            return caller(ob.sequence)
+        elif otype is Mapping:
+            return caller(ob.mapping)
+        elif otype is Instance:
+            return caller(ob.sequence, ob.mapping)
+        elif otype is dict:
+            return caller(ob)
+        elif otype is list:
+            return caller(ob)
+        elif otype is tuple:
+            return caller(ob)
+        else:
+            raise errors.error2("Object %s do not support convertion" % otype)
+
+default_factory_register = FactoryRegister()
+
+factory = default_factory_register.all
+mapping_factory = default_factory_register.mapping
+element_factory = default_factory_register.element
+sequence_factory = default_factory_register.sequence
+instance_factory = default_factory_register.instance
+empty_factory = default_factory_register.empty
+type_factory = default_factory_register.type
+convert = default_factory_register.convert
+reset_factory = default_factory_register.reset
+reset_type_factory = default_factory_register.reset_types
 
 def dict_as_sequence(d):
     return c_new_sequence(c_as_name('dict'), [(k,v) for k,v in d.items()])
@@ -1107,12 +1111,14 @@ class SafeBuilder(Builder):
 
 class StrictBuilder(Builder):
 
-    def __init__(self):
-        self.c_mapping_factory_dict = c_mapping_factory_dict
-        self.c_element_factory_dict = c_element_factory_dict
-        self.c_sequence_factory_dict = c_sequence_factory_dict
-        self.c_instance_factory_dict = c_instance_factory_dict
-        self.c_empty_factory_dict = c_empty_factory_dict
+    @cython.locals(register=FactoryRegister)
+    def __init__(self, register=default_factory_register):
+        self.register = register
+        self.c_mapping_factory_dict = register.c_mapping_factory_dict
+        self.c_element_factory_dict = register.c_element_factory_dict
+        self.c_sequence_factory_dict = register.c_sequence_factory_dict
+        self.c_instance_factory_dict = register.c_instance_factory_dict
+        self.c_empty_factory_dict = register.c_empty_factory_dict
     #
     def create_mapping(self, name, mapping):
         handler = self.c_mapping_factory_dict.get(name)
@@ -1151,12 +1157,14 @@ class StrictBuilder(Builder):
 
 class MixedBuilder(Builder):
 
-    def __init__(self):
-        self.c_mapping_factory_dict = c_mapping_factory_dict
-        self.c_element_factory_dict = c_element_factory_dict
-        self.c_sequence_factory_dict = c_sequence_factory_dict
-        self.c_instance_factory_dict = c_instance_factory_dict
-        self.c_empty_factory_dict = c_empty_factory_dict
+    @cython.locals(register=FactoryRegister)
+    def __init__(self, register=default_factory_register):
+        self.register = register
+        self.c_mapping_factory_dict = register.c_mapping_factory_dict
+        self.c_element_factory_dict = register.c_element_factory_dict
+        self.c_sequence_factory_dict = register.c_sequence_factory_dict
+        self.c_instance_factory_dict = register.c_instance_factory_dict
+        self.c_empty_factory_dict = register.c_empty_factory_dict
 
     def create_mapping(self, name, mapping):
         handler = self.c_mapping_factory_dict.get(name)
