@@ -24,7 +24,7 @@ Installation
 
 It can be installed via pip::
 
-	pip install graphviz
+	pip install pyaxon
 	
 It can be installed from sources::
 
