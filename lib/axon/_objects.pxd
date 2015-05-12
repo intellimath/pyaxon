@@ -186,12 +186,15 @@ cdef class Attrs(object):
 @cython.locals(attrs=Attrs)
 cdef object new_attrs(dict o)
 
+cdef public class Node[type NodeType, object NodeObject]:
+    pass
+
 #
 # Empty
 #
 @cython.freelist(64)
 @cython.final
-cdef public class Empty[type EmptyType, object EmptyObject]:
+cdef public class Empty(Node)[type EmptyType, object EmptyObject]:
     cdef public object name
 
 #
@@ -199,7 +202,7 @@ cdef public class Empty[type EmptyType, object EmptyObject]:
 #
 @cython.freelist(64)
 @cython.final
-cdef public class Sequence[object SequenceObject, type SequenceType]:
+cdef public class Sequence(Node)[object SequenceObject, type SequenceType]:
     cdef public object name
     cdef public list sequence
     #
@@ -209,7 +212,7 @@ cdef public class Sequence[object SequenceObject, type SequenceType]:
 #
 @cython.freelist(64)
 @cython.final
-cdef public class Mapping[object MappingObject, type MappingType]:
+cdef public class Mapping(Node)[object MappingObject, type MappingType]:
     cdef public object name
     cdef public dict mapping
     #
@@ -219,7 +222,7 @@ cdef public class Mapping[object MappingObject, type MappingType]:
 #
 @cython.freelist(64)
 @cython.final
-cdef public class Element[object ElementObject, type ElementType]:
+cdef public class Element(Node)[object ElementObject, type ElementType]:
     cdef public object name
     cdef public dict mapping
     cdef public list sequence
@@ -229,7 +232,7 @@ cdef public class Element[object ElementObject, type ElementType]:
 #
 @cython.freelist(64)
 @cython.final
-cdef public class Instance[object InstanceObject, type InstanceType]:
+cdef public class Instance(Node)[object InstanceObject, type InstanceType]:
     cdef public object name
     cdef public tuple sequence
     cdef public dict mapping

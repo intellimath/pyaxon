@@ -324,9 +324,16 @@ def new_attrs(mapping):
     return attrs
 
 #
+# Node: base class
+#
+
+class Node(object):
+    pass
+
+#
 # Empty
 #
-class Empty(object):
+class Empty(Node):
     '''
     Empty named complex value.
 
@@ -393,7 +400,7 @@ class Empty(object):
 #
 # Sequence
 #
-class Sequence(object):
+class Sequence(Node):
     '''
     Named sequence of values.
 
@@ -472,7 +479,7 @@ class Sequence(object):
 #
 # Mapping
 #
-class Mapping(object):
+class Mapping(Node):
     '''
     Named mapping containing pairs of `name`/`value`.
 
@@ -555,7 +562,7 @@ class Mapping(object):
 #
 # Element
 #
-class Element(object):
+class Element(Node):
     '''
     Named mapping containing list of values.
 
@@ -642,7 +649,7 @@ class Element(object):
 #
 # Instance
 #
-class Instance(object):
+class Instance(Node):
     '''
     Named sequence containing pairs of name: value.
 
