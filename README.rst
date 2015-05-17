@@ -73,11 +73,11 @@ Load and dump lists, dicts, tuples::
 	>>> text = axon.dumps(vals, pretty=1)
 	>>> print(text)
 	[ { a: 1
-		b: 2
-		c: 3}
+	    b: 2
+	    c: 3}
 	  { a: [1 2 3]
-		b: (1 2 3)
-		c: []}]
+	    b: (1 2 3)
+	    c: []}]
 	>>> vals = axon.loads(text)
 	True
 

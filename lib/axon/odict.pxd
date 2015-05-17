@@ -63,6 +63,7 @@ cdef class _ValuesView(_MappingView):
 ### OrderedDict
 ################################################################################
 
+@cython.freelist(64)
 @cython.final
 cdef public class Link[object LinkObject, type LinkType]:
     cdef cython.void *prev
@@ -70,7 +71,6 @@ cdef public class Link[object LinkObject, type LinkType]:
     cdef object key
     cdef object value
     
-
 cdef inline Link link_new(Link prev, Link next):
    cdef Link link = Link.__new__(Link)
    link.prev = <cython.void*>prev
@@ -80,9 +80,7 @@ cdef inline Link link_new(Link prev, Link next):
 cdef Link link_marker
 
 cdef public class OrderedDict[object OrderedDictObject, type OrderedDictType]:
-
     cdef Link root
     cdef dict map
-    
     
 cdef OrderedDict c_new_odict(list args)

@@ -40,8 +40,6 @@ cdef public class OrderedDict[object OrderedDictObject, type OrderedDictType]
 
 cdef class _MappingView:
 
-    #cdef OrderedDict _mapping
-
     def __init__(self, OrderedDict mapping):
         self._mapping = mapping
 
@@ -126,12 +124,7 @@ collections.ValuesView.register(_ValuesView)
 ################################################################################
 
 @cython.final
-cdef public class Link[object LinkObject, type LinkType]:
-    #cdef cython.void *prev
-    #cdef cython.void *next
-    #cdef object key
-    #cdef object value
-    
+cdef public class Link[object LinkObject, type LinkType]:    
     def __iter__(self):
         yield self.key
         yield self.value
@@ -139,9 +132,6 @@ cdef public class Link[object LinkObject, type LinkType]:
 cdef Link link_marker = Link()
 
 cdef public class OrderedDict[object OrderedDictObject, type OrderedDictType]:
-
-    #cdef Link root
-    #cdef dict map
 
     def __init__(self, *args, **kwds):
         '''Initialize an ordered dictionary.  The signature is the same as

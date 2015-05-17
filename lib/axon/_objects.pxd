@@ -192,7 +192,7 @@ cdef public class Node[type NodeType, object NodeObject]:
 #
 # Empty
 #
-@cython.freelist(64)
+#@cython.freelist(64)
 @cython.final
 cdef public class Empty(Node)[type EmptyType, object EmptyObject]:
     cdef public object name
@@ -200,7 +200,7 @@ cdef public class Empty(Node)[type EmptyType, object EmptyObject]:
 #
 # Sequence
 #
-@cython.freelist(64)
+#@cython.freelist(64)
 @cython.final
 cdef public class Sequence(Node)[object SequenceObject, type SequenceType]:
     cdef public object name
@@ -210,7 +210,7 @@ cdef public class Sequence(Node)[object SequenceObject, type SequenceType]:
 #
 # Object
 #
-@cython.freelist(64)
+#@cython.freelist(64)
 @cython.final
 cdef public class Mapping(Node)[object MappingObject, type MappingType]:
     cdef public object name
@@ -220,7 +220,7 @@ cdef public class Mapping(Node)[object MappingObject, type MappingType]:
 #
 # Element
 #
-@cython.freelist(64)
+#@cython.freelist(64)
 @cython.final
 cdef public class Element(Node)[object ElementObject, type ElementType]:
     cdef public object name
@@ -230,7 +230,7 @@ cdef public class Element(Node)[object ElementObject, type ElementType]:
 #
 # Instance
 #
-@cython.freelist(64)
+#@cython.freelist(64)
 @cython.final
 cdef public class Instance(Node)[object InstanceObject, type InstanceType]:
     cdef public object name

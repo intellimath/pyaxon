@@ -19,3 +19,5 @@ lib/axon/_dumper.c
 lib/axon/_dumper.h
 lib/axon/_loader.c
 lib/axon/_loader.h
+lib/axon/_odict.c
+lib/axon/_odict.h
