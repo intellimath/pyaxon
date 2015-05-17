@@ -40,6 +40,8 @@ cdef public class OrderedDict[object OrderedDictObject, type OrderedDictType]
 
 cdef class _MappingView:
 
+    #cdef OrderedDict _mapping
+
     def __init__(self, OrderedDict mapping):
         self._mapping = mapping
 
@@ -132,7 +134,6 @@ cdef public class Link[object LinkObject, type LinkType]:
 cdef Link link_marker = Link()
 
 cdef public class OrderedDict[object OrderedDictObject, type OrderedDictType]:
-
     def __init__(self, *args, **kwds):
         '''Initialize an ordered dictionary.  The signature is the same as
         regular dictionaries, but keyword arguments are not recommended because
@@ -302,7 +303,10 @@ cdef public class OrderedDict[object OrderedDictObject, type OrderedDictType]:
             elif tp is dict:
                 for key, value in (<dict>other).items():
                     self[key] = value
-            if isinstance(other, collections.Mapping):
+            elif tp is tuple:
+                for key, value in <list>other:
+                    self[key] = value
+            elif isinstance(other, collections.Mapping):
                 for key in other:
                     self[key] = other[key]
             elif hasattr(other, "keys"):

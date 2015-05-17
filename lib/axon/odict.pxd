@@ -80,7 +80,7 @@ cdef inline Link link_new(Link prev, Link next):
 cdef Link link_marker
 
 cdef public class OrderedDict[object OrderedDictObject, type OrderedDictType]:
-    cdef Link root
+    cdef Link root, last
     cdef dict map
     
 cdef OrderedDict c_new_odict(list args)
