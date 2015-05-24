@@ -210,7 +210,6 @@ cdef public class Sequence(Node)[object SequenceObject, type SequenceType]:
 #
 # Object
 #
-#@cython.freelist(64)
 @cython.final
 cdef public class Mapping(Node)[object MappingObject, type MappingType]:
     cdef public object name
@@ -220,7 +219,6 @@ cdef public class Mapping(Node)[object MappingObject, type MappingType]:
 #
 # Element
 #
-#@cython.freelist(64)
 @cython.final
 cdef public class Element(Node)[object ElementObject, type ElementType]:
     cdef public object name
@@ -230,7 +228,6 @@ cdef public class Element(Node)[object ElementObject, type ElementType]:
 #
 # Instance
 #
-#@cython.freelist(64)
 @cython.final
 cdef public class Instance(Node)[object InstanceObject, type InstanceType]:
     cdef public object name
@@ -250,9 +247,6 @@ cdef public class Instance(Node)[object InstanceObject, type InstanceType]:
 
 @cython.locals(s=Sequence)
 cdef public object c_new_sequence(object name, list sequence)
-#
-#@cython.locals(s=Collection)
-#cdef public object c_new_collection(object name, list sequence)
 #
 @cython.locals(o=Mapping)
 cdef public object c_new_mapping(object name, dict mapping)
