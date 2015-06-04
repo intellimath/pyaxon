@@ -54,7 +54,7 @@ from cpython.object cimport PyObject
 from cpython.dict cimport PyDict_SetItem, PyDict_GetItem
 from cpython.unicode cimport PyUnicode_FromEncodedObject
 
-from axon._objects cimport Empty, Mapping, Element, Sequence, Instance, Undefined
+from axon._objects cimport Node, Attribute, attribute
 #from axon._objects cimport c_undefined
 #from axon._objects cimport name_cache, c_as_name
 from axon._objects cimport StringWriter
@@ -68,20 +68,23 @@ from axon._common cimport c_as_unicode, c_as_list, c_as_dict, c_as_tuple, dict_g
 from axon.odict cimport OrderedDict as axon_odict
 
 
-cdef inline Mapping as_mapping(object ob):
-    return <Mapping>ob
+# cdef inline Mapping as_mapping(object ob):
+#     return <Mapping>ob
+#
+# cdef inline Element as_element(object ob):
+#     return <Element>ob
+#
+# cdef inline Sequence as_sequence(object ob):
+#     return <Sequence>ob
+#
+# cdef inline Instance as_instance(object ob):
+#     return <Instance>ob
+#
+# cdef inline Empty as_empty(object ob):
+#     return <Empty>ob
 
-cdef inline Element as_element(object ob):
-    return <Element>ob
-
-cdef inline Sequence as_sequence(object ob):
-    return <Sequence>ob
-
-cdef inline Instance as_instance(object ob):
-    return <Instance>ob
-
-cdef inline Empty as_empty(object ob):
-    return <Empty>ob
+cdef inline Node as_node(object ob):
+    return <Node>ob
 
 cdef class PyInt:
     cdef long val
@@ -109,15 +112,8 @@ cdef set simple_types
 cdef public dict c_reduce_dict
 cdef public dict c_all_names
 
-cpdef mapping_reduce(Mapping o)
-#
-cpdef element_reduce(Element o)
-#
-cpdef sequence_reduce(Sequence o)
-#
-cpdef instance_reduce(Instance o)
-#
-cpdef empty_reduce(Empty o)
+cpdef node_reduce(Node o)
+cpdef attribute_reduce(Attribute o)
 
 cdef dict _c_type_reducers
 
@@ -200,7 +196,6 @@ cdef public class Dumper[object Dumper, type DumperType]:
     #
     cdef dict c_simple_dumpers
     cdef dict c_type_reducers
-    #cdef long size, max_size
     cdef int hsize
     cdef object fd
     cdef StringWriter sfd
@@ -226,129 +221,98 @@ cdef public class Dumper[object Dumper, type DumperType]:
     #
     cdef inline void write(Dumper self, o)
     #
-    cdef void _pretty_dump_crossref(Dumper self, o)
+    cdef void pretty_dump_crossref(Dumper self, o)
     #
-    cdef void _dump_crossref(Dumper self, o)
+    cdef void dump_crossref(Dumper self, o)
     #
-    cdef bint _dump_label(Dumper self, o)
+    cdef bint dump_label(Dumper self, o)
     #
     @cython.locals(flag=bint)
-    cdef int _dump(Dumper self, o) except -1
+    cdef dump_value(Dumper self, o)
     #
     @cython.locals(flag=bint, this_offset=unicode, new_offset=unicode)
-    cdef int _pretty_dump(Dumper self, o, unicode offset, bint use_offset) except -1
+    cdef pretty_dump_value(Dumper self, o, unicode offset, bint use_offset)
     #
     @cython.locals(text=unicode, ptr=PyPointer)
-    cdef bint _dump_value(Dumper self, o) except -1
+    cdef bint dump_simple_value(Dumper self, o) except -1
+    #
+    cdef dump_attribute(Dumper self, Attribute attr)
     #
     @cython.locals(i=int)
-    cdef int _dump_attributes(Dumper self, dict d) except -1
+    cdef dump_dict_values(Dumper self, dict d)
     #
     @cython.locals(i=int)
-    cdef int _dump_dict_values(Dumper self, dict d) except -1
+    cdef dump_odict_values(Dumper self, object d)
     #
     @cython.locals(i=int)
-    cdef int _dump_odict_values(Dumper self, object d) except -1
+    cdef dump_list_sequence(Dumper self, list l)
     #
     @cython.locals(i=int)
-    cdef int _dump_list_sequence(Dumper self, list l) except -1
+    cdef dump_tuple_sequence(Dumper self, tuple l)
     #
-    #@cython.locals(i=int)
-    #cdef int _dump_set_sequence(Dumper self, set l) except -1
+    cdef dump_list(Dumper self, list l)
     #
-    @cython.locals(i=int)
-    cdef int _dump_tuple_sequence(Dumper self, tuple l) except -1
+    #cdef dump_set(Dumper self, set l)
     #
-    cdef int dump_list(Dumper self, list l) except -1
+    cdef dump_dict(Dumper self, dict d)
     #
-    #cdef int dump_set(Dumper self, set l) except -1
+    cdef dump_odict(Dumper self, object d)
     #
-    cdef int dump_dict(Dumper self, dict d) except -1
+    cdef dump_tuple(Dumper self, tuple d)
     #
-    cdef int dump_odict(Dumper self, object d) except -1
-    #
-    cdef int dump_tuple(Dumper self, tuple d) except -1
-    #
-    cdef int dump_mapping(Dumper self, Mapping ob) except -1
-    #
-    cdef int dump_element(Dumper self, Element ob) except -1
-    #
-    cdef int dump_sequence(Dumper self, Sequence ob) except -1
-    #
-    cdef int dump_instance(Dumper self, Instance ob) except -1
-    #
-    cdef int dump_empty(Dumper self, Empty ob) except -1
+    cdef dump_node(Dumper self, Node ob)
     #
     @cython.locals(i=int, j=int, flag=int, use_offset=bint)
-    cdef inline int _pretty_dump_dict_values(Dumper self, dict d, unicode w) except -1
+    cdef pretty_dump_node_sequence(Dumper self, list l, unicode w)
     #
     @cython.locals(i=int, j=int, flag=int, use_offset=bint)
-    cdef inline int _pretty_dump_odict_values(Dumper self, object d, unicode w) except -1
+    cdef pretty_dump_dict_values(Dumper self, dict d, unicode w)
     #
     @cython.locals(i=int, j=int, flag=int, use_offset=bint)
-    cdef inline int _pretty_dump_attributes(Dumper self, dict d, unicode w) except -1
+    cdef pretty_dump_odict_values(Dumper self, object d, unicode w)
     #
-    #@cython.locals(text=unicode, i=int, j=int, flag=bint)
-    #cdef inline int _pretty_dump_attr_sequence(Dumper self, dict d, unicode w, bint use_offset) except -1
-    #
-    @cython.locals(i=int, j=int, flag=int, use_offset=bint)
-    cdef inline int _pretty_dump_list_sequence(Dumper self, list l, unicode w) except -1
+    cdef pretty_dump_attribute(Dumper self, Attribute attr, unicode w, bint use_offset)
     #
     @cython.locals(i=int, j=int, flag=int, use_offset=bint)
-    cdef inline int _pretty_dump_tuple_sequence(Dumper self, tuple l, unicode w) except -1
+    cdef pretty_dump_list_sequence(Dumper self, list l, unicode w)
+    #
+    @cython.locals(i=int, j=int, flag=int, use_offset=bint)
+    cdef pretty_dump_tuple_sequence(Dumper self, tuple l, unicode w)
     #
     @cython.locals(n=int)
-    cdef inline int pretty_dump_list(Dumper self, list l, unicode w, bint use_offset) except -1
+    cdef pretty_dump_list(Dumper self, list l, unicode w, bint use_offset)
     #
-    #cdef int pretty_dump_set(Dumper self, set l, unicode w, bint use_offset) except -1
+    #cdef pretty_dump_set(Dumper self, set l, unicode w, bint use_offset)
     #
-    cdef inline int pretty_dump_dict(Dumper self, dict d, unicode w, bint use_offset) except -1
+    cdef pretty_dump_dict(Dumper self, dict d, unicode w, bint use_offset)
     #
-    cdef inline int pretty_dump_odict(Dumper self, object d, unicode w, bint use_offset) except -1
+    cdef pretty_dump_odict(Dumper self, object d, unicode w, bint use_offset)
     #
     @cython.locals(n=int)
-    cdef int pretty_dump_tuple(Dumper self, tuple l, unicode w, bint use_offset) except -1
+    cdef pretty_dump_tuple(Dumper self, tuple l, unicode w, bint use_offset)
     #
     @cython.locals(w1=unicode)
-    cdef inline int pretty_dump_mapping(Dumper self, Mapping ob, unicode w, bint use_offset) except -1
-    #
-    @cython.locals(w1=unicode)
-    cdef inline int pretty_dump_element(Dumper self, Element ob, unicode w, bint use_offset) except -1
-    #
-    @cython.locals(w1=unicode)
-    cdef inline int pretty_dump_sequence(Dumper self, Sequence ob, unicode w, bint use_offset) except -1
-    #
-    @cython.locals(w1=unicode)
-    cdef inline int pretty_dump_instance(Dumper self, Instance ob, unicode w, bint use_offset) except -1
-    #
-    @cython.locals(w1=unicode)
-    cdef inline int pretty_dump_empty(Dumper self, Empty ob, unicode w, bint use_offset) except -1
+    cdef pretty_dump_node(Dumper self, Node ob, unicode w, bint use_offset)
     #
     @cython.locals(count=PyInt, crossref_set=set, crossref_dict=dict, i=int)
     cdef void apply_crossref(Dumper self)
     #
     @cython.locals(count=PyInt)
-    cdef int _collect(Dumper self, o) except -1
+    cdef collect_value(Dumper self, o)
     #
-    cdef int _collect_list(Dumper self, list lst) except -1
+    cdef void collect_list(Dumper self, list lst)
     #
-    cdef int _collect_tuple(Dumper self, tuple lst) except -1
+    cdef void collect_tuple(Dumper self, tuple lst)
     #
-    cdef int _collect_set(Dumper self, set lst) except -1
+    cdef void collect_set(Dumper self, set lst)
     #
-    cdef int _collect_dict(Dumper self, dict d) except -1
+    cdef void collect_dict(Dumper self, dict d)
     #
-    cdef int _collect_mapping(Dumper self, Mapping d) except -1
+    cdef void collect_node(Dumper self, Node d)
     #
-    cdef int _collect_sequence(Dumper self, Sequence d) except -1
+    cdef void collect_attribute(Dumper self, Attribute d)
     #
-    cdef int _collect_element(Dumper self, Element d) except -1
-    #
-    cdef int _collect_instance(Dumper self, Instance d) except -1
-    #
-    cdef int _collect_empty(Dumper self, Empty d) except -1
-    #
-    cdef int collect(Dumper self, values) except -1
+    cdef void collect(Dumper self, values)
 
 
 cdef set _simple_types

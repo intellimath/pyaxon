@@ -19,20 +19,20 @@ class E(object):
 def mapping_instance_maker(cls):
     def make_instance(attrs):
         inst = cls.__new__(cls)
-        for name, value in attrs.items():
+        for name, value in attrs:
             setattr(inst, name, value)
         return inst
     return make_instance
 
 def mapping_reducer_maker(cls):
     def type_reducer(o):
-        attrs = {}
+        attrs = []
         for name in o.__dict__:
             if name.startswith('_'):
                 continue
-            attrs[as_name(name)] = getattr(o, name)
+            attrs.append(attribute(as_name(name), getattr(o, name)))
 
-        return mapping(as_name(cls.__name__), attrs)
+        return node(as_name(cls.__name__), attrs)
     return type_reducer
 
 
@@ -69,8 +69,8 @@ class Edge(Base):
         
         
 @factory('graph')
-def create_graph(kwdict):
-    return Graph(**kwdict)
+def create_graph(args):
+    return Graph(**{attr.name:attr.value for attr in args})
 
 @factory('node')
 def create_node(args):
@@ -82,15 +82,15 @@ def create_edge(args):
 
 @reduce(Graph)
 def reduce_graph(graph):
-    return element('graph', {'nodes': graph.nodes, 'edges': graph.edges})
+    return node('graph', [attribute('nodes', graph.nodes), attribute('edges', graph.edges)])
 
 @reduce(Node)
 def reduce_node(node):
-    return sequence('node', [node.x, node.y])
+    return node('node', [node.x, node.y])
 
 @reduce(Edge)
 def reduce_edge(edge):
-    return sequence('edge', [edge.p1, edge.p2])
+    return node('edge', [edge.p1, edge.p2])
 
 
 class UnsafeLoadsTestCase(unittest.TestCase):

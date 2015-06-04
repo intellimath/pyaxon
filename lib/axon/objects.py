@@ -22,8 +22,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-from axon._objects import Empty, Instance, Element, Sequence, Mapping
-from axon._objects import empty, sequence, mapping, instance, element
-from axon._objects import GenericBuilder
+from axon._objects import Node, Attribute
+from axon._objects import node, attribute
+from axon._objects import attrs_values, values_attrs, dict_values, values_dict
+from axon._objects import Builder
 from axon._objects import timezone
 from axon._loader import register_builder

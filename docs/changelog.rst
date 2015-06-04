@@ -1,6 +1,14 @@
 Release Notes
 -------------
 
+**0.7**
+
+1. Safe mode loading/dumping on named complex values are based on general ``Node`` objects.
+2. Attributes in safe mode are represented as ``Attribute`` objects.
+3. Named complex values are now sensitive to an order of containing values and attributes.
+4. The protocol for unsafe loading/dumping of named complex values is changed.
+5. Old safe mode loading/dumping are still here in the ``mode='safe_old'``
+
 **0.6**
 
 1. Use compiled `decimal` module when possible.

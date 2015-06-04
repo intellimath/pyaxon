@@ -851,7 +851,6 @@ class Loader:
                     self.bc += 1
                     skip_char(self)
                     self.skip_spaces()
-
                     val = self.get_complex_value(name, 0)
                 elif ch == ':':
                     skip_char(self)
@@ -859,13 +858,13 @@ class Loader:
 
                     if self.is_nl:
                         if self.eof or self.col <= idn:
-                            val = self.builder.create_empty(name)
+                            val = self.builder.create_node(name, [])
                         elif self.col > idn:
                             val = self.get_complex_value(name, self.col)
                         else:
                             errors.error_indentation(self, idn)
                     else:
-                        errors.error_unexpected_attribute(self, name)
+                        val = c_new_attribute(name, self.get_value(idn))
                 else:
                     val = self.get_constant_or_string(name)
             elif ch == '|':
@@ -913,88 +912,37 @@ class Loader:
         return val
     #
     def get_complex_value(self, name, idn):
-        ch = current_char(self)
-        if ch == '#':
-            self.skip_comments()
-
-        aname = self.try_get_name()
-
-        if aname is not None:
-
-            val = dict_get(self.c_constants, aname, None)
-            if val is not None:
-                return val
-
-            ch = self.skip_spaces()
-            
-            if ch == ':':
-                skip_char(self)
-                self.skip_spaces()
-
-                if self.is_nl:
-                    if self.eof or self.col <= idn:
-                        sequence = [self.builder.create_empty(aname)]
-                        val = self.get_sequence_mapping(name, sequence, idn)
-                    elif self.pos > idn:
-                        sequence = [self.get_complex_value(aname, self.col)]
-                        val = self.get_sequence_mapping(name, sequence, idn)
-                    else:
-                        errors.error_indentation(self, idn)
-                else:
-                    mapping = {aname: self.get_value(idn)}
-                    val = self.get_mapping_sequence(name, mapping, idn)
-            elif ch == '{':
-                self.bc += 1
-                skip_char(self)
-
-                ch = self.skip_spaces()
+        sequence = []            
+        ch = self.skip_spaces()
+        while 1:
+            if ch == '#':
+                self.skip_comments()
+                ch = current_char(self)
                 
-                sequence = [self.get_complex_value(aname, 0)]
-                val = self.get_sequence_mapping(name, sequence, idn)
-            else:
-                sequence = [self.get_constant_or_string(aname)]
-                val = self.get_sequence_mapping(name, sequence, idn)
-
-        else:
-            ch = self.skip_spaces()
-
+            if idn:
+                if self.eof or self.col < idn:
+                    val = self.builder.create_node(name, sequence)
+                    break
+                elif self.col == idn:
+                    pass
+                elif self.is_nl:
+                    errors.error_indentation(self, idn)
+            elif self.eof:
+                errors.error(self, "Unexpected end inside of the complex value")
+            
             if ch == '}':
                 self.bc -= 1
                 skip_char(self)
-                val = self.builder.create_empty(name)
+                val = self.builder.create_node(name, sequence)
+                break
             elif ch == '\0':
-                val = self.builder.create_empty(name)
+                val = self.builder.create_node(name, sequence)
+                break
             else:
-                sequence = [self.get_value(idn)]
-                val = self.get_sequence_mapping(name, sequence, idn)
+                val = self.get_value(idn)
+                sequence.append(val)
 
-        return val
-    #
-    def get_sequence_mapping(self, name, sequence, idn):
-        mapping = {}
-        v = self.get_sequence_part(sequence, mapping, idn)
-        if v:
-            v = self.get_mapping_part(mapping, None, idn)
-            if v:
-                errors.error_unexpected_value(self, 'in named sequence-like structure')
-
-            val = self.builder.create_instance(name, c_as_tuple(sequence), mapping)
-        else:
-            val = self.builder.create_sequence(name, sequence)
-
-        return val
-    #
-    def get_mapping_sequence(self, name, mapping, idn):
-        sequence = []
-        v = self.get_mapping_part(mapping, sequence, idn)
-        if v:
-            v = self.get_sequence_part(sequence, None, idn)
-            if v:
-                errors.error_unexpected_value(self, 'in named mapping-like structure')
-
-            val = self.builder.create_element(name, mapping, sequence)
-        else:
-            val = self.builder.create_mapping(name, mapping)
+            ch = self.skip_spaces()            
 
         return val
     #
@@ -1125,147 +1073,3 @@ class Loader:
                     errors.error(self, "Expected '>' or invalid part of the ordered dict")
 
             ch = self.skip_spaces()
-    #
-    def get_mapping_part(self, mapping, sequence, idn):
-
-        while 1:
-            ch = self.skip_spaces()
-            
-            if ch == '#':
-                self.skip_comments()
-            
-            if idn:
-                if self.eof or self.col < idn or ch == '}' or ch == ']' or ch == ')':
-                    return 0
-                elif self.col == idn:
-                    pass
-                elif self.is_nl:
-                    errors.error_indentation(self, idn)
-            elif self.eof:
-                errors.error(self, "Unexpected end inside of mapping part of the named structure")
-
-            name = self.try_get_name()
-
-            if name is not None:
-
-                val = dict_get(self.c_constants, name, None)
-                if val is not None:
-                    return val
-
-                ch = self.skip_spaces()
-
-                if ch == ':':
-                    skip_char(self)
-                    self.skip_spaces()
-
-                    if self.is_nl:
-                        if self.eof or self.col <= idn:
-                            if sequence is not None:
-                                val = self.builder.create_empty(name)
-                                sequence.append(val)
-                            return 1
-                        elif self.col > idn:
-                            if sequence is not None:
-                                val = self.get_complex_value(name, self.col)
-                                sequence.append(val)
-                            return 1
-                        else:
-                            errors.error_indentation(self, idn)
-
-                    val = self.get_value(idn)
-                    mapping[name] = val
-                elif ch == '{':
-                    self.bc += 1
-                    skip_char(self)
-                    self.skip_spaces()
-
-                    if sequence is not None:
-                        val = self.get_complex_value(name, 0)
-                        sequence.append(val)
-
-                    return 1
-                else:
-                    if sequence is not None:
-                        val = self.get_constant_or_string(name)
-                        sequence.append(val)
-                    return 1
-            else:
-                ch = current_char(self)
-                if ch == '}':
-                    skip_char(self)
-                    self.bc -= 1
-                    return 0
-                else:
-                    if sequence is not None:
-                        val = self.get_value(idn)
-                        sequence.append(val)
-                    return 1
-    #
-    def get_sequence_part(self, sequence, mapping, idn):
-
-        while 1:
-            ch = self.skip_spaces()
-
-            if ch == '#':
-                self.skip_comments()
-
-            if idn:
-                if self.eof or self.col < idn or ch == '}' or ch == ']' or ch == ')':
-                    return 0
-                if self.col == idn:
-                    pass
-                elif self.is_nl: # self.col > idn:
-                    errors.error_indentation(self, idn)
-            elif self.eof:
-                errors.error(self, "Unexpected end inside of sequence part of the named structure")
-
-            name = self.try_get_name()
-
-            if name is not None:
-                val = dict_get(self.c_constants, name, None)
-                if val is not None:
-                    return val
-
-                ch = self.skip_spaces()
-
-                if ch == ':':
-                    skip_char(self)
-                    self.skip_spaces()
-
-                    if self.is_nl:
-                        if self.eof or self.col <= idn:
-                            val = self. builder.create_empty(name)
-                            sequence.append(val)
-                            continue
-                        elif self.pos > idn:
-                            val = self.get_complex_value(name, self.pos)
-                            sequence.append(val)
-                            continue
-                        else:
-                            errors.error_indentation(self, idn)
-
-                    if mapping is not None:
-                        val = self.get_value(idn)
-                        mapping[name] = val
-                    return 1
-                elif ch == '{':
-                    skip_char(self)
-                    self.bc += 1
-
-                    self.skip_spaces()
-
-                    val = self.get_complex_value(name, 0)
-                    sequence.append(val)
-                else:
-                    val = self.get_constant_or_string(name)
-                    sequence.append(val)
-            else:
-                ch = current_char(self)
-                if ch == '}':
-                    skip_char(self)
-                    self.bc -= 1
-                    return 0
-                else:
-                    val = self.get_value(idn)
-                    sequence.append(val)
-    #

@@ -59,8 +59,7 @@ cdef extern from "utils.h":
 
 from axon._objects cimport c_undefined, empty_name
 from axon._objects cimport name_cache, c_as_name, c_constants
-from axon._objects cimport c_new_instance, c_new_mapping, c_new_sequence, \
-                           c_new_element, c_new_empty
+from axon._objects cimport c_new_node, c_new_attribute
 
 from axon._objects cimport Builder, SafeBuilder, StrictBuilder, MixedBuilder
 from axon._objects cimport SimpleBuilder
@@ -193,17 +192,8 @@ cdef class Loader:
     @cython.locals(ch=Py_UCS4, val=object)
     cdef object get_value(Loader self, int idn)
 
-    @cython.locals(ch=Py_UCS4, val=object,
-                   sequence=list, mapping=dict, v=bint)
+    @cython.locals(ch=Py_UCS4, val=object, sequence=list)
     cdef object get_complex_value(Loader self, object name, int idn)
-
-    @cython.locals(ch=Py_UCS4, val=object,
-                   mapping=dict, v=bint)
-    cdef object get_sequence_mapping(Loader self, object name, list sequence, int idn)
-
-    @cython.locals(ch=Py_UCS4, val=object,
-                   sequence=list, v=bint)
-    cdef object get_mapping_sequence(Loader self, object name, dict mapping, int idn)
 
     @cython.locals(sequence=list, ch=Py_UCS4, val=object)
     cdef object get_list_value(Loader self)
@@ -216,10 +206,4 @@ cdef class Loader:
 
     @cython.locals(ch=Py_UCS4, sequence=list)
     cdef object get_odict_value(Loader self)
-
-    @cython.locals(ch=Py_UCS4, is_multi=bint)
-    cdef bint get_mapping_part(Loader self, dict mapping, list sequence, int idn) except -1
-
-    @cython.locals(ch=Py_UCS4, is_multi=bint)
-    cdef bint get_sequence_part(Loader self, list sequence, dict mapping, int idn) except -1
 

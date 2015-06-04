@@ -81,7 +81,6 @@ ctypedef PyObject* PyObjectPtr
 
 cdef public unicode empty_name
 cdef public unicode c_undescore
-cdef public object c_undefined
 
 from axon._common cimport c_as_unicode, c_as_list, c_as_dict, c_as_tuple, dict_get
 
@@ -142,210 +141,99 @@ cdef inline unicode c_as_name(object name):
 @cython.final
 cdef public class Undefined[object UndefinedObject, type UndefinedType]:
     pass
+    
+cdef public object c_undefined
 
 #
 # Readonly dict
 #
-@cython.final
-cdef public class rdict(dict)[object ReadonlyDict, type ReadonlyDictType]:
-    pass
+# @cython.final
+# cdef public class rdict(dict)[object ReadonlyDict, type ReadonlyDictType]:
+#     pass
 
 #
 # Readonly list
 #
-@cython.final
-cdef public class rlist(list)[object ReadonlyList, type ReadonlyListType]:
-    pass
-
-cdef public rdict c_empty_dict
-cdef public rlist c_empty_list
-
-cdef class NamedValue:
-    cdef public object __name__
-    cdef public object __value__
-
-cpdef named(name, value)
+# @cython.final
+# cdef public class rlist(list)[object ReadonlyList, type ReadonlyListType]:
+#     pass
+#
+# cdef public rdict c_empty_dict
+# cdef public rlist c_empty_list
 
 #
 # Attribute
 #
+@cython.freelist(128)
 @cython.final
 cdef public class Attribute[type AttributeType, object Attribute]:
     cdef public unicode name
     cdef public object value
 
 @cython.locals(a=Attribute)
-cpdef new_attribute(name, value)
+cpdef attribute(name, value)
 
 cdef public Attribute c_new_attribute(unicode name, object value)
 
-cdef class Attrs(object):
-    #
-    cdef public dict mapping
-
-@cython.locals(attrs=Attrs)
-cdef object new_attrs(dict o)
-
+@cython.freelist(128)
+@cython.final
 cdef public class Node[type NodeType, object NodeObject]:
+    cdef public object name
+    cdef public list sequence
+
+@cython.locals(o=Node)
+cdef public object c_new_node(object name, list sequence)
+
+@cython.final
+cdef class Attributes(list):
     pass
 
-#
-# Empty
-#
-#@cython.freelist(64)
 @cython.final
-cdef public class Empty(Node)[type EmptyType, object EmptyObject]:
-    cdef public object name
+cdef class Values(list):
+    pass
 
-#
-# Sequence
-#
-#@cython.freelist(64)
-@cython.final
-cdef public class Sequence(Node)[object SequenceObject, type SequenceType]:
-    cdef public object name
-    cdef public list sequence
-    #
+@cython.locals(i=int, n=int, flag=bint, vals=Values, attrs=Attributes)
+cpdef attrs_values(list)
 
-#
-# Object
-#
-@cython.final
-cdef public class Mapping(Node)[object MappingObject, type MappingType]:
-    cdef public object name
-    cdef public dict mapping
-    #
-#
-#
-# Element
-#
-@cython.final
-cdef public class Element(Node)[object ElementObject, type ElementType]:
-    cdef public object name
-    cdef public dict mapping
-    cdef public list sequence
-    #
-#
-# Instance
-#
-@cython.final
-cdef public class Instance(Node)[object InstanceObject, type InstanceType]:
-    cdef public object name
-    cdef public tuple sequence
-    cdef public dict mapping
+@cython.locals(i=int, n=int, flag=bint, vals=Values, attrs=Attributes)
+cpdef values_attrs(list)
 
-#
-#
-# Node
-#
-# @cython.freelist(64)
-# @cython.final
-# cdef public class Node[object NodeObject, type NodeType]:
-#     cdef public object name
-#     cdef public dict mapping
-#     cdef public list sequence
+@cython.locals(i=int, n=int, flag=bint, vals=Values, attrs=dict, a=Attribute)
+cpdef dict_values(list)
 
-@cython.locals(s=Sequence)
-cdef public object c_new_sequence(object name, list sequence)
-#
-@cython.locals(o=Mapping)
-cdef public object c_new_mapping(object name, dict mapping)
-#
-@cython.locals(e=Element)
-cdef public object c_new_element(object name, dict mapping, list sequence)
-#
-@cython.locals(e=Instance)
-cdef public object c_new_instance(object name, tuple args, dict mapping)
-#
-@cython.locals(e=Empty)
-cdef public object c_new_empty(object name)
-#
-# @cython.locals(e=Node)
-# cdef public object c_new_node(object name, dict mapping, list sequence)
+@cython.locals(i=int, n=int, flag=bint, vals=Values, attrs=dict, a=Attribute)
+cpdef values_dict(list)
 
 cdef FactoryRegister default_factory_register
-# cdef public object mapping_factory
-# cdef public object element_factory
-# cdef public object sequence_factory
-# cdef public object instance_factory
-# cdef public object empty_factory
+# cdef public object factory
 # cdef public object type_factory
 
 cdef class FactoryRegister:
-    cdef dict c_mapping_factory_dict
-    cdef dict c_element_factory_dict
-    cdef dict c_sequence_factory_dict
-    cdef dict c_instance_factory_dict
-    cdef dict c_empty_factory_dict
-
+    cdef dict c_factory_dict
     cdef dict c_type_factory_dict
     
-
-# cdef public dict c_mapping_factory_dict
-# cdef public dict c_element_factory_dict
-# cdef public dict c_sequence_factory_dict
-# cdef public dict c_instance_factory_dict
-# cdef public dict c_empty_factory_dict
-# cdef public dict c_type_factory_dict
-#
-# cdef public dict c_node_factory_dict
-# cdef public dict c_row_factory_dict
+cdef public dict c_factory_dict
+cdef public dict c_factory_dict
 
 cdef class Builder:
-    cdef public object create_mapping(self, object, dict)
-    cdef public object create_element(self, object, dict, list)
-    cdef public object create_sequence(self, object, list)
-    cdef public object create_instance(self, object, tuple, dict)
-    cdef public object create_empty(self, object)
+    cdef public object create_node(self, object, list)
 
 cdef class SafeBuilder(Builder):
-    @cython.locals(o=Mapping)
-    cdef public object create_mapping(self, object, dict)
-    @cython.locals(e=Element)
-    cdef public object create_element(self, object, dict, list)
-    @cython.locals(s=Sequence)
-    cdef public object create_sequence(self, object, list)
-    @cython.locals(s=Instance)
-    cdef public object create_instance(self, object, tuple, dict)
-    @cython.locals(e=Empty)
-    cdef public object create_empty(self, object)
+    cdef public object create_node(self, object, list)
 
 cdef class StrictBuilder(Builder):
     cdef FactoryRegister register
-    cdef public dict c_mapping_factory_dict
-    cdef public dict c_element_factory_dict
-    cdef public dict c_sequence_factory_dict
-    cdef public dict c_instance_factory_dict
-    cdef public dict c_empty_factory_dict
+    cdef public dict c_factory_dict
     cdef public dict c_type_factory_dict    
 
-    cdef public object create_mapping(self, object, dict)
-    cdef public object create_element(self, object, dict, list)
-    cdef public object create_sequence(self, object, list)
-    cdef public object create_instance(self, object, tuple, dict)
-    cdef public object create_empty(self, object)
+    cdef public object create_node(self, object, list)
 
 cdef class MixedBuilder(Builder):
     cdef FactoryRegister register
-    cdef public dict c_mapping_factory_dict
-    cdef public dict c_element_factory_dict
-    cdef public dict c_sequence_factory_dict
-    cdef public dict c_instance_factory_dict
-    cdef public dict c_empty_factory_dict
+    cdef public dict c_factory_dict
     cdef public dict c_type_factory_dict
     
-    cdef public object create_mapping(self, object, dict)
-    cdef public object create_element(self, object, dict, list)
-    cdef public object create_sequence(self, object, list)
-    cdef public object create_instance(self, object, tuple, dict)
-    cdef public object create_empty(self, object)
-
-cdef public class GenericBuilder(Builder)[object GenericBuilderObject, type GenericBuilderType]:
-    cdef public object create_mapping(self, object, dict)
-    cdef public object create_element(self, object, dict, list)
-    cdef public object create_sequence(self, object, list)
-    cdef public object create_instance(self, object, tuple, dict)
-    cdef public object create_empty(self, object)
+    cdef public object create_node(self, object, list)
 
 cdef object _str2decimal
 

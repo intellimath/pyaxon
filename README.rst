@@ -47,14 +47,14 @@ Load and dump lists, dicts, tuples::
 	["abc абв" 1 3.14 true]
 	[2015-05-12T13:08:37.078189 3.14D]
 	
-	vals = [{'id':1, 'nickname':'nick', 'time':time(12, 31, 34), 'text':'hello!'},
+	>>> vals = [{'id':1, 'nickname':'nick', 'time':time(12, 31, 34), 'text':'hello!'},
 	{'id':2, 'nickname':'mark', 'time':time(12, 32, 3), 'text':'hi!'}]
 	>>> text = axon.dumps(vals)
 	>>> print(text)
 	{id:1 nickname:"nick" text:"hello!" time:12:31:34}
 	{id:2 nickname:"mark" text:"hi!" time:12:32:03}	
 	>>> text = axon.dumps(vals, pretty=1)
-	>>>print(text)
+	>>> print(text)
 	{ id: 1
 	  nickname: "nick"
 	  text: "hello!"
@@ -63,7 +63,7 @@ Load and dump lists, dicts, tuples::
 	  nickname: "mark"
 	  text: "hi!"
 	  time: 12:32:03}
-	>>> vals = axon.loads(text)
+	>>> vals == axon.loads(text)
 	True
 	  
 	>>> vals = [[{'a':1, 'b':2, 'c':3}, {'a':[1,2,3], 'b':(1,2,3), 'c':[]}]]
@@ -78,7 +78,7 @@ Load and dump lists, dicts, tuples::
 	  { a: [1 2 3]
 	    b: (1 2 3)
 	    c: []}]
-	>>> vals = axon.loads(text)
+	>>> vals == axon.loads(text)
 	True
 
 Dump, load objects in "safe" mode::
@@ -107,27 +107,34 @@ Dump, load objects in "safe" mode::
 
 Dump, load objects in unsafe mode::
 
-	class Person:
+	lass Person:
 	    def __init__(self, name, age, email):
 	        self.name = name
 	        self.age = age
 	        self.email = email
         
+	    def __str__(self):
+	        return "Person(name=%r, age=%r, email=%r)" % (self.name, self.age, self.email)
+
 	@axon.reduce(Person)
 	def reduce_Person(p):
-	    return axon.mapping('person', {'name':p.name, 'age':p.age, 'email':p.email})
+	    return axon.node('person', 
+	                     [axon.attribute('name', p.name),
+	                      axon.attribute('age', p.age),
+	                      axon.attribute('email', p.email)])
 
-	@axon.mapping_factory('person')
+	@axon.factory('person')
 	def factory_Person(p):
-	    return Person(**p)   
-
+	    a1, a2, a3 = p
+	    return Person(p[0].value, p[1].value, p[2].value)
+	
 	>>> p = Person('nick', 32, 'mail@example.com')
 	>>> text = axon.dumps([p])
 	>>> print(text)
 	person{age:32 email:"mail@example.com" name:"nick"}
 	>>> val = axon.loads(text, mode='strict')[0]
-	>>> print(type(val))
-	<class '__main__.Person'>
+	>>> print(val)
+	Person(name='nick', age=32, email='mail@example.com')
 	>>> print(val.name==p.name, val.age==p.age, val.email==p.email)
 	True True True
 	

@@ -125,13 +125,18 @@ collections.ValuesView.register(_ValuesView)
 ### OrderedDict
 ################################################################################
 
-@cython.final
 cdef public class Link[object LinkObject, type LinkType]:    
     def __iter__(self):
         yield self.key
         yield self.value
 
 cdef Link link_marker = Link()
+
+cdef Link link_new(Link prev, Link next):
+   cdef Link link = Link.__new__(Link)
+   link.prev = <cython.void*>prev
+   link.next = <cython.void*>next
+   return link
 
 cdef public class OrderedDict[object OrderedDictObject, type OrderedDictType]:
     def __init__(self, *args, **kwds):

@@ -71,12 +71,6 @@ cdef public class Link[object LinkObject, type LinkType]:
     cdef object key
     cdef object value
     
-cdef inline Link link_new(Link prev, Link next):
-   cdef Link link = Link.__new__(Link)
-   link.prev = <cython.void*>prev
-   link.next = <cython.void*>next
-   return link
-
 cdef Link link_marker
 
 cdef public class OrderedDict[object OrderedDictObject, type OrderedDictType]:
