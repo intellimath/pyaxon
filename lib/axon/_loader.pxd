@@ -118,8 +118,8 @@ cdef class Loader:
     #cdef inline Py_UCS4 next_char(Loader self)
     #cdef inline Py_UCS4 current_char(Loader self)
 
-    @cython.locals(ch=Py_UCS4)
-    cdef inline Py_UCS4 moveto_next_token(Loader self) except -1
+    # @cython.locals(ch=Py_UCS4)
+    # cdef inline Py_UCS4 moveto_next_token(Loader self) except -1
 
     @cython.locals(ch=Py_UCS4)
     cdef inline Py_UCS4 skip_spaces(Loader self)
@@ -178,10 +178,10 @@ cdef class Loader:
     cdef object get_base64(Loader self)
 
     @cython.locals(ch=Py_UCS4)
-    cdef void skip_comment(self)
+    cdef skip_comment(self)
 
     @cython.locals(ch=Py_UCS4)
-    cdef void skip_comments(self)
+    cdef skip_comments(self)
 
     @cython.locals(ch=Py_UCS4)
     cdef object get_constant_or_string(Loader self, unicode name)
