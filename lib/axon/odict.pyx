@@ -469,7 +469,7 @@ cdef OrderedDict c_new_odict(list args):
     root.prev = root.next = <cython.void*>root
     od.root = root
 
-    if args is not None:    
+    if args is not None:  
         for key, value in args:
             root = od.root
             last = <Link>root.prev

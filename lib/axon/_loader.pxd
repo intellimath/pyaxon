@@ -128,7 +128,7 @@ cdef class Loader:
     cdef inline void skip_whitespace(Loader self)
 
     @cython.locals(line=unicode, ch=Py_UCS4, n=int)
-    cdef void next_line(Loader self)
+    cdef next_line(Loader self)
 
     #@cython.locals(ch=Py_UCS4)
     #cdef inline bint valid_end_item(Loader self)

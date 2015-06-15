@@ -52,7 +52,7 @@ if sys.version_info.major == 3:
     int_mode = 'i'
 else:
     int_mode = b'i'
-
+    
 _builder_dict = {
     'safe': SafeBuilder(),
     'strict': StrictBuilder(),
