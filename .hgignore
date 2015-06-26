@@ -1,16 +1,19 @@
 syntax: glob
-.git
-*.pyc
-*.pyo
+
+*~
 .DS_Store
+.ipynb_checkpoints
+.pyc
+.pyo
+*.bak
+__pycache__
+*.egg-info
+
+.git
 docs/_build
 build
 dist
 MANIFEST
-__pycache__
-*.egg-info
-*~
-*.bak
 pyaxon.bbprojectd/*
 pyaxon.bbprojectd/*.*
 lib/axon/_objects.c
@@ -19,5 +22,5 @@ lib/axon/_dumper.c
 lib/axon/_dumper.h
 lib/axon/_loader.c
 lib/axon/_loader.h
-lib/axon/_odict.c
-lib/axon/_odict.h
+lib/axon/odict.c
+lib/axon/odict.h
