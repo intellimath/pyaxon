@@ -19,6 +19,21 @@ class ConstantTestCase(unittest.TestCase):
         s = dumps([v])
         self.assertEqual(s, '?')
     #
+    def test_null(self):
+        v = loads('$null')[0]
+        s = dumps([v])
+        self.assertEqual(s, '$null')
+    #
+    def test_true(self):
+        v = loads('$true')[0]
+        s = dumps([v])
+        self.assertEqual(s, '$true')
+    #
+    def test_false(self):
+        v = loads('$false')[0]
+        s = dumps([v])
+        self.assertEqual(s, '$false')
+    #
     # def test_inf(self):
     #     v = loads('$Infinity')[0]
     #     s = dumps([v])
