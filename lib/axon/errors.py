@@ -111,7 +111,7 @@ def error_expected_complex_value(self):
 def error_expected_label(self):
     error(self, "Expected label of the value")
 
-def error2(self, msg):
+def error2(msg):
     e = AxonError(msg)
     if sys.flags.debug:
         self.errto.write(str(e))

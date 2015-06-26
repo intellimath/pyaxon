@@ -435,6 +435,9 @@ def values_dict(L):
             attrs[a.name] = a.value
             i += 1
     return vals, attrs
+    
+def dict2attrs(d):
+    return [c_new_attribute(n,v) for n,v in d.items()]
         
 #
 # Empty
