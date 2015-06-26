@@ -974,6 +974,9 @@ class FactoryRegister:
             return _factory
         else:
             self.c_factory_dict[name] = factory_func
+    #
+    def defname(self, name, val):
+        self.c_constants[name] = val
 
     # def mapping(self, name, factory_func=None):
     #     name = c_as_unicode(name)
@@ -1054,6 +1057,7 @@ class FactoryRegister:
 default_factory_register = FactoryRegister()
 
 factory = default_factory_register.factory
+defname = default_factory_register.defname
 # mapping_factory = default_factory_register.mapping
 # element_factory = default_factory_register.element
 # sequence_factory = default_factory_register.sequence
