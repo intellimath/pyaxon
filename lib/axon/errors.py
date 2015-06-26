@@ -40,7 +40,8 @@ class LoaderError(Exception):
 
 def error(self, msg):
     e = LoaderError(self.lnum, self.pos, msg, self.line[self.pos:self.pos+16])
-    self.errto.write(str(e))
+    if sys.flags.debug:
+        self.errto.write(str(e))
     raise e
 #
 # def error_getvalue(self):
