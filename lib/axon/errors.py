@@ -26,20 +26,24 @@ from __future__ import unicode_literals
 
 import sys
 
-class LoaderError(Exception):
+class AxonError(Exception):
     #
-    def __init__(self, lnum, pos, msg, chunk):
+    def __init__(self, msg, pos=None, chunk=''):
         self.msg = msg
-        self.lnum = lnum
         self.pos = pos
         self.chunk = chunk
     #
     def __str__(self):
-        return 'ERROR:: %s. line:%s pos:%s chunk: %s\n' % \
-                    (self.msg, self.lnum, self.pos+1, repr(self.chunk))
+        text = 'ERROR:: ' + self.msg
+        if self.pos is not None:
+            lnum, pos = self.pos
+            text +=  ' line:%s pos:%s' % (lnum, pos)
+        if self.chunk:
+            text +=  ' chunk: %s' % self.chunk
+        return text
 
 def error(self, msg):
-    e = LoaderError(self.lnum, self.pos, msg, self.line[self.pos:self.pos+16])
+    e = AxonError(msg, (self.lnum, self.pos), self.line[self.pos:self.pos+16])
     if sys.flags.debug:
         self.errto.write(str(e))
     raise e
@@ -106,14 +110,15 @@ def error_expected_complex_value(self):
 #
 def error_expected_label(self):
     error(self, "Expected label of the value")
-#
+
+def error2(self, msg):
+    e = AxonError(msg)
+    if sys.flags.debug:
+        self.errto.write(str(e))
+    raise e
 
 def error_no_handler(name):
-    sys.stderr.write('Handler for name <%s> is not registered' % name)
-
-
-def error2(msg):
-    sys.stderr.write('ERROR::' + msg)
+    error2('Handler for name <%s> is not registered' % name)
 
 def error_no_reducer(tp):
     error2('There is no reducer for this type: %r' % tp)
