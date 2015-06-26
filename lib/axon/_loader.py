@@ -757,43 +757,44 @@ class Loader:
             else:
                 break
     #
-    def get_constant_or_string(self, name):
-        if name == 'Infinity':
-            ch = current_char(self)
-            if ch == '$':
-                skip_char(self)
-                return self.sbuilder.create_decimal_inf()
-            else:
-                return self.sbuilder.create_inf()
-        elif name == 'NaN':
-            ch = current_char(self)
-            if ch == '$':
-                skip_char(self)
-                return self.sbuilder.create_decimal_nan()
-            else:
-                return self.sbuilder.create_nan()
-            
-        name2 = dict_get(self.c_constants, name, c_undefined)
-        if name2 is c_undefined:
-            return name
-        else:
-            return name2
+    # def get_constant_or_string(self, name):
+    #     if name == 'Infinity':
+    #         ch = current_char(self)
+    #         if ch == '$':
+    #             skip_char(self)
+    #             return self.sbuilder.create_decimal_inf()
+    #         else:
+    #             return self.sbuilder.create_inf()
+    #     elif name == 'NaN':
+    #         ch = current_char(self)
+    #         if ch == '$':
+    #             skip_char(self)
+    #             return self.sbuilder.create_decimal_nan()
+    #         else:
+    #             return self.sbuilder.create_nan()
+    #
+    #     return name
+    #     name2 = dict_get(self.c_constants, name, c_undefined)
+    #     if name2 is c_undefined:
+    #         return name
+    #     else:
+    #         return name2
     #
     def get_negative_constant(self):
 
         ch = current_char(self)
-        if ch.isalpha():
-            name = self.get_name()
-            if name == 'Infinity':
-                ch = current_char(self)
-                if ch == '$':
-                    skip_char(self)
-                    return self.sbuilder.create_decimal_ninf()
-                else:
-                    return self.sbuilder.create_ninf()
-            else:
-                errors.error_invalid_value_with_prefix(self, '-')
-        elif ch == '∞':
+        # if ch.isalpha():
+        #     name = self.get_name()
+        #     if name == 'Infinity':
+        #         ch = current_char(self)
+        #         if ch == '$':
+        #             skip_char(self)
+        #             return self.sbuilder.create_decimal_ninf()
+        #         else:
+        #             return self.sbuilder.create_ninf()
+        #     else:
+        #         errors.error_invalid_value_with_prefix(self, '-')
+        if ch == '∞':
             ch = next_char(self)
             if ch == 'd' or ch == 'D' or ch == '$':
                 skip_char(self)
@@ -842,9 +843,9 @@ class Loader:
             name = self.try_get_name()
             if name is not None:
 
-                val = dict_get(self.c_constants, name, None)
-                if val is not None:
-                    return val
+                #val = dict_get(self.c_constants, name, None)
+                #if val is not None:
+                #    return val
             
                 ch = self.skip_spaces()
                 if ch == '{':
@@ -866,7 +867,7 @@ class Loader:
                     else:
                         val = c_new_attribute(name, self.get_value(idn))
                 else:
-                    val = self.get_constant_or_string(name)
+                    errors.error(self, "undefined name %r" % name)
             elif ch == '|':
                 val = self.get_base64()
             elif ch == '∞': # \U221E
@@ -901,6 +902,12 @@ class Loader:
 
                 val = self.get_value(pos0)
                 self.labeled_objects[label] = val
+            elif ch == '$':
+                skip_char(self)
+                name = self.get_name()
+                val = self.c_constants.get(name, c_undefined)
+                if val is c_undefined:
+                    errors.error(self, "Undefined name %r" % name)                    
             elif ch == '\0':
                 errors.error(self, "Unexpected end after name %r" % name)
             else:

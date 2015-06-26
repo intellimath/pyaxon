@@ -329,7 +329,7 @@ def node(name, sequence=None):
         python sequence containing values.
     '''
     return c_new_node(c_as_name(name), c_as_list(sequence))
-
+    
 class Attributes(list):
     pass
 

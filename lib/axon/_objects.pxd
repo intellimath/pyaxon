@@ -204,7 +204,10 @@ cpdef dict_values(list)
 @cython.locals(i=int, n=int, flag=bint, vals=Values, attrs=dict, a=Attribute)
 cpdef values_dict(list)
 
-cpdef object dict2attrs(dict d)
+cpdef dict2attrs(dict d)
+
+#@cython.locals(sequence=list)
+#cpdef node_from_items(name, args)
 
 cdef FactoryRegister default_factory_register
 # cdef public object factory

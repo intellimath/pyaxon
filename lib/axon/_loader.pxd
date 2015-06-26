@@ -183,8 +183,8 @@ cdef class Loader:
     @cython.locals(ch=Py_UCS4)
     cdef skip_comments(self)
 
-    @cython.locals(ch=Py_UCS4)
-    cdef object get_constant_or_string(Loader self, unicode name)
+    # @cython.locals(ch=Py_UCS4)
+    # cdef object get_constant_or_string(Loader self, unicode name)
 
     @cython.locals(ch=Py_UCS4)
     cdef object get_negative_constant(Loader self)

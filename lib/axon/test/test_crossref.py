@@ -16,7 +16,7 @@ class CrossrefTestCase(unittest.TestCase):
         self.assertTrue(v1 is v2.sequence[0])
     #
     def test_crossref_2(self):
-        v1, v2 = loads('&_123_ a{ a:1 } b{ *_123_ abc }')
+        v1, v2 = loads('&_123_ a{ a:1 } b{ *_123_ "abc" }')
         self.assertTrue(v1 is v2.sequence[0])
         text = dumps([v1,v2], crossref=1)
         self.assertEqual(text, '&1 a{a:1}\nb{*1 "abc"}')
