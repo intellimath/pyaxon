@@ -809,7 +809,7 @@ class Loader:
             self.skip_comments()
             ch = current_char(self)
 
-        if (ch <= '9' and ch >= '0') or ch == '.':
+        if (ch <= '9' and ch >= '0'): # or ch == '.':
             val = self.get_number()
             return val
 
