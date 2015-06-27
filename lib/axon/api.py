@@ -28,40 +28,40 @@ from axon._objects import as_unicode, StringReader, StringWriter
 
 import io
 
-class Reader(object):
-    def __init__(self, fd, encoding):
-        self.fd = fd
-        self.encoding = encoding
-
-    def readline(self):
-        line = self.fd.readline()
-        line =  line.decode(self.encoding)
-        return line
-
-    def close(self):
-        self.fd.close()
-
-class Writer(object):
-    def __init__(self, fd, encoding):
-        self.fd = fd
-        self.encoding = encoding
-
-    def write(self, line):
-        line =  line.encode(self.encoding)
-        self.fd.write(line)
-
-    def close(self):
-        self.fd.close()
+# class Reader(object):
+#     def __init__(self, fd, encoding):
+#         self.fd = fd
+#         self.encoding = encoding
+#
+#     def readline(self):
+#         line = self.fd.readline()
+#         line =  line.decode(self.encoding)
+#         return line
+#
+#     def close(self):
+#         self.fd.close()
+#
+# class Writer(object):
+#     def __init__(self, fd, encoding):
+#         self.fd = fd
+#         self.encoding = encoding
+#
+#     def write(self, line):
+#         line =  line.encode(self.encoding)
+#         self.fd.write(line)
+#
+#     def close(self):
+#         self.fd.close()
 
 def display(text, pretty=1, braces=0, sorted=1, hsize=0, crossref=0):
     '''
     Display AXON text in formatted form for easy read.
 
     :param text:
-       `unicode` AXON text
+       Unicode AXON text
 
     :returns:
-        formatted `unicode` AXON text
+        Formatted form of AXON encoded text.
     '''
     val = loads(text)
     print(dumps(val, pretty, braces, sorted, hsize, crossref))
@@ -71,31 +71,28 @@ def dumps(val, pretty=0, braces=0, sorted=1, hsize=0, crossref=0):
     Dump value into unicode text.
 
     :param val:
-       value to convert
-
-    :param simple_dumpers:
-       dictionary containing callables for text representation of values of simple types &em;
-       int, float, decimal, boolean, unicode text, date/time/datetime &em; in form of
-       `type`:`dumper`.
-
-    :param type_reducers:
-       dictionary containing callables, which returns reduced data for
-       representation in AXON.
+       Value to convert.
 
     :param pretty:
-        flag indicating pretty dumping:
+        Flag indicating pretty dumping:
 
-        * True - use pretty dumping
-        * False - do not use pretty dumping (default)
+        * `True` - use pretty dumping
+        * `False` - do not use pretty dumping (default)
+
+    :param braces:
+        Flag indicating using braces (json-style) during formatting:
+
+        * `True` - use json style formatting during dumping
+        * `False` - use yaml-style formatting during dumping (default)
 
     :param crossref:
-        flag for crossreferece support in unsafe mode
+        Flag for crossreferece support in unsafe mode
 
-        * True - use crosserefernce support
-        * False - do not use crosserefernce support (default)
+        * `True` - use crosserefernce support
+        * `False` - do not use crosserefernce support (default)
 
     :returns:
-        unicode string of AXON representation of `val`.
+        Unicode text in AXON format.
     '''
     fd = StringWriter()
 
@@ -110,7 +107,7 @@ def dump(fpath, val, pretty=0, braces=0, sorted=1, hsize=0, crossref=0, encoding
     Same as :py:func:`dumps` but for dumping into a file.
 
     :param fpath:
-        path to file for dumping.
+        Path to file for dumping.
 
     For other parameters see :py:func:`dumps`.
     '''
@@ -125,20 +122,20 @@ def loads(text, mode="safe", errto=None, json=0):
     Load values from unicode text.
 
     :param text:
-        `unicode` text in AXON.
+        Unicode text.
 
     :param mode:
-        specifies the method of building python objects for complex values
+        Specifies the method of building python objects for complex values
         (see .. py:func:`load`)
 
     :param errto:
-        name of file for reporting errors
+        Name of file for reporting errors
 
     :param json:
-        if true then allow to load from json format
+        If true then allow JSON encoded parts.
 
     :returns:
-        `list` of values.
+        List of values.
     '''
     loader = iloads(text, mode, errto, json)
     return loader.load()
@@ -148,20 +145,20 @@ def iloads(text, mode="safe", errto=None, json=0):
     Iterative loading values from unicode text.
 
     :param text:
-        unicode text in AXON.
+        Unicode text.
 
     :param mode:
-        specifies the method of building python objects for complex values
+        Specifies the method of building python objects for complex values
         (see .. py:func:`load`)
 
     :param errto:
-        name of file for reporting errors
+        Name of file for reporting errors
 
     :param json:
-        if true then allow to load from json format
+        If true then allow JSON encoded parts.
 
     :returns:
-        iterator object.
+        Iterator object. It returns values during iteration.
     '''
     text = as_unicode(text)
     fd = StringReader(text)
@@ -170,32 +167,32 @@ def iloads(text, mode="safe", errto=None, json=0):
 
 def load(fd, mode="safe", errto=None, encoding='utf-8', json=0):
     '''
-    Load object from unicode text in AXON.
+    Load object from unicode text.
 
     :param fd:
-        input file name of file object opening as TextIO/StringIO
+        Input file name of file object opening as TextIO/StringIO.
 
     :param mode:
-        specifies the method of building python objects for complex values.
+        Specifies the method of building python objects for complex values.
+
+        There are values of parameter `mode`:
+            * `safe` - use safe object builder
+            * `strict` - use unsafe builder with strict name resolution: if there is no registered name
+              for building object builder return `undef` object
+            * `mixed` - use unsafe object builder with following rule: if there is no registered name
+              for building object then use `safe` mode.
 
     :param errto:
-        name of file for reporting errors
+        Name of file for reporting errors
 
     :param encoding:
-        encoding of input file (default `utf-8`)
-
-    There are values of parameter `mode`:
-        * "safe" - use safe object builder
-        * "strict" - use unsafe builder with strict name resolution: if there is no registered name
-          for building object builder return `undef` object
-        * "mixed" - use unsafe object builder with following rule: if there is no registered name
-          for building object then use `safe` mode.
+        Encoding of input file (default `utf-8`).
 
     :param json:
-        if true then allow to load from json format
+        If true then allow JSON encoded parts.
 
     :returns:
-        `list` of values.
+        List of values.
     '''
     loader = iload(fd, mode, errto, encoding, json)
     return loader.load()

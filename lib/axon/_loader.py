@@ -1009,11 +1009,8 @@ class Loader:
     #
     def get_odict_value(self):
         sequence = []
-
         ch = self.skip_spaces()
-
         while 1:
-        
             if ch == '#':
                 self.skip_comments()
 
