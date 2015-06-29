@@ -66,7 +66,5 @@ cdef inline unicode c_as_unicode(object ob):
         return <unicode>ob
     elif tp is str:
         return c_object_to_unicode(ob)
-    elif ob is None:
-        return c_object_to_unicode('')
     else:
-        raise TypeError(' Object %r is not unicode compatible' % ob)
+        raise TypeError("The type of the object should be `str` or `unicode`.")
