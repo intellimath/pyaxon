@@ -75,21 +75,21 @@ text_6c_0 = text_6c_1 = text_6c_2 = '''[]'''
 text_7_o = '''aaa{}'''
 text_7_0 = '''aaa{}'''
 text_7_1 = '''aaa {}'''
-text_7_2 = '''aaa:'''
+text_7_2 = '''aaa {}'''
 
 #################################
 
 text_7a_o = '''aaa.bbb{}'''
 text_7a_0 = '''aaa.bbb{}'''
 text_7a_1 = '''aaa.bbb {}'''
-text_7a_2 = '''aaa.bbb:'''
+text_7a_2 = '''aaa.bbb {}'''
 
 #################################
 
 text_7b_o = """'aaa@bbb'{}"""
 text_7b_0 = """'aaa@bbb'{}"""
 text_7b_1 = """'aaa@bbb' {}"""
-text_7b_2 = """'aaa@bbb':"""
+text_7b_2 = """'aaa@bbb' {}"""
 
 #################################
 
@@ -272,8 +272,8 @@ text_11_1 = '''aaa {
   bbb {}
   ccc {}}'''
 text_11_2 = '''aaa:
-  bbb:
-  ccc:'''
+  bbb {}
+  ccc {}'''
 
 #################################
 
@@ -281,10 +281,10 @@ text_12_o = '''
 aaa:
   a: 1
   b:2
-  bbb:
+  bbb {}
   ccc:
     c:1
-    ddd:
+    ddd {}
       '''
 text_12_0 = '''aaa{a:1 b:2 bbb{} ccc{c:1 ddd{}}}'''
 text_12_1 = '''aaa {
@@ -297,10 +297,10 @@ text_12_1 = '''aaa {
 text_12_2 = '''aaa:
   a: 1
   b: 2
-  bbb:
+  bbb {}
   ccc:
     c: 1
-    ddd:'''
+    ddd {}'''
 
 text_12c_o = '''
 # comments
@@ -311,8 +311,8 @@ aaa:
   # comments
   b:2 # comments
   # comments
-  bbb:
-  
+  bbb {}
+
   # comments  
   ccc:
     # comments
@@ -331,10 +331,10 @@ text_12c_1 = '''aaa {
 text_12c_2 = '''aaa:
   a: 1
   b: 2
-  bbb:
+  bbb {}
   ccc:
     c: 1
-    ddd:'''
+    ddd {}'''
 
 text_12cc_o = '''
 # comments
@@ -367,10 +367,10 @@ text_12cc_1 = '''aaa {
 text_12cc_2 = '''aaa:
   a: 1
   b: 2
-  bbb:
+  bbb {}
   ccc:
     c: 1
-    ddd:'''
+    ddd {}'''
 
 #################################
 
@@ -401,7 +401,7 @@ text_13_2 = '''aaa:
   a: 1
   b: 2
   c: 12
-  bbb:
+  bbb {}
   ccc:
     c: 1
     d: ""
@@ -445,7 +445,7 @@ text_13c_2 = '''aaa:
   a: 1
   b: 2
   c: 12
-  bbb:
+  bbb {}
   ccc:
     c: 1
     d: ""
@@ -615,11 +615,15 @@ text_22_2 = '''{ a: 1
 text_23_o = '''aaa{a: {c:3} b: {d:4}}'''
 text_23_0 = '''aaa{a:{c:3} b:{d:4}}'''
 text_23_1 = '''aaa {
-  a: {c: 3}
-  b: {d: 4}}'''
+  a: {
+    c: 3}
+  b: {
+    d: 4}}'''
 text_23_2 = '''aaa:
-  a: {c: 3}
-  b: {d: 4}'''
+  a: {
+    c: 3}
+  b: {
+    d: 4}'''
 
 text_24_o = '''aaa{a: {c:3 d:4} b: {d:4 e:5}}'''
 text_24_0 = '''aaa{a:{c:3 d:4} b:{d:4 e:5}}'''
@@ -662,7 +666,7 @@ text_27_o = '''p:
 '''
 text_27_0 = '''p{}'''
 text_27_1 = '''p {}'''
-text_27_2 = '''p:'''
+text_27_2 = '''p {}'''
 
 text_28_o = '''{"123":123}'''
 text_28_0 = '''{"123":123}'''

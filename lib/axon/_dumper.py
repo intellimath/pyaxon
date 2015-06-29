@@ -610,15 +610,15 @@ class Dumper:
 
             otype = type(o)
             if otype is list:
-                self.pretty_dump_list(o, new_offset, 1-use_offset)
+                self.pretty_dump_list(o, new_offset, use_offset)
             elif otype is dict:
-                self.pretty_dump_dict(o, new_offset, 1-use_offset)
+                self.pretty_dump_dict(o, new_offset, use_offset)
             elif otype is tuple:
-                self.pretty_dump_tuple(o, new_offset, 1-use_offset)
+                self.pretty_dump_tuple(o, new_offset, use_offset)
             elif otype is axon_odict or otype is odict:
-                self.pretty_dump_odict(o, new_offset, 1-use_offset)
+                self.pretty_dump_odict(o, new_offset, use_offset)
             elif otype is Attribute:
-                self.pretty_dump_attribute(o, offset, use_offset)
+                self.pretty_dump_attribute(o, offset, 1)
             elif otype is Node:
                 self.pretty_dump_node(o, new_offset, 1)
             else:
@@ -631,17 +631,17 @@ class Dumper:
                     obtype = type(ob)
 
                     if obtype is Attribute:
-                        self.pretty_dump_attribute(ob, offset, use_offset)
+                        self.pretty_dump_attribute(ob, offset, 1)
                     elif obtype is Node:
                         self.pretty_dump_node(ob, new_offset, 1)
                     elif obtype is dict:
-                        self.pretty_dump_dict(ob, new_offset, 1-use_offset)
+                        self.pretty_dump_dict(ob, new_offset, use_offset)
                     elif obtype is list:
-                        self.pretty_dump_list(ob, new_offset, 1-use_offset)
+                        self.pretty_dump_list(ob, new_offset, use_offset)
                     elif obtype is tuple:
-                        self.pretty_dump_tuple(ob, new_offset, 1-use_offset)
+                        self.pretty_dump_tuple(ob, new_offset, use_offset)
                     elif otype is axon_odict or otype is odict:
-                        self.pretty_dump_odict(o, new_offset, 1-use_offset)
+                        self.pretty_dump_odict(o, new_offset, use_offset)
                     else:
                         errors.error_reducer_wrong_type(obtype)
     #
@@ -701,7 +701,7 @@ class Dumper:
     def pretty_dump_attribute(self, attr, offset, use_offset):
         self.write(_dump_name(attr.name))
         self.write(': ')
-        self.pretty_dump_value(attr.value, offset, 0)
+        self.pretty_dump_value(attr.value, offset, 1)
     #
     def dump_dict_values(self, d):
         i = 0
@@ -788,181 +788,14 @@ class Dumper:
         self.dump_tuple_sequence(d)
         self.write(')')
     #
-    def pretty_dump_dict_values(self, d, w):
-        if len(d) == 0: 
-            return
-
-        if self.sorted:
-            items = sorted(d.items())
-        else:
-            items = d.items()            
-
-        i = 0
-        j = 0
-        for k,v in items:
-        
-            if i > 0:
-                if self.hsize: 
-                    if j >= self.hsize:
-                        use_offset = 1
-                        j = 0
-                    else:
-                        use_offset = 1
-                else:
-                    use_offset = 1
-
-                if use_offset:
-                    self.write('\n')
-                    self.write(w)
-                else:
-                    self.write(' ')
-
-            text = c_as_unicode(k)
-            self.write(_dump_key(text))
-            
-            self.write(': ')
-            
-            self.pretty_dump_value(v, w, 1)
-
-            i += 1
-            j += 1
-    #
-    def pretty_dump_odict_values(self, d, w):
-        if len(d) == 0: 
-            return
-
-        i = 0
-        j = 0
-        for k,v in d.items():
-        
-            if i > 0:
-                if self.hsize: 
-                    if j >= self.hsize:
-                        use_offset = 1
-                        j = 0
-                    else:
-                        use_offset = 1
-                else:
-                    use_offset = 1
-
-                if use_offset:
-                    self.write('\n')
-                    self.write(w)
-                else:
-                    self.write(' ')
-
-            text = c_as_unicode(k)
-            self.write(_dump_key(text))
-            
-            self.write(': ')
-            
-            self.pretty_dump_value(v, w, 0)
-
-            i += 1
-            j += 1
-    #
-    def pretty_dump_list_sequence(self, l, w):
-        n = len(l)
-        if n == 0:
-            return
-        elif n == 1:
-            v = l[0]
-            if self.is_simple_type(v):
-                self.dump_simple_value(v)
-            else:
-                self.pretty_dump_value(v, w, 1)
-            return
-        elif n <= self.hsize and self.is_all_simple_list(l, n):
-            for i in range(n):
-                v = l[i]
-                if i > 0:
-                    self.write(' ')
-                self.dump_simple_value(v)
-            return
-
-        j = 0
-        flag = 0
-        for i in range(n):
-        
-            v = l[i]
-
-            use_offset = 0
-            if i > 0:
-                if not flag or j >= self.hsize:
-                    use_offset = 1
-                    j = 0
-                
-                flag = self.is_simple_type(v)
-                if not flag:
-                    use_offset = 1
-
-                if use_offset:
-                    self.write('\n')
-                    self.write(w)
-                else:
-                    if j > 0:
-                        self.write(' ')
-            else:
-                flag = self.is_simple_type(v)
-                                
-            self.pretty_dump_value(v, w, 1)
-
-            j += 1
-    #
-    def pretty_dump_tuple_sequence(self, l, w):
-        n = len(l)
-        if n == 0:
-            return
-        elif n == 1:
-            v = l[0]
-            flag = self.is_simple_type(v)
-            if flag:
-                self.dump_simple_value(v)
-            else:
-                self.pretty_dump_value(v, w, 1)
-            return
-        elif n <= self.hsize:
-            if self.is_all_simple_tuple(l, n):
-                for i in range(n):
-                    v = l[i]
-                    if i > 0:
-                        self.write(' ')
-                    self.dump_simple_value(v)
-                return
-            
-        j = 0
-        flag = 0
-        for i in range(n):
-        
-            v = l[i]
-
-            use_offset = 0
-            if i > 0:
-                if not flag or j >= self.hsize:
-                    use_offset = 1
-                    j = 0
-                
-                flag = self.is_simple_type(v)
-                if not flag:
-                    use_offset = 1
-
-                if use_offset:
-                    self.write('\n')
-                    self.write(w)
-                else:
-                    if j > 0:
-                        self.write(' ')
-            else:
-                flag = self.is_simple_type(v)
-                
-            self.pretty_dump_value(v, w, 1)
-
-            j += 1
-    #
     def pretty_dump_node(self, o, w, use_offset):
         self.write(_dump_name(o.name))
 
         n = len(o.sequence)
+        if n == 0:
+            self.write(' {}')
+            return
+            
         if self.pretty == 1:
             if n > 0:
                 self.write(':\n')
@@ -979,12 +812,12 @@ class Dumper:
                 self.write('\n')
                 self.write(w)
 
-        self.pretty_dump_node_sequence(o.sequence, w)
+        self.pretty_dump_node_sequence(o.sequence, w, use_offset)
 
         if self.pretty == 2:
             self.write('}')
     #
-    def pretty_dump_node_sequence(self, l, w):
+    def pretty_dump_node_sequence(self, l, w, use_offset):
         n = len(l)
         if n == 0:
             return
@@ -993,7 +826,7 @@ class Dumper:
             if self.is_simple_type(v):
                 self.dump_simple_value(v)
             else:
-                self.pretty_dump_value(v, w, 1)
+                self.pretty_dump_value(v, w, 0)
             return
         elif n <= self.hsize and self.is_all_simple_list(l, n):
             for i in range(n):
@@ -1018,79 +851,121 @@ class Dumper:
                 flag = self.is_simple_type(v)
                 if not flag:
                     use_offset = 1
-
-                if use_offset:
-                    self.write('\n')
-                    self.write(w)
-                else:
-                    if j > 0:
-                        self.write(' ')
             else:
                 flag = self.is_simple_type(v)
+
+            if use_offset:
+                self.write('\n')
+                self.write(w)
+            else:
+                if j > 0:
+                    self.write(' ')
                                 
-            self.pretty_dump_value(v, w, 1)
+            self.pretty_dump_value(v, w, 0)
 
             j += 1
     #
     def pretty_dump_list(self, l, w, use_offset):
         self.write('[')
-        
-        n = len(l)
-        if n == 1:
-            if not self.is_simple_type(l[0]):
-                self.write(' ')
-        elif self.hsize and n <= self.hsize and self.is_all_simple_list(l, n):
-            pass            
-        elif use_offset:
-            self.write('\n')
-            self.write(w)
-        elif n > 0:
-            self.write(' ')
-            
-        self.pretty_dump_list_sequence(l, w)
+        self.pretty_dump_list_sequence(l, w, use_offset)
         self.write(']')
     #
-    def pretty_dump_dict(self, d, w, use_offset):
-        self.write('{')
-        n = len(d)
-        if n > 1:
+    def pretty_dump_list_sequence(self, l, w, use_offset):
+        n = len(l)
+        if n == 0:
+            return
+        elif n == 1:
+            v = l[0]
+            if self.is_simple_type(v):
+                self.dump_simple_value(v)
+            else:
+                self.pretty_dump_value(v, w, 0)
+            return
+            
+        if n <= self.hsize and self.is_all_simple_list(l, n):
+            for i in range(n):
+                v = l[i]
+                if i > 0:
+                    self.write(' ')
+                self.dump_simple_value(v)
+            return
+
+        j = 0
+        flag = 0
+        for i in range(n):
+        
+            v = l[i]
+
+            if i > 0:
+                if not flag or j >= self.hsize:
+                    use_offset = 1
+                    j = 0
+                
+                flag = self.is_simple_type(v)
+                if not flag:
+                    use_offset = 1
+
+            else:
+                flag = self.is_simple_type(v)
+
             if use_offset:
                 self.write('\n')
                 self.write(w)
             else:
                 self.write(' ')
-        self.pretty_dump_dict_values(d, w)
+                                
+            self.pretty_dump_value(v, w, 0)
+
+            j += 1
+    #
+    def pretty_dump_dict(self, d, w, use_offset):
+        self.write('{')
+        self.pretty_dump_dict_values(d, w, use_offset)
         self.write('}')
     #
     def pretty_dump_odict(self, d, w, use_offset):
         self.write('<')
+        self.pretty_dump_dict_values(d, w, use_offset)
+        self.write('>')
+    #
+    def pretty_dump_dict_values(self, d, w, use_offset):
         n = len(d)
-        if n > 1:
+        if n == 0:
+            return
+
+        items = d.items()        
+        if self.sorted:
+            items = sorted(items)
+
+        i = 0
+        for k, v in items:
+        
+            if i > 0:
+                use_offset = 1
+
             if use_offset:
                 self.write('\n')
                 self.write(w)
             else:
-                self.write(' ')
-        self.pretty_dump_odict_values(d, w)
-        self.write('>')
+                if n > 1:
+                  self.write(' ')
+
+            text = c_as_unicode(k)
+            self.write(_dump_key(text))
+            
+            self.write(': ')
+            
+            self.pretty_dump_value(v, w, 1)
+
+            i += 1
     #
     def pretty_dump_tuple(self, l, w, use_offset):
         self.write('(')
-                
-        n = len(l)
-        if n == 1:
-            if not self.is_simple_type(l[0]):
-                self.write(' ')
-        elif self.hsize and n <= self.hsize and self.is_all_simple_tuple(l, n):
-            pass
-        elif use_offset:
-            self.write('\n')
-            self.write(w)
-        elif n > 1:
-            self.write(' ')
-
-        self.pretty_dump_tuple_sequence(l, w)
+        self.pretty_dump_tuple_sequence(l, w, use_offset)
         self.write(')')
+    #
+    def pretty_dump_tuple_sequence(self, l, w, use_offset):
+        self.pretty_dump_list_sequence(list(l), w, use_offset)
     #
     def dump(self, seq):
         '''
@@ -1114,14 +989,14 @@ class Dumper:
         v = next(iterseq)
 
         if self.pretty:
-            self.pretty_dump_value(v, '', 1)
+            self.pretty_dump_value(v, '', 0)
         else:
             self.dump_value(v)
 
         if self.pretty:
             for v in iterseq:
                 self.write('\n')
-                self.pretty_dump_value(v, '', 1)
+                self.pretty_dump_value(v, '', 0)
         else:
             for v in iterseq:
                 self.write('\n')

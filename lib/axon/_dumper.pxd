@@ -262,22 +262,19 @@ cdef public class Dumper[object Dumper, type DumperType]:
     #
     cdef dump_node(Dumper self, Node ob)
     #
-    @cython.locals(i=int, j=int, flag=int, use_offset=bint)
-    cdef pretty_dump_node_sequence(Dumper self, list l, unicode w)
+    @cython.locals(i=int, j=int, flag=int)
+    cdef pretty_dump_node_sequence(Dumper self, list l, unicode w, bint use_offset)
     #
-    @cython.locals(i=int, j=int, flag=int, use_offset=bint)
-    cdef pretty_dump_dict_values(Dumper self, dict d, unicode w)
-    #
-    @cython.locals(i=int, j=int, flag=int, use_offset=bint)
-    cdef pretty_dump_odict_values(Dumper self, object d, unicode w)
+    @cython.locals(i=int, n=int)
+    cdef pretty_dump_dict_values(Dumper self, object d, unicode w, bint use_offset)
     #
     cdef pretty_dump_attribute(Dumper self, Attribute attr, unicode w, bint use_offset)
     #
-    @cython.locals(i=int, j=int, flag=int, use_offset=bint)
-    cdef pretty_dump_list_sequence(Dumper self, list l, unicode w)
+    @cython.locals(i=int, j=int, flag=int)
+    cdef pretty_dump_list_sequence(Dumper self, list l, unicode w, bint use_offset)
     #
-    @cython.locals(i=int, j=int, flag=int, use_offset=bint)
-    cdef pretty_dump_tuple_sequence(Dumper self, tuple l, unicode w)
+    @cython.locals(i=int, j=int, flag=int)
+    cdef pretty_dump_tuple_sequence(Dumper self, tuple l, unicode w, bint use_offset)
     #
     @cython.locals(n=int)
     cdef pretty_dump_list(Dumper self, list l, unicode w, bint use_offset)
