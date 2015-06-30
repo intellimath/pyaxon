@@ -221,6 +221,12 @@ aaa:
         except AxonError:
             pass
 
+    def test_invalid_key_1(self):
+        try:
+            text = dumps([{('foo', 'bar'): True}])
+        except TypeError:
+            pass
+
 
 def suite():
     suite = unittest.TestSuite()
