@@ -1074,60 +1074,11 @@ def dict_as_node(d):
 class Builder:
     def create_node(self, name, sequence):
         return self.node(name, c_as_list(sequence))
-    #
-    # def create_sequence(self, name, sequence):
-    #     return None
-    # #
-    # def create_mapping(self, name, mapping):
-    #     return None
-    # #
-    # def create_element(self, name, mapping, sequence):
-    #     return None
-    # #
-    # def create_instance(self, name, args, mapping):
-    #     return None
-    #
-    # def create_empty(self, name):
-    #     return None
 
 class SafeBuilder(Builder):
     #
     def create_node(self, name, sequence):
-        s = Node.__new__(Node)
-        s.name = name
-        s.sequence = sequence
-        return s
-    #
-    # def create_mapping(self, name, mapping):
-    #     o = Mapping.__new__(Mapping)
-    #     o.name = name
-    #     o.mapping = mapping
-    #     return o
-    # #
-    # def create_sequence(self, name, sequence):
-    #     s = Sequence.__new__(Sequence)
-    #     s.name = name
-    #     s.sequence = sequence
-    #     return s
-    # #
-    # def create_element(self, name, mapping, sequence):
-    #     e = Element.__new__(Element)
-    #     e.name = name
-    #     e.mapping = mapping
-    #     e.sequence = sequence
-    #     return e
-    # #
-    # def create_instance(self, name, args, mapping):
-    #     e = Instance.__new__(Instance)
-    #     e.name = name
-    #     e.sequence = args
-    #     e.mapping = mapping
-    #     return e
-    #
-    # def create_empty(self, name):
-    #     e = Empty.__new__(Empty)
-    #     e.name = name
-    #     return e
+        return self.node(name, c_as_list(sequence)) 
 
 class StrictBuilder(Builder):
 
@@ -1135,10 +1086,6 @@ class StrictBuilder(Builder):
     def __init__(self, register=default_factory_register):
         self.register = register
         self.c_factory_dict = register.c_factory_dict
-        # self.c_element_factory_dict = register.c_element_factory_dict
-        # self.c_sequence_factory_dict = register.c_sequence_factory_dict
-        # self.c_instance_factory_dict = register.c_instance_factory_dict
-        # self.c_empty_factory_dict = register.c_empty_factory_dict
     #
     def create_node(self, name, sequence):
         handler = self.c_factory_dict.get(name)
@@ -1146,41 +1093,6 @@ class StrictBuilder(Builder):
             errors.error_no_handler(name)
         else:
             return handler(sequence)
-    #
-    # def create_mapping(self, name, mapping):
-    #     handler = self.c_mapping_factory_dict.get(name)
-    #     if handler is None:
-    #         errors.error_no_handler(name)
-    #     else:
-    #         return handler(mapping)
-    # #
-    # def create_sequence(self, name, sequence):
-    #     handler = self.c_sequence_factory_dict.get(name)
-    #     if handler is None:
-    #         errors.error_no_handler(name)
-    #     else:
-    #         return handler(sequence)
-    # #
-    # def create_element(self, name, mapping, sequence):
-    #     handler = self.c_element_factory_dict.get(name)
-    #     if handler is None:
-    #         errors.error_no_handler(name)
-    #     else:
-    #         return handler(mapping, sequence)
-    # #
-    # def create_instance(self, name, sequence, mapping):
-    #     handler = self.c_instance_factory_dict.get(name)
-    #     if handler is None:
-    #         errors.error_no_handler(name)
-    #     else:
-    #         return handler(sequence, mapping)
-    # #
-    # def create_empty(self, name):
-    #     handler = self.c_empty_factory_dict.get(name)
-    #     if handler is None:
-    #         errors.error_no_handler(name)
-    #     else:
-    #         return handler()
 
 class MixedBuilder(Builder):
 
@@ -1188,10 +1100,6 @@ class MixedBuilder(Builder):
     def __init__(self, register=default_factory_register):
         self.register = register
         self.c_factory_dict = register.c_factory_dict
-        # self.c_element_factory_dict = register.c_element_factory_dict
-        # self.c_sequence_factory_dict = register.c_sequence_factory_dict
-        # self.c_instance_factory_dict = register.c_instance_factory_dict
-        # self.c_empty_factory_dict = register.c_empty_factory_dict
     #
     def create_node(self, name, sequence):
         handler = self.c_sequence_factory_dict.get(name)
@@ -1199,61 +1107,7 @@ class MixedBuilder(Builder):
             return c_new_node(name, sequence)
         else:
             return handler(sequence)
-    #
-    # def create_mapping(self, name, mapping):
-    #     handler = self.c_mapping_factory_dict.get(name)
-    #     if handler is None:
-    #         return c_new_mapping(name, mapping)
-    #     else:
-    #         return handler(mapping)
-    # #
-    # def create_sequence(self, name, sequence):
-    #     handler = self.c_sequence_factory_dict.get(name)
-    #     if handler is None:
-    #         return c_new_sequence(name, sequence)
-    #     else:
-    #         return handler(sequence)
-    # #
-    # def create_element(self, name, mapping, sequence):
-    #     handler = self.c_element_factory_dict.get(name)
-    #     if handler is None:
-    #         return c_new_element(name, mapping, sequence)
-    #     else:
-    #         return handler(mapping, sequence)
-    # #
-    # def create_instance(self, name, sequence, mapping):
-    #     handler = self.c_instance_factory_dict.get(name)
-    #     if handler is None:
-    #         return c_new_instance(name, sequence, mapping)
-    #     else:
-    #         return handler(sequence, mapping)
-    # #
-    # def create_empty(self, name):
-    #     handler = self.c_empty_factory_dict.get(name)
-    #     if handler is None:
-    #         return c_new_empty(name)
-    #     else:
-    #         return handler()
 
-# class GenericBuilder(Builder):
-#
-#     def create_node(self, name, sequence):
-#         return self.node(name, c_as_list(sequence))
-    #
-    # def create_mapping(self, name, mapping):
-    #     return self.mapping(name, c_as_dict(mapping))
-    # #
-    # def create_sequence(self, name, sequence):
-    #     return self.sequence(name, c_as_list(sequence))
-    # #
-    # def create_element(self, name, mapping, sequence):
-    #     return self.element(name, c_as_dict(mapping), c_as_list(sequence))
-    # #
-    # def create_instance(self, name, sequence, mapping):
-    #     return self.instance(name, c_as_list(sequence), c_as_dict(mapping))
-    # #
-    # def create_empty(self, name):
-    #     return self.empty(name)
 
 _inf = float('inf')
 _ninf = float('-inf')
