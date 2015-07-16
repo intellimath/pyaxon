@@ -1078,7 +1078,7 @@ class Builder:
 class SafeBuilder(Builder):
     #
     def create_node(self, name, sequence):
-        return self.node(name, c_as_list(sequence)) 
+        return c_new_node(name, c_as_list(sequence)) 
 
 class StrictBuilder(Builder):
 
