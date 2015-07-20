@@ -245,7 +245,7 @@ cdef public class Dumper[object Dumper, type DumperType]:
     cdef dump_odict_values(Dumper self, object d)
     #
     @cython.locals(i=int)
-    cdef dump_attrs_sequence(Dumper self, object d)
+    cdef dump_attrs_sequence(Dumper self, axon_odict d)
     #
     @cython.locals(i=int)
     cdef dump_list_sequence(Dumper self, list l)
