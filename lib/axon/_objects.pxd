@@ -83,6 +83,7 @@ cdef public unicode empty_name
 cdef public unicode c_undescore
 
 from axon._common cimport c_as_unicode, c_as_list, c_as_dict, c_as_tuple, dict_get
+from axon.odict cimport OrderedDict, c_new_odict
 
 cdef public dict name_cache
 
@@ -168,21 +169,22 @@ cdef public object c_undefined
 @cython.final
 cdef public class Attribute[type AttributeType, object Attribute]:
     cdef public unicode name
-    cdef public object value
+    cdef public object val
 
 @cython.locals(a=Attribute)
-cpdef attribute(name, value)
+cpdef attribute(name, val)
 
-cdef public Attribute c_new_attribute(unicode name, object value)
+cdef public Attribute c_new_attribute(unicode name, object val)
 
 @cython.freelist(128)
 @cython.final
 cdef public class Node[type NodeType, object NodeObject]:
     cdef public object name
-    cdef public list sequence
+    cdef public OrderedDict attrs
+    cdef public list vals
 
 @cython.locals(o=Node)
-cdef public object c_new_node(object name, list sequence)
+cdef public object c_new_node(object name, OrderedDict attrs, list vals)
 
 @cython.final
 cdef class Attributes(list):
@@ -221,24 +223,24 @@ cdef public dict c_factory_dict
 cdef public dict c_factory_dict
 
 cdef class Builder:
-    cdef public object create_node(self, object, list)
+    cdef public object create_node(self, object, OrderedDict, list)
 
 cdef class SafeBuilder(Builder):
-    cdef public object create_node(self, object, list)
+    cdef public object create_node(self, object, OrderedDict, list)
 
 cdef class StrictBuilder(Builder):
     cdef FactoryRegister register
     cdef public dict c_factory_dict
     cdef public dict c_type_factory_dict    
 
-    cdef public object create_node(self, object, list)
+    cdef public object create_node(self, object, OrderedDict, list)
 
 cdef class MixedBuilder(Builder):
     cdef FactoryRegister register
     cdef public dict c_factory_dict
     cdef public dict c_type_factory_dict
     
-    cdef public object create_node(self, object, list)
+    cdef public object create_node(self, object, OrderedDict, list)
 
 cdef object _str2decimal
 

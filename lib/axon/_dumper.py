@@ -696,12 +696,12 @@ class Dumper:
     def dump_attribute(self, attr):
         self.write(_dump_name(attr.name))
         self.write(':')
-        self.dump_value(attr.value)
+        self.dump_value(attr.val)
 
     def pretty_dump_attribute(self, attr, offset, use_offset):
         self.write(_dump_name(attr.name))
         self.write(': ')
-        self.pretty_dump_value(attr.value, offset, 1)
+        self.pretty_dump_value(attr.val, offset, 1)
     #
     def dump_dict_values(self, d):
         i = 0
@@ -738,6 +738,21 @@ class Dumper:
             self.dump_value(v)
             i += 1
     #
+    def dump_attrs_sequence(self, d):
+        i = 0
+
+        for k,v in d.items():
+            if i > 0:
+                self.write(' ')
+
+            text = c_as_unicode(k)
+            self.write(_dump_name(text))
+
+            self.write(':')
+
+            self.dump_value(v)
+            i += 1
+    #
     def dump_list_sequence(self, l):
         i = 0
         for v in l:
@@ -765,7 +780,12 @@ class Dumper:
     def dump_node(self, o):
         self.write(_dump_name(o.name))
         self.write('{')
-        self.dump_list_sequence(o.sequence)
+        if o.attrs:
+            self.dump_attrs_sequence(o.attrs)
+        if o.vals:
+            if o.attrs:
+                self.write(' ')
+            self.dump_list_sequence(o.vals)
         self.write('}')
     #
     def dump_list(self, l):
@@ -791,28 +811,39 @@ class Dumper:
     def pretty_dump_node(self, o, w, use_offset):
         self.write(_dump_name(o.name))
 
-        n = len(o.sequence)
-        if n == 0:
+        n, m = 0, 0
+        if o.attrs is not None:
+            m = len(o.attrs)
+        if o.vals is not None:
+            n = len(o.vals)
+
+        if n == 0 and m == 0:
             self.write(' {}')
             return
             
         if self.pretty == 1:
-            if n > 0:
+            if n > 0 or m > 0:
                 self.write(':\n')
                 self.write(w)
             else:
                 self.write(':')
         elif self.pretty == 2:
             self.write(' {')
-            if n <= self.hsize and self.is_all_simple_list(o.sequence, n):
+            if m == 0 and n <= self.hsize and self.is_all_simple_list(o.vals, n):
                 use_offset = 0
-            elif n == 1 and self.is_simple_type(o.sequence[0]):
+            elif m == 0 and n == 1 and self.is_simple_type(o.vals[0]):
                 use_offset = 0
             if use_offset:
                 self.write('\n')
                 self.write(w)
 
-        self.pretty_dump_node_sequence(o.sequence, w, use_offset)
+        if o.attrs:
+            self.pretty_dump_node_attrs(o.attrs, w, use_offset)
+        if o.vals:
+            if o.attrs:
+                self.write('\n')
+                self.write(w)                
+            self.pretty_dump_node_sequence(o.vals, w, use_offset)
 
         if self.pretty == 2:
             self.write('}')
@@ -862,6 +893,23 @@ class Dumper:
                     self.write(' ')
                                 
             self.pretty_dump_value(v, w, 0)
+
+            j += 1
+    #
+    def pretty_dump_node_attrs(self, attrs, w, use_offset):
+
+        j = 0
+        for name, val in attrs.items():
+            if j > 0:
+                self.write('\n')
+                self.write(w)
+                                        
+            text = c_as_unicode(name)
+            self.write(_dump_name(text))
+            
+            self.write(': ')
+            
+            self.pretty_dump_value(val, w, 1)
 
             j += 1
     #
@@ -1004,7 +1052,6 @@ class Dumper:
     #
     def apply_crossref(self):
         crossref_set = set()
-        crossref_set2 = set()
         for o_ref, count in self.crossref_dict.items():
             if count.val > 1:
                 crossref_set.add(o_ref)
@@ -1016,11 +1063,8 @@ class Dumper:
             crossref_dict[o_ref] = unicode(i)
 
         self.crossref_set = crossref_set
-        self.crossref_set2 = crossref_set2
         self.crossref_dict = crossref_dict
-        crossref_dict = None
-        crossref_set = None
-        crossref_set2 = None
+        self.crossref_set2 = set()
     #
     def collect_value(self, o):
 
@@ -1036,6 +1080,8 @@ class Dumper:
         else:
             count.val += 1
             self.crossref_dict[ref_o] = count
+            # if count.val == 2:
+            #     print(o)
             return 0
 
         if otype is list:
@@ -1080,11 +1126,18 @@ class Dumper:
         for v in d.values():
             self.collect_value(v)
     #
+    def collect_odict(self, d):
+        for v in d.values():
+            self.collect_value(v)
+    #
     def collect_attribute(self, ob):
-        self.collect_value(ob.value)
+        self.collect_value(ob.val)
     #
     def collect_node(self, ob):
-        self.collect_list(ob.sequence)
+        if ob.attrs:
+            self.collect_odict(ob.attrs)
+        if ob.vals:
+            self.collect_list(ob.vals)
     #
     def collect(self, values):
         self.crossref_dict = {}

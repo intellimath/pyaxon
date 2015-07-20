@@ -382,10 +382,10 @@ aaa:
   ccc:
     c:1     d:""
     ddd:
-      1 2 
       a:1
+      1 2 
 '''
-text_13_0 = '''aaa{a:1 b:2 c:12 bbb{} ccc{c:1 d:"" ddd{1 2 a:1}}}'''
+text_13_0 = '''aaa{a:1 b:2 c:12 bbb{} ccc{c:1 d:"" ddd{a:1 1 2}}}'''
 text_13_1 = '''aaa {
   a: 1
   b: 2
@@ -395,8 +395,8 @@ text_13_1 = '''aaa {
     c: 1
     d: ""
     ddd {
-      1 2
-      a: 1}}}'''
+      a: 1
+      1 2}}}'''
 text_13_2 = '''aaa:
   a: 1
   b: 2
@@ -406,8 +406,8 @@ text_13_2 = '''aaa:
     c: 1
     d: ""
     ddd:
-      1 2
-      a: 1'''
+      a: 1
+      1 2'''
 
 text_13c_o = '''
 # comments
@@ -424,12 +424,12 @@ aaa:
     c:1     d:""
     # comments
     ddd:
+      a:1
       1 # comments
       # comments
       2 # comments
-      a:1
 '''
-text_13c_0 = '''aaa{a:1 b:2 c:12 bbb{} ccc{c:1 d:"" ddd{1 2 a:1}}}'''
+text_13c_0 = '''aaa{a:1 b:2 c:12 bbb{} ccc{c:1 d:"" ddd{a:1 1 2}}}'''
 text_13c_1 = '''aaa {
   a: 1
   b: 2
@@ -439,8 +439,8 @@ text_13c_1 = '''aaa {
     c: 1
     d: ""
     ddd {
-      1 2
-      a: 1}}}'''
+      a: 1
+      1 2}}}'''
 text_13c_2 = '''aaa:
   a: 1
   b: 2
@@ -450,8 +450,8 @@ text_13c_2 = '''aaa:
     c: 1
     d: ""
     ddd:
-      1 2
-      a: 1'''
+      a: 1
+      1 2'''
 
 
 #################################

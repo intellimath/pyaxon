@@ -85,12 +85,12 @@ cdef class _ItemsView(_MappingView):
     def __contains__(self, item):
         cdef Link link
     
-        key, value = item
+        key, val = item
         link = <Link>self._mapping.get(key, None)
         if link is None:
             return False
         else:
-            return link.value == value
+            return link.val == val
 
     def __iter__(self):
         for key in self._mapping:
@@ -104,9 +104,9 @@ collections.ItemsView.register(_ItemsView)
 
 cdef class _ValuesView(_MappingView):
 
-    def __contains__(self, value):
+    def __contains__(self, val):
         for key in self._mapping:
-            if value == self._mapping[key]:
+            if val == self._mapping[key]:
                 return True
         return False
 
@@ -128,7 +128,7 @@ collections.ValuesView.register(_ValuesView)
 cdef public class Link[object LinkObject, type LinkType]:    
     def __iter__(self):
         yield self.key
-        yield self.value
+        yield self.val
 
 cdef Link link_marker = Link()
 
@@ -157,7 +157,7 @@ cdef public class OrderedDict[object OrderedDictObject, type OrderedDictType]:
         
         self.__update(args, kwds)
 
-    def __setitem__(self, key, value):
+    def __setitem__(self, key, val):
         'od.__setitem__(i, y) <==> od[i]=y'
         # Setting a new item creates a new link at the end of the linked list,
         # and the inherited dictionary is updated with the new key/value pair.
@@ -166,7 +166,7 @@ cdef public class OrderedDict[object OrderedDictObject, type OrderedDictType]:
         
         if dict.__contains__(self.map, key):
             link = <Link>dict.__getitem__(self.map, key)
-            link.value = value
+            link.val = val
         else:
             root = self.root
             last = <Link>root.prev
@@ -174,24 +174,20 @@ cdef public class OrderedDict[object OrderedDictObject, type OrderedDictType]:
             link = <Link>Link.__new__(Link)
 
             link.prev, link.next = <cython.void*>last, <cython.void*>root
-            link.key, link.value = key, value
+            link.key, link.val = key, val
             last.next =  root.prev = <cython.void*>link
             
             dict.__setitem__(self.map, key, link)
 
     def __getitem__(self, key):
-        'od.__setitem__(i, y) <==> od[i]=y'
-        # Setting a new item creates a new link at the end of the linked list,
-        # and the inherited dictionary is updated with the new key/value pair.
+        'od.__getitem__(key) <==> od[key]'
         cdef Link link
         
         link = <Link>dict.__getitem__(self.map, key)
-        return link.value
+        return link.val
 
     def __delitem__(self, key):
         'od.__delitem__(y) <==> del od[y]'
-        # Deleting an existing item uses self.__map to find the link which gets
-        # removed by updating the links in the predecessor and successor nodes.
         cdef Link link, link_prev, link_next
         
         link = <Link>dict.pop(self.map, key)
@@ -216,7 +212,6 @@ cdef public class OrderedDict[object OrderedDictObject, type OrderedDictType]:
 
     def __reversed__(self):
         'od.__reversed__() <==> reversed(od)'
-        # Traverse the linked list in reverse order.
         cdef Link root, curr
 
         root = self.root
@@ -239,7 +234,6 @@ cdef public class OrderedDict[object OrderedDictObject, type OrderedDictType]:
     def popitem(self, last=True):
         '''od.popitem() -> (k, v), return and remove a (key, value) pair.
         Pairs are returned in LIFO order if last is true or FIFO order if false.
-
         '''
         
         cdef Link root, link, link_prev, link_next
@@ -258,9 +252,9 @@ cdef public class OrderedDict[object OrderedDictObject, type OrderedDictType]:
             root.next = <cython.void*>link_next
             link_next.prev = <cython.void*>root
         key = link.key
-        value = link.value
+        val = link.val
         dict.__delitem__(self.map, key)
-        return key, value
+        return key, val
         
     def move_to_end(self, key, last=True):
         '''Move an existing element to the end (or beginning if last==False).
@@ -301,16 +295,16 @@ cdef public class OrderedDict[object OrderedDictObject, type OrderedDictType]:
                             len(args))
         if args:
             other = args[0]
-            tp = type(other) 
+            tp = type(other)
             if tp is list:
-                for key, value in <list>other:
-                    self[key] = value
+                for key, val in <list>other:
+                    self[key] = val
             elif tp is dict:
-                for key, value in (<dict>other).items():
-                    self[key] = value
+                for key, val in (<dict>other).items():
+                    self[key] = val
             elif tp is tuple:
-                for key, value in <list>other:
-                    self[key] = value
+                for key, val in <list>other:
+                    self[key] = val
             elif isinstance(other, collections.Mapping):
                 for key in other:
                     self[key] = other[key]
@@ -318,11 +312,11 @@ cdef public class OrderedDict[object OrderedDictObject, type OrderedDictType]:
                 for key in other.keys():
                     self[key] = other[key]
             else:
-                for key, value in other:
-                    self[key] = value
+                for key, val in other:
+                    self[key] = val
         if kwds:
-            for key, value in kwds.items():
-                self[key] = value
+            for key, val in kwds.items():
+                self[key] = val
 
     def update(self, *args, **kw):
         ''' D.update([E, ]**F) -> None.  Update D from mapping/iterable E and F.
@@ -340,7 +334,7 @@ cdef public class OrderedDict[object OrderedDictObject, type OrderedDictType]:
         if link is None:
             return default
         else:
-            return link.value
+            return link.val
 
     def __contains__(self, key):
         return key in self.map
@@ -371,7 +365,7 @@ cdef public class OrderedDict[object OrderedDictObject, type OrderedDictType]:
             else:
                 return default
         else:
-            return link.value
+            return link.val
 
     def setdefault(self, key, default=None):
         'od.setdefault(k[,d]) -> od.get(k,d), also set od[k]=d if k not in od'
@@ -382,7 +376,7 @@ cdef public class OrderedDict[object OrderedDictObject, type OrderedDictType]:
             self[key] = default
             return default
         else:
-            return link.value
+            return link.val
 
     def __repr__(self):
         'od.__repr__() <==> repr(od)'
@@ -401,12 +395,8 @@ cdef public class OrderedDict[object OrderedDictObject, type OrderedDictType]:
 
     def __reduce__(self):
         'Return state information for pickling'
-        # items = [(k, self[k]) for k in self]
-        # return odict, (items,)
         try:
             inst_dict = vars(self).copy()
-            #for k in vars(OrderedDict()):
-            #    inst_dict.pop(k, None)
         except:
             inst_dict = None
         return self.__class__, (), inst_dict, None, iter(self.items())
@@ -416,14 +406,14 @@ cdef public class OrderedDict[object OrderedDictObject, type OrderedDictType]:
         return self.__class__(self)
 
     @classmethod
-    def fromkeys(cls, iterable, value=None):
+    def fromkeys(cls, iterable, val=None):
         '''OD.fromkeys(S[, v]) -> New ordered dictionary with keys from S.
         If not specified, the value defaults to None.
 
         '''
         self = cls()
         for key in iterable:
-            self[key] = value
+            self[key] = val
         return self
 
     def __eq(self, other):
@@ -468,16 +458,16 @@ cdef OrderedDict c_new_odict(list args):
     root = <Link>Link.__new__(Link)
     root.prev = root.next = <cython.void*>root
     od.root = root
-
+    
     if args is not None:  
-        for key, value in args:
+        for key, val in args:
             root = od.root
             last = <Link>root.prev
 
             link = <Link>Link.__new__(Link)
 
             link.prev, link.next = <cython.void*>last, <cython.void*>root
-            link.key, link.value = key, value
+            link.key, link.val = key, val
             last.next =  root.prev = <cython.void*>link
             
             dict.__setitem__(od.map, key, link)

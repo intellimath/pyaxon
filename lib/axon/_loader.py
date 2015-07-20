@@ -820,7 +820,7 @@ class Loader:
 
                     if self.is_nl:
                         if self.eof or self.col <= idn:
-                            val = self.builder.create_node(name, [])
+                            val = self.builder.create_node(name, None, None)
                         elif self.col > idn:
                             val = self.get_complex_value(name, self.col)
                         else:
@@ -880,7 +880,8 @@ class Loader:
         return val
     #
     def get_complex_value(self, name, idn):
-        sequence = []            
+        attrs = None
+        vals = None         
         ch = self.skip_spaces()
         while 1:
             if ch == '#':
@@ -889,7 +890,7 @@ class Loader:
                 
             if idn:
                 if self.eof or self.col < idn:
-                    val = self.builder.create_node(name, sequence)
+                    val = self.builder.create_node(name, attrs, vals)
                     break
                 elif self.col == idn:
                     pass
@@ -901,17 +902,25 @@ class Loader:
             if ch == '}':
                 self.bc -= 1
                 skip_char(self)
-                val = self.builder.create_node(name, sequence)
                 break
             elif ch == '\0':
-                val = self.builder.create_node(name, sequence)
                 break
             else:
                 val = self.get_value(idn)
-                sequence.append(val)
+                if type(val) is Attribute:
+                    if attrs is None:
+                        attrs = axon_odict()
+                    attr = val
+                    attrs[attr.name] = attr.val
+                else:
+                    if vals is None:
+                        vals = [val]
+                    else:
+                        vals.append(val)
 
             ch = self.skip_spaces()            
 
+        val = self.builder.create_node(name, attrs, vals)
         return val
     #
     def get_list_value(self):

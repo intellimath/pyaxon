@@ -15,7 +15,7 @@ from axon.test.test_tuple import *
 #from axon.test.test_sequence import *
 #from axon.test.test_instance import *
 #from axon.test.test_safe_loads import *
-#from axon.test.test_unsafe_loads import *
+from axon.test.test_unsafe_loads import *
 from axon.test.test_crossref import *
 from axon.test.test_base64 import *
 from axon.test.test_errors import *

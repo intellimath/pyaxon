@@ -245,55 +245,95 @@ c_constants = {
 #
 class Attribute(object):
     #
-    def __init__(self, name, value):
+    def __init__(self, name, val):
         self.name = c_as_name(name)
-        self.value = value
+        self.val = val
     #
     def __getitem__(self, index):
         if index == 0:
             return self.name
         elif index == 1:
-            return self.value
+            return self.val
         else:
             raise IndexError('Index out of range: ' + str(index))
     #
     def __iter__(self):
         yield self.name
-        yield self.value
+        yield self.val
     #
     def __repr__(self):
-        return self.name + ':' + repr(self.value)
+        return self.name + ':' + repr(self.val)
 
-def attribute(name, value):
+def attribute(name, val):
     a = Attribute.__new__(Attribute)
     a.name = c_as_unicode(name)
-    a.value = value
+    a.val = val
     return a
 
-def c_new_attribute(name, value):
+def c_new_attribute(name, val):
     a = Attribute.__new__(Attribute)
     a.name = name
-    a.value = value
+    a.val = val
     return a
 
 #
 # Node
 #
 class Node(object):
+    
+    @property
+    def __tag__(self):
+        return self.name
 
-    def __init__(self, name, sequence=None):
+    @property
+    def __dict__(self):
+        return self.attrs
+
+    def __init__(self, name, attrs=None, vals=None):
         self.name = c_as_name(name)
-        self.sequence = c_as_list(sequence)
+        if attrs is not None and len(attrs) == 0:
+            self.attrs = None
+        else:
+            self.attrs = OrderedDict(attrs)
+        if vals is not None and len(vals) == 0:
+            self.vals = None
+        else:
+            if type(vals) is list:
+                self.vals = vals
+            else:
+                self.vals = list(vals)
+    #
+    def __getattr__(self, name):
+        if name.startswith('__'):
+            return object.__getattr__(self, name)
+        else:
+            val = self.attrs.get(name, c_undefined)
+            if val is c_undefined:
+                raise AttributeError("Undefined attribute " + name)
+            return val
+    #
+    def __setattr__(self, name, val):
+        if name.startswith('__'):
+            object.__setattr__(self, name, val)
+        else:
+            self.attrs[name] = val
     #
     def __getitem__(self, index):
-        return self.sequence[index]
+        return self.vals[index]
     #
     def __setitem__(self, index, val):
-        self.sequence[index] = val
+        self.vals[index] = val
+    #
+    def __iter__(self):
+        if self.vals is not None:
+            return iter(self.vals)
+    #
+    def __nonzero__(self):
+        return self.attrs is not None or self.vals is not None
     #
     def __richcmp__(self, other, op):
         if type(self) is Node:
-            v = (self.name == other.name) and (self.sequence == other.sequence)
+            v = (self.name == other.name) and (self.attrs == other.attrs) and (self.vals == other.vals)
             if op == 2:
                 return v
             elif op == 3:
@@ -305,18 +345,20 @@ class Node(object):
     #
     def __repr__(self):
         return self.name + '{' + \
-                ' '.join([repr(x) for x in self.sequence]) + '}'
+                ' '.join([str(x.name)+':'+repr(x.val) for x in self.attrs or ()]) + \
+                ' '.join([repr(x) for x in self.vals or ()]) + '}'
     #
     def __reduce__(self):
-        return node, (self.name, self.sequence)
+        return node, (self.name, self.attrs, self.vals)
 
-def c_new_node(name, sequence):
+def c_new_node(name, attrs, vals):
     o = Node.__new__(Node)
     o.name = name
-    o.sequence = sequence
+    o.attrs = attrs
+    o.vals = vals
     return o
 
-def node(name, sequence=None):
+def node(name, attrs=None, vals=None):
     '''
     Factory function for creating node.
 
@@ -328,7 +370,21 @@ def node(name, sequence=None):
 
         python sequence containing values.
     '''
-    return c_new_node(c_as_name(name), c_as_list(sequence))
+    if attrs is not None:
+        if len(attrs) == 0:
+            _attrs = None
+        elif type(attrs) is OrderedDict:
+            _attrs = attrs
+        else:
+            _attrs = OrderedDict(attrs)
+    else:
+        _attrs = attrs
+    if vals is not None and len(vals) == 0:
+        _vals = None
+    else:
+        _vals = vals
+    
+    return c_new_node(c_as_name(name), _attrs, c_as_list(_vals))
     
 class Attributes(list):
     pass
@@ -1069,16 +1125,16 @@ reset_factory = default_factory_register.reset
 reset_type_factory = default_factory_register.reset_types
 
 def dict_as_node(d):
-    return c_new_node(c_as_name('dict'), [(k,v) for k,v in d.items()])
+    return c_new_node(c_as_name('dict'), [attribute(k,v) for k,v in d.items()], None)
 
 class Builder:
-    def create_node(self, name, sequence):
-        return self.node(name, c_as_list(sequence))
+    def create_node(self, name, attrs, vals):
+        return self.node(name, attrs, c_as_list(vals))
 
 class SafeBuilder(Builder):
     #
-    def create_node(self, name, sequence):
-        return c_new_node(name, c_as_list(sequence)) 
+    def create_node(self, name, attrs, vals):
+        return c_new_node(name, attrs, c_as_list(vals)) 
 
 class StrictBuilder(Builder):
 
@@ -1087,12 +1143,12 @@ class StrictBuilder(Builder):
         self.register = register
         self.c_factory_dict = register.c_factory_dict
     #
-    def create_node(self, name, sequence):
+    def create_node(self, name, attrs, vals):
         handler = self.c_factory_dict.get(name)
         if handler is None:
             errors.error_no_handler(name)
         else:
-            return handler(sequence)
+            return handler(attrs, vals)
 
 class MixedBuilder(Builder):
 
@@ -1101,12 +1157,12 @@ class MixedBuilder(Builder):
         self.register = register
         self.c_factory_dict = register.c_factory_dict
     #
-    def create_node(self, name, sequence):
+    def create_node(self, name, attrs, vals):
         handler = self.c_sequence_factory_dict.get(name)
         if handler is None:
-            return c_new_node(name, sequence)
+            return c_new_node(name, attrs, vals)
         else:
-            return handler(sequence)
+            return handler(attrs, vals)
 
 
 _inf = float('inf')
