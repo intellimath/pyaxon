@@ -805,10 +805,64 @@ class Loader:
             self.ba += 1
             skip_char(self)
             val = self.get_odict_value()
+        elif ch == '|':
+            val = self.get_base64()
+        elif ch == '∞': # \U221E
+            ch = next_char(self)
+            if ch == 'D' or ch == 'd' or ch == '$':
+                skip_char(self)
+                val = self.sbuilder.create_decimal_inf()
+            else:
+                val = self.sbuilder.create_inf()
+        elif ch == '?':
+            ch = next_char(self)
+            if ch == 'D' or ch == 'd' or ch == '$':
+                skip_char(self)
+                val = self.sbuilder.create_decimal_nan()
+            else:
+                val = self.sbuilder.create_nan()
+        elif ch == '*':
+            skip_char(self)
+            label = self.try_get_label()
+            if self.eof:
+                errors.error_unexpected_end(self)
+            if label is not None:
+                val = self.labeled_objects.get(label, c_undefined)
+            else:
+                errors.error(self, "Expected label here")
+        elif ch == '&':
+            pos0 = self.pos
+            skip_char(self)
+            label = self.try_get_label()
+
+            self.skip_spaces()
+
+            val = self.get_value(pos0)
+            self.labeled_objects[label] = val
+        elif ch == '$':
+            skip_char(self)
+            name = self.get_name()
+            val = self.c_constants.get(name, c_undefined)
+            if val is c_undefined:
+                errors.error(self, "Undefined name %r" % name)                    
         else:
             name = self.try_get_name()
-            if name is not None:
-                ch = self.skip_spaces()
+            if name is None:
+                errors.error(self, "Expected name of attribute or complex value")
+
+            self.skip_spaces()
+            if self.eof:
+                errors.error(self, "Unexpected end after name %r" % name)
+
+            if self.is_nl:
+                if self.eof or self.col <= idn:
+                    val = self.builder.create_node(name, None, None)
+                elif self.col > idn:
+                    val = self.get_complex_value(name, self.col)
+                else:
+                    errors.error_indentation(self, idn)
+            else:
+                ch = current_char(self)
                 if ch == '{':
                     self.bc += 1
                     skip_char(self)
@@ -828,51 +882,9 @@ class Loader:
                     else:
                         val = c_new_attribute(name, self.get_value(idn))
                 else:
-                    errors.error(self, "undefined name %r" % name)
-            elif ch == '|':
-                val = self.get_base64()
-            elif ch == '∞': # \U221E
-                ch = next_char(self)
-                if ch == 'D' or ch == 'd' or ch == '$':
-                    skip_char(self)
-                    val = self.sbuilder.create_decimal_inf()
-                else:
-                    val = self.sbuilder.create_inf()
-            elif ch == '?':
-                ch = next_char(self)
-                if ch == 'D' or ch == 'd' or ch == '$':
-                    skip_char(self)
-                    val = self.sbuilder.create_decimal_nan()
-                else:
-                    val = self.sbuilder.create_nan()
-            elif ch == '*':
-                skip_char(self)
-                label = self.try_get_label()
-                if self.eof:
-                    errors.error_unexpected_end(self)
-                if label is not None:
-                    val = self.labeled_objects.get(label, c_undefined)
-                else:
-                    errors.error(self, "Expected label here")
-            elif ch == '&':
-                pos0 = self.pos
-                skip_char(self)
-                label = self.try_get_label()
-
-                self.skip_spaces()
-
-                val = self.get_value(pos0)
-                self.labeled_objects[label] = val
-            elif ch == '$':
-                skip_char(self)
-                name = self.get_name()
-                val = self.c_constants.get(name, c_undefined)
-                if val is c_undefined:
-                    errors.error(self, "Undefined name %r" % name)                    
-            elif ch == '\0':
-                errors.error(self, "Unexpected end after name %r" % name)
-            else:
-                errors.error_unexpected_value(self, 'Invalid value')
+                    errors.error_unexpected_value(self, 'Expected attribute or complex value with the name %r' % name)
+            # else:
+            #     errors.error_unexpected_value(self, 'Invalid value')
 
         #if not valid_end_item(self):
         #    errors.error_end_item(self)
