@@ -118,15 +118,11 @@ Dump, load objects in unsafe mode::
 
 	@axon.reduce(Person)
 	def reduce_Person(p):
-	    return axon.node('person', 
-	                     [axon.attribute('name', p.name),
-	                      axon.attribute('age', p.age),
-	                      axon.attribute('email', p.email)])
+	    return axon.node('person', {'name':p.name, 'age':p.age, 'email': p.email})
 
 	@axon.factory('person')
-	def factory_Person(p):
-	    a1, a2, a3 = p
-	    return Person(p[0].value, p[1].value, p[2].value)
+	def factory_Person(attrs, vals):
+	    return Person(name=attrs['name'], age=attrs['age'], email=attrs['email'])
 	
 	>>> p = Person('nick', 32, 'mail@example.com')
 	>>> text = axon.dumps([p])

@@ -148,7 +148,8 @@ c_constants = {
     c_as_name(c_as_unicode('true')): True,
     c_as_name(c_as_unicode('false')): False,
     c_as_name(c_as_unicode('null')): None,
-    #c_as_name(c_as_unicode('NaN')): float('nan'),
+    c_as_name(c_as_unicode('NaN')): float('nan'),
+    c_as_name(c_as_unicode('NaND')): _decimal.Decimal(float('nan')),
     #c_as_name(c_as_unicode('Infinity')): float('inf'),
 }
     
@@ -286,18 +287,23 @@ class Node(object):
         return self.name
 
     @property
-    def __dict__(self):
+    def __attrs__(self):
         return self.attrs
+
+    @property
+    def __vals__(self):
+        return self.vals
 
     def __init__(self, name, attrs=None, vals=None):
         self.name = c_as_name(name)
         if attrs is not None and len(attrs) == 0:
             self.attrs = None
-        else:
+        elif attrs is not None:
             self.attrs = OrderedDict(attrs)
+            
         if vals is not None and len(vals) == 0:
             self.vals = None
-        else:
+        elif vals is not None:
             if type(vals) is list:
                 self.vals = vals
             else:
@@ -305,7 +311,7 @@ class Node(object):
     #
     def __getattr__(self, name):
         if name.startswith('__'):
-            return object.__getattr__(self, name)
+            return self.__getattribute__(name)
         else:
             val = self.attrs.get(name, c_undefined)
             if val is c_undefined:
@@ -345,7 +351,7 @@ class Node(object):
     #
     def __repr__(self):
         return self.name + '{' + \
-                ' '.join([str(x.name)+':'+repr(x.val) for x in self.attrs or ()]) + \
+                ' '.join([str(name)+':'+repr(self.attrs[name]) for name in self.attrs or ()]) + \
                 ' '.join([repr(x) for x in self.vals or ()]) + '}'
     #
     def __reduce__(self):
@@ -386,111 +392,111 @@ def node(name, attrs=None, vals=None):
     
     return c_new_node(c_as_name(name), _attrs, c_as_list(_vals))
     
-class Attributes(list):
-    pass
-
-class Values(list):
-    pass
-
-def attrs_values(L):
-    n = list.__len__(L)
-    if n == 0:
-        return None
-        
-    i = 0
-    attrs = Attributes()
-    vals = None
-    flag = 0
-    while i < n:
-        o = list.__getitem__(L, i)
-        if type(o) is Attribute:
-            list.append(attrs, o)
-        else:
-            flag = 1
-            break
-        i += 1
-    if flag:
-        vals = Values()
-        while i < n:
-            o = list.__getitem__(L, i)
-            list.append(vals, o)
-            i += 1
-    return attrs, vals
-
-def dict_values(L):
-    n = list.__len__(L)
-    if n == 0:
-        return None
-        
-    i = 0
-    attrs = dict()
-    vals = None
-    flag = 0
-    while i < n:
-        o = list.__getitem__(L, i)
-        if type(o) is Attribute:
-            a = o
-            attrs[a.name] = a.value
-        else:
-            flag = 1
-            break
-        i += 1
-    if flag:
-        vals = Values()
-        while i < n:
-            o = list.__getitem__(L, i)
-            list.append(vals, o)
-            i += 1
-    return attrs, vals
-            
-def values_attrs(L):
-    n = list.__len__(L)
-    if n == 0:
-        return None
-        
-    i = 0
-    vals = Values()
-    attrs = None
-    flag = 0
-    while i < n:
-        o = list.__getitem__(L, i)
-        if type(o) is Attribute:
-            flag = 1
-            break
-        else:
-            list.append(vals, o)
-        i += 1
-    if flag:
-        attrs = Attributes()
-        while i < n:
-            list.append(attrs, o)
-            i += 1
-    return vals, attrs
-
-def values_dict(L):
-    n = list.__len__(L)
-    if n == 0:
-        return None
-        
-    i = 0
-    vals = Values()
-    attrs = None
-    flag = 0
-    while i < n:
-        o = list.__getitem__(L, i)
-        if type(o) is Attribute:
-            flag = 1
-            break
-        else:
-            list.append(vals, o)
-        i += 1
-    if flag:
-        attrs = dict()
-        while i < n:
-            a = o
-            attrs[a.name] = a.value
-            i += 1
-    return vals, attrs
+# class Attributes(list):
+#     pass
+#
+# class Values(list):
+#     pass
+#
+# def attrs_values(L):
+#     n = list.__len__(L)
+#     if n == 0:
+#         return None
+#
+#     i = 0
+#     attrs = Attributes()
+#     vals = None
+#     flag = 0
+#     while i < n:
+#         o = list.__getitem__(L, i)
+#         if type(o) is Attribute:
+#             list.append(attrs, o)
+#         else:
+#             flag = 1
+#             break
+#         i += 1
+#     if flag:
+#         vals = Values()
+#         while i < n:
+#             o = list.__getitem__(L, i)
+#             list.append(vals, o)
+#             i += 1
+#     return attrs, vals
+#
+# def dict_values(L):
+#     n = list.__len__(L)
+#     if n == 0:
+#         return None
+#
+#     i = 0
+#     attrs = dict()
+#     vals = None
+#     flag = 0
+#     while i < n:
+#         o = list.__getitem__(L, i)
+#         if type(o) is Attribute:
+#             a = o
+#             attrs[a.name] = a.value
+#         else:
+#             flag = 1
+#             break
+#         i += 1
+#     if flag:
+#         vals = Values()
+#         while i < n:
+#             o = list.__getitem__(L, i)
+#             list.append(vals, o)
+#             i += 1
+#     return attrs, vals
+#
+# def values_attrs(L):
+#     n = list.__len__(L)
+#     if n == 0:
+#         return None
+#
+#     i = 0
+#     vals = Values()
+#     attrs = None
+#     flag = 0
+#     while i < n:
+#         o = list.__getitem__(L, i)
+#         if type(o) is Attribute:
+#             flag = 1
+#             break
+#         else:
+#             list.append(vals, o)
+#         i += 1
+#     if flag:
+#         attrs = Attributes()
+#         while i < n:
+#             list.append(attrs, o)
+#             i += 1
+#     return vals, attrs
+#
+# def values_dict(L):
+#     n = list.__len__(L)
+#     if n == 0:
+#         return None
+#
+#     i = 0
+#     vals = Values()
+#     attrs = None
+#     flag = 0
+#     while i < n:
+#         o = list.__getitem__(L, i)
+#         if type(o) is Attribute:
+#             flag = 1
+#             break
+#         else:
+#             list.append(vals, o)
+#         i += 1
+#     if flag:
+#         attrs = dict()
+#         while i < n:
+#             a = o
+#             attrs[a.name] = a.value
+#             i += 1
+#     return vals, attrs
     
 def dict2attrs(d):
     return [c_new_attribute(n,v) for n,v in d.items()]
@@ -1158,7 +1164,7 @@ class MixedBuilder(Builder):
         self.c_factory_dict = register.c_factory_dict
     #
     def create_node(self, name, attrs, vals):
-        handler = self.c_sequence_factory_dict.get(name)
+        handler = self.c_factory_dict.get(name)
         if handler is None:
             return c_new_node(name, attrs, vals)
         else:

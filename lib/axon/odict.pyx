@@ -295,25 +295,26 @@ cdef public class OrderedDict[object OrderedDictObject, type OrderedDictType]:
                             len(args))
         if args:
             other = args[0]
-            tp = type(other)
-            if tp is list:
-                for key, val in <list>other:
-                    self[key] = val
-            elif tp is dict:
-                for key, val in (<dict>other).items():
-                    self[key] = val
-            elif tp is tuple:
-                for key, val in <list>other:
-                    self[key] = val
-            elif isinstance(other, collections.Mapping):
-                for key in other:
-                    self[key] = other[key]
-            elif hasattr(other, "keys"):
-                for key in other.keys():
-                    self[key] = other[key]
-            else:
-                for key, val in other:
-                    self[key] = val
+            if other is not None:
+                tp = type(other)
+                if tp is list:
+                    for key, val in <list>other:
+                        self[key] = val
+                elif tp is dict:
+                    for key, val in (<dict>other).items():
+                        self[key] = val
+                elif tp is tuple:
+                    for key, val in <list>other:
+                        self[key] = val
+                elif isinstance(other, collections.Mapping):
+                    for key in other:
+                        self[key] = other[key]
+                elif hasattr(other, "keys"):
+                    for key in other.keys():
+                        self[key] = other[key]
+                else:
+                    for key, val in other:
+                        self[key] = val
         if kwds:
             for key, val in kwds.items():
                 self[key] = val

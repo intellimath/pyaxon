@@ -179,32 +179,32 @@ cdef public Attribute c_new_attribute(unicode name, object val)
 @cython.freelist(128)
 @cython.final
 cdef public class Node[type NodeType, object NodeObject]:
-    cdef public object name
-    cdef public OrderedDict attrs
-    cdef public list vals
+    cdef object name
+    cdef OrderedDict attrs
+    cdef list vals
 
 @cython.locals(o=Node)
 cdef public object c_new_node(object name, OrderedDict attrs, list vals)
 
-@cython.final
-cdef class Attributes(list):
-    pass
-
-@cython.final
-cdef class Values(list):
-    pass
-
-@cython.locals(i=int, n=int, flag=bint, vals=Values, attrs=Attributes)
-cpdef attrs_values(list)
-
-@cython.locals(i=int, n=int, flag=bint, vals=Values, attrs=Attributes)
-cpdef values_attrs(list)
-
-@cython.locals(i=int, n=int, flag=bint, vals=Values, attrs=dict, a=Attribute)
-cpdef dict_values(list)
-
-@cython.locals(i=int, n=int, flag=bint, vals=Values, attrs=dict, a=Attribute)
-cpdef values_dict(list)
+# @cython.final
+# cdef class Attributes(list):
+#     pass
+#
+# @cython.final
+# cdef class Values(list):
+#     pass
+#
+# @cython.locals(i=int, n=int, flag=bint, vals=Values, attrs=Attributes)
+# cpdef attrs_values(list)
+#
+# @cython.locals(i=int, n=int, flag=bint, vals=Values, attrs=Attributes)
+# cpdef values_attrs(list)
+#
+# @cython.locals(i=int, n=int, flag=bint, vals=Values, attrs=dict, a=Attribute)
+# cpdef dict_values(list)
+#
+# @cython.locals(i=int, n=int, flag=bint, vals=Values, attrs=dict, a=Attribute)
+# cpdef values_dict(list)
 
 cpdef dict2attrs(dict d)
 

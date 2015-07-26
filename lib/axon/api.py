@@ -28,31 +28,6 @@ from axon._objects import as_unicode, StringReader, StringWriter
 
 import io
 
-# class Reader(object):
-#     def __init__(self, fd, encoding):
-#         self.fd = fd
-#         self.encoding = encoding
-#
-#     def readline(self):
-#         line = self.fd.readline()
-#         line =  line.decode(self.encoding)
-#         return line
-#
-#     def close(self):
-#         self.fd.close()
-#
-# class Writer(object):
-#     def __init__(self, fd, encoding):
-#         self.fd = fd
-#         self.encoding = encoding
-#
-#     def write(self, line):
-#         line =  line.encode(self.encoding)
-#         self.fd.write(line)
-#
-#     def close(self):
-#         self.fd.close()
-
 def display(text, pretty=1, braces=0, sorted=1, hsize=0, crossref=0):
     '''
     Display AXON text in formatted form for easy read.
@@ -66,30 +41,30 @@ def display(text, pretty=1, braces=0, sorted=1, hsize=0, crossref=0):
     val = loads(text)
     print(dumps(val, pretty, braces, sorted, hsize, crossref))
 
-def dumps(val, pretty=0, braces=0, sorted=1, hsize=0, crossref=0):
+def dumps(vals, pretty=0, braces=0, sorted=1, hsize=0, crossref=0):
     '''
-    Dump value into unicode text.
+    Dump sequence of values into unicode text.
 
-    :param val:
-       Value to convert.
+    :param vals:
+       Sequence of values to convert.
 
     :param pretty:
         Flag indicating pretty dumping:
 
         * `True` - use pretty dumping
-        * `False` - do not use pretty dumping (default)
+        * `False` - compact dumping (default)
 
     :param braces:
         Flag indicating using braces (json-style) during formatting:
 
-        * `True` - use json style formatting during dumping
-        * `False` - use yaml-style formatting during dumping (default)
+        * `True` - use formatting with braces
+        * `False` - use formatting without braces (default)
 
     :param crossref:
         Flag for crossreferece support in unsafe mode
 
-        * `True` - use crosserefernce support
-        * `False` - do not use crosserefernce support (default)
+        * `True` - use reference to the object on duplicate
+        * `False` - use copy of the object on duplicate (default)
 
     :returns:
         Unicode text in AXON format.
@@ -97,7 +72,7 @@ def dumps(val, pretty=0, braces=0, sorted=1, hsize=0, crossref=0):
     fd = StringWriter()
 
     dumper = Dumper(fd, pretty, braces, sorted, hsize, crossref)
-    dumper.dump(val)
+    dumper.dump(vals)
     v = fd.getvalue()
     fd.close()
     return v

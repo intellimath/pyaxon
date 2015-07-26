@@ -28,6 +28,8 @@ from cpython.dict cimport PyDict_GetItem, PyDict_SetItem
 cdef extern from "utils.h":
     inline unicode c_object_to_unicode(object o)
 
+cdef extern from "Python.h":
+    cdef int PY_MAJOR_VERSION
 
 cdef inline object dict_get(object op, object key, object default):
     cdef PyObject* val = <PyObject*>PyDict_GetItem(op, key)
@@ -67,4 +69,7 @@ cdef inline unicode c_as_unicode(object ob):
     elif tp is str:
         return c_object_to_unicode(ob)
     else:
-        raise TypeError("The type of the object should be `str` or `unicode`.")
+        if PY_MAJOR_VERSION >= 3:
+            raise TypeError("The type of the object should be `str` or `unicode`.")
+        else:
+            raise TypeError("The type of the object should be `str`.")

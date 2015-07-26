@@ -872,7 +872,7 @@ class Loader:
             elif ch == '\0':
                 errors.error(self, "Unexpected end after name %r" % name)
             else:
-                errors.error_unexpected_value(self, 'expected named complex value')
+                errors.error_unexpected_value(self, 'Invalid value')
 
         #if not valid_end_item(self):
         #    errors.error_end_item(self)
@@ -1006,7 +1006,7 @@ class Loader:
                 elif ch == '\0':
                     errors.error(self, "Unexpected end inside of the dict")
                 else:
-                    errors.error(self, "Expected '}' or invalid part of the dict")
+                    errors.error(self, "Invalid key in the dict")
 
             ch = self.skip_spaces()
 
@@ -1044,6 +1044,6 @@ class Loader:
                 elif ch == '\0':
                     errors.error(self, "Unexpected end inside of the ordered dict")
                 else:
-                    errors.error(self, "Expected '>' or invalid part of the ordered dict")
+                    errors.error(self, "Invalid key in the ordered dict")
 
             ch = self.skip_spaces()
