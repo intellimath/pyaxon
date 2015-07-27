@@ -274,6 +274,7 @@ cdef public class Dumper[object Dumper, type DumperType]:
     @cython.locals(i=int, n=int)
     cdef pretty_dump_dict_values(Dumper self, object d, unicode w, bint use_offset)
     #
+    @cython.locals(i=int, n=int)
     cdef pretty_dump_attribute(Dumper self, Attribute attr, unicode w, bint use_offset)
     #
     @cython.locals(i=int, j=int, flag=int)

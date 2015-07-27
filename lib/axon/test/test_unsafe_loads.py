@@ -70,11 +70,11 @@ class Edge(Base):
         
         
 @axon.factory('graph')
-def create_graph(attrs, args):
+def create_graph2(attrs, args):
     return Graph(**dict(attrs))
 
 @axon.factory('node')
-def create_node(attrs, args):
+def create_node2(attrs, args):
     return Node(*args)
 
 @axon.factory('edge')

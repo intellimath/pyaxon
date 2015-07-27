@@ -818,15 +818,16 @@ class Dumper:
             n = len(o.vals)
 
         if n == 0 and m == 0:
-            self.write(' {}')
+            if self.pretty == 2:
+                self.write(' {}')
             return
             
         if self.pretty == 1:
             if n > 0 or m > 0:
-                self.write(':\n')
+                self.write('\n')
                 self.write(w)
-            else:
-                self.write(':')
+            # else:
+            #     self.write(':')
         elif self.pretty == 2:
             self.write(' {')
             if m == 0 and n <= self.hsize and self.is_all_simple_list(o.vals, n):
@@ -897,6 +898,19 @@ class Dumper:
             j += 1
     #
     def pretty_dump_node_attrs(self, attrs, w, use_offset):
+        n = len(attrs)
+        if n == 0:
+            return
+        elif n == 1:
+            for name, val in attrs.items():            
+                if self.is_simple_type(val):
+                    text = c_as_unicode(name)
+                    self.write(_dump_name(text))
+                    self.write(': ')
+                    self.dump_simple_value(val)
+                    return
+                else:
+                    break
 
         j = 0
         for name, val in attrs.items():
@@ -980,6 +994,16 @@ class Dumper:
         n = len(d)
         if n == 0:
             return
+        elif n == 1:
+            for key, val in d.items():            
+                if self.is_simple_type(val):
+                    text = c_as_unicode(key)
+                    self.write(_dump_key(text))
+                    self.write(': ')
+                    self.dump_simple_value(val)
+                    return
+                else:
+                    break
 
         items = d.items()        
         if self.sorted:

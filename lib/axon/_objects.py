@@ -351,8 +351,9 @@ class Node(object):
     #
     def __repr__(self):
         return self.name + '{' + \
-                ' '.join([str(name)+':'+repr(self.attrs[name]) for name in self.attrs or ()]) + \
-                ' '.join([repr(x) for x in self.vals or ()]) + '}'
+                ', '.join([str(name)+': '+repr(self.attrs[name]) for name in self.attrs or {}]) + \
+                (' ' if self.attrs and self.vals else '') + \
+                ', '.join([repr(x) for x in self.vals or ()]) + '}'
     #
     def __reduce__(self):
         return node, (self.name, self.attrs, self.vals)

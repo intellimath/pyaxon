@@ -851,8 +851,8 @@ class Loader:
                 errors.error(self, "Expected name of attribute or complex value")
 
             self.skip_spaces()
-            if self.eof:
-                errors.error(self, "Unexpected end after name %r" % name)
+            #if self.eof:
+            #    errors.error(self, "Unexpected end after name %r" % name)
 
             if self.is_nl:
                 if self.eof or self.col <= idn:
