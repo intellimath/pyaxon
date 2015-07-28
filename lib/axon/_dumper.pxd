@@ -27,11 +27,17 @@ cimport cython
 cdef bint IS_NAME=1
 cdef bint IS_KEY=0
 
-cdef extern from "math.h" nogil:
-    bint isnan(double x)
-    bint isinf(double x)
-    bint signbit(double x)
-    bint isfinite(double x)
+cdef extern from "pymath.h" nogil:
+    bint Py_IS_FINITE(double x)
+    bint Py_IS_INFINITY(double x)
+    bint Py_IS_NAN(double x)
+    bint copysign(double x, double x)
+
+# cdef extern from "math.h" nogil:
+#     bint isnan(double x)
+#     bint isinf(double x)
+#     bint signbit(double x)
+#     bint isfinite(double x)
 
 cdef extern from "floatobject.h":
     double PyFloat_AS_DOUBLE(object)

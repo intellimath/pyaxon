@@ -197,19 +197,19 @@ class SimpleDumper:
 
     def dump_float(self, o):
         d = PyFloat_AS_DOUBLE(o)
-        if isfinite(d):
+        if Py_IS_FINITE(d):
             return c_object_to_unicode(o)
 
-        if isnan(d):
+        if Py_IS_NAN(d):
             return '?'
 
-        if isinf(d):
-            if signbit(d):
+        if Py_IS_INFINITY(d):
+            if copysign(1.0, d) < 0:
                 return '-∞'
             else:
                 return '∞'
 
-        if signbit(d):
+        if copysign(1.0, d) < 0:
             return '-0'
 
         return '0'
