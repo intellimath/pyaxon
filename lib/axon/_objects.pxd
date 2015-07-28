@@ -186,34 +186,10 @@ cdef public class Node[type NodeType, object NodeObject]:
 @cython.locals(o=Node)
 cdef public object c_new_node(object name, OrderedDict attrs, list vals)
 
-# @cython.final
-# cdef class Attributes(list):
-#     pass
-#
-# @cython.final
-# cdef class Values(list):
-#     pass
-#
-# @cython.locals(i=int, n=int, flag=bint, vals=Values, attrs=Attributes)
-# cpdef attrs_values(list)
-#
-# @cython.locals(i=int, n=int, flag=bint, vals=Values, attrs=Attributes)
-# cpdef values_attrs(list)
-#
-# @cython.locals(i=int, n=int, flag=bint, vals=Values, attrs=dict, a=Attribute)
-# cpdef dict_values(list)
-#
-# @cython.locals(i=int, n=int, flag=bint, vals=Values, attrs=dict, a=Attribute)
-# cpdef values_dict(list)
-
-cpdef dict2attrs(dict d)
-
 #@cython.locals(sequence=list)
 #cpdef node_from_items(name, args)
 
 cdef FactoryRegister default_factory_register
-# cdef public object factory
-# cdef public object type_factory
 
 cdef class FactoryRegister:
     cdef dict c_factory_dict
