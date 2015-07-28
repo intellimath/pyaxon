@@ -260,27 +260,6 @@ class Loader:
             
         return ch
     #
-    # def moveto_next_token(self):
-    #     if self.eof:
-    #         errors.error_unexpected_end(self)
-    #     self.is_nl = 0
-    #
-    #     ch = current_char(self)
-    #     while ch <= ' ':
-    #         if ch == '\n' or ch == '\r':
-    #             self.next_line()
-    #             self.is_nl = 1
-    #             if self.eof:
-    #                 errors.error(self, 'Unexpected end before start of next value')
-    #             ch = current_char(self)
-    #         elif ch == '\t':
-    #             ch = next_char(self)
-    #             self.col += 8
-    #         else:
-    #             ch = next_char(self)
-    #             self.col += 1
-    #     return ch
-    #
     def skip_whitespace(self):
         ch = current_char(self)
         while ch == ' ' or ch == '\t':
