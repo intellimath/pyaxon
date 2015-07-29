@@ -75,6 +75,8 @@ from axon.odict cimport OrderedDict as axon_odict, c_new_odict
 cdef object unicode_type, str_type, int_type, long_type
 cdef object bool_type, float_type, bytes_type
 
+cdef dict reserved_name_dict 
+
 @cython.final
 cdef class Loader:
 

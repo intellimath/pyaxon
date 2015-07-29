@@ -65,6 +65,8 @@ def register_builder(mode, builder):
 def get_builder(mode):
     return _builder_dict.get(mode, None)
         
+reserved_name_dict = {'null':None, 'true':True, 'false':False}
+
 
 #
 # Loader
@@ -828,40 +830,41 @@ class Loader:
             name = self.try_get_name()
             if name is None:
                 errors.error(self, "Expected name of attribute or complex value")
+                
+            val = reserved_name_dict.get(name, c_undefined)
+            if val is c_undefined:
 
-            self.skip_spaces()
+                self.skip_spaces()
 
-            if self.is_nl:
-                if self.eof or self.col <= idn:
-                    val = self.builder.create_node(name, None, None)
-                elif self.col > idn:
-                    val = self.get_complex_value(name, self.col)
-                else:
-                    errors.error_indentation(self, idn)
-            else:
-                ch = current_char(self)
-                if ch == '{':
-                    self.bc += 1
-                    skip_char(self)
-                    self.skip_spaces()
-                    val = self.get_complex_value(name, 0)
-                elif ch == ':':
-                    skip_char(self)
-                    ch = self.skip_spaces()
-
-                    if self.is_nl:
-                        if self.eof or self.col <= idn:
-                            val = self.builder.create_node(name, None, None)
-                        elif self.col > idn:
-                            val = self.get_complex_value(name, self.col)
-                        else:
-                            errors.error_indentation(self, idn)
+                if self.is_nl:
+                    if self.eof or self.col <= idn:
+                        val = self.builder.create_node(name, None, None)
+                    elif self.col > idn:
+                        val = self.get_complex_value(name, self.col)
                     else:
-                        val = c_new_attribute(name, self.get_value(idn))
+                        errors.error_indentation(self, idn)
                 else:
-                    errors.error_unexpected_value(self, 'Expected attribute or complex value with the name %r' % name)
-            # else:
-            #     errors.error_unexpected_value(self, 'Invalid value')
+                    ch = current_char(self)
+                    if ch == '{':
+                        self.bc += 1
+                        skip_char(self)
+                        self.skip_spaces()
+                        val = self.get_complex_value(name, 0)
+                    elif ch == ':':
+                        skip_char(self)
+                        ch = self.skip_spaces()
+
+                        if self.is_nl:
+                            if self.eof or self.col <= idn:
+                                val = self.builder.create_node(name, None, None)
+                            elif self.col > idn:
+                                val = self.get_complex_value(name, self.col)
+                            else:
+                                errors.error_indentation(self, idn)
+                        else:
+                            val = c_new_attribute(name, self.get_value(idn))
+                    else:
+                        errors.error_unexpected_value(self, 'Expected attribute or complex value with the name %r' % name)
 
         #if not valid_end_item(self):
         #    errors.error_end_item(self)

@@ -289,7 +289,7 @@ class SimpleDumper:
         return '"' + text + '"'
 
     def dump_bool(self, o):
-        return '$true' if o else '$false'
+        return 'true' if o else 'false'
 
     def dump_date(self, o):
         d = "%d-%02d-%02d" % (o.year, o.month, o.day)
@@ -344,7 +344,7 @@ class SimpleDumper:
         return c_as_unicode(t)
 
     def dump_none(self, o):
-        return '$null'
+        return 'null'
 
 _simple_dumper = SimpleDumper()
 
