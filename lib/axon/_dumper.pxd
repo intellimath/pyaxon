@@ -61,7 +61,7 @@ from cpython.dict cimport PyDict_SetItem, PyDict_GetItem
 from cpython.unicode cimport PyUnicode_FromEncodedObject
 
 from axon._objects cimport Node, Attribute, attribute
-#from axon._objects cimport c_undefined
+from axon._objects cimport c_undefined, reserved_name_dict
 #from axon._objects cimport name_cache, c_as_name
 from axon._objects cimport StringWriter
 

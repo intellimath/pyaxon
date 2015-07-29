@@ -60,7 +60,7 @@ cdef extern from "utils.h":
 from axon._objects cimport c_undefined, empty_name
 from axon._objects cimport name_cache, c_as_name, c_constants
 from axon._objects cimport c_new_node, c_new_attribute
-from axon._objects cimport Attribute, Node
+from axon._objects cimport Attribute, Node, reserved_name_dict
 
 from axon._objects cimport Builder, SafeBuilder, StrictBuilder, MixedBuilder
 from axon._objects cimport SimpleBuilder
@@ -74,8 +74,6 @@ from axon.odict cimport OrderedDict as axon_odict, c_new_odict
 
 cdef object unicode_type, str_type, int_type, long_type
 cdef object bool_type, float_type, bytes_type
-
-cdef dict reserved_name_dict 
 
 @cython.final
 cdef class Loader:

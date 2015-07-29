@@ -64,9 +64,6 @@ def register_builder(mode, builder):
 
 def get_builder(mode):
     return _builder_dict.get(mode, None)
-        
-reserved_name_dict = {'null':None, 'true':True, 'false':False}
-
 
 #
 # Loader

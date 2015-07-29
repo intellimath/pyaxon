@@ -152,7 +152,9 @@ c_constants = {
     c_as_name(c_as_unicode('NaND')): _decimal.Decimal(float('nan')),
     #c_as_name(c_as_unicode('Infinity')): float('inf'),
 }
-    
+ 
+reserved_name_dict = {'null':None, 'true':True, 'false':False}
+   
 
 #
 # Readonly dict

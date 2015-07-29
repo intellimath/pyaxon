@@ -778,7 +778,12 @@ class Dumper:
             i += 1
     #
     def dump_node(self, o):
-        self.write(_dump_name(o.name))
+        if reserved_name_dict.get(o.name, c_undefined) is not c_undefined:
+            self.write("'")
+            self.write(_dump_name(o.name))
+            self.write("'")
+        else:
+            self.write(_dump_name(o.name))
         self.write('{')
         if o.attrs:
             self.dump_attrs_sequence(o.attrs)
@@ -809,7 +814,12 @@ class Dumper:
         self.write(')')
     #
     def pretty_dump_node(self, o, w, use_offset):
-        self.write(_dump_name(o.name))
+        if reserved_name_dict.get(o.name, c_undefined) is not c_undefined:
+            self.write("'")
+            self.write(_dump_name(o.name))
+            self.write("'")
+        else:
+            self.write(_dump_name(o.name))
 
         n, m = 0, 0
         if o.attrs is not None:

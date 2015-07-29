@@ -176,6 +176,8 @@ cpdef attribute(name, val)
 
 cdef public Attribute c_new_attribute(unicode name, object val)
 
+cdef dict reserved_name_dict 
+
 @cython.freelist(128)
 @cython.final
 cdef public class Node[type NodeType, object NodeObject]:
