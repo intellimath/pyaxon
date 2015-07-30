@@ -85,7 +85,7 @@ Dump, load objects in "safe" mode::
 	
     >>> vals = axon.loads('person{name:"nick" age:32 email:"nail@example.com"}')
     >>> print(type(vals[0]))
-	<class 'axon._objects.Mapping'>
+	<class 'axon._objects.Node'>
 	>>> print(vals[0])
     mapping('person', {'email': 'nail@example.com', 'age': 32, 'name': 'nick'})
 
@@ -94,7 +94,7 @@ Dump, load objects in "safe" mode::
     person{age:32 email:"nail@example.com" name:"nick"}
     >>> text = axon.dumps(vals, pretty=1)
     >>> print(text)
-    person:
+    person
       age: 32
       email: "nail@example.com"
       name: "nick"
@@ -107,7 +107,7 @@ Dump, load objects in "safe" mode::
 
 Dump, load objects in unsafe mode::
 
-	lass Person:
+	class Person:
 	    def __init__(self, name, age, email):
 	        self.name = name
 	        self.age = age

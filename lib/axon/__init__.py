@@ -26,4 +26,4 @@ from axon.utils import *
 from axon.types import *
 from axon.odict import *
 
-__version__ = '0.6'
+__version__ = '0.8'

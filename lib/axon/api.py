@@ -40,6 +40,28 @@ def display(text, pretty=1, braces=0, sorted=1, hsize=0, crossref=0):
     '''
     val = loads(text)
     print(dumps(val, pretty, braces, sorted, hsize, crossref))
+    
+def display_html(vals):
+    from IPython.html.widgets import Tab, HTML
+
+    # Compact form
+    p1 = dumps(vals)
+    # Formatted form without braces
+    p2 = dumps(vals, pretty=1)
+    # Formatted form with braces
+    p3 = dumps(vals, pretty=1, braces=1)
+    
+    wg = Tab(
+        ( HTML("<pre>%s</pre>" % p1), 
+          HTML("<pre>%s</pre>" % p2), 
+          HTML("<pre>%s</pre>" % p3))
+    )
+    wg.set_title(0, "Compact")
+    wg.set_title(1, "Formatted")
+    wg.set_title(2, "Formatted with {}")
+    wg.selected_index = 1
+
+    return wg    
 
 def dumps(vals, pretty=0, braces=0, sorted=1, hsize=0, crossref=0):
     '''

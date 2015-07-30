@@ -1,6 +1,26 @@
 Release Notes
 -------------
 
+**0.8**
+
+1. Now name of complex value in indented form hasn't suffix ':'. For example::
+
+	    person
+		   name: "Alex"
+		   age: 36
+		
+   instead of::
+
+	    person:
+		   name: "Alex"
+		   age: 36
+
+2. Introduce named values which are defined using ``defname(name, value)`` function.
+   Such names in `AXON` message always have `$` prefix (for example, $one, $two, $three).
+3. Attributes of the `Node` objects are `axon.OrederDict` instance now. This allows preserving
+   order of attributes.
+
+
 **0.7**
 
 1. Safe mode loading/dumping on named complex values are based on general ``Node`` objects.

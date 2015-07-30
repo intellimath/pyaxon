@@ -22,23 +22,7 @@ Classes
    :members:
    :inherited-members:
 
-.. autoclass:: Empty
-   :members:
-   :inherited-members:
-
-.. autoclass:: Sequence
-   :members:
-   :inherited-members:
-
-.. autoclass:: Mapping
-   :members:
-   :inherited-members:
-
-.. autoclass:: Element
-   :members:
-   :inherited-members:
-
-.. autoclass:: Instance
+.. autoclass:: Node
    :members:
    :inherited-members:
 
@@ -66,15 +50,7 @@ Loading and dumping
 Factory functions for safe mode complex values
 ----------------------------------------------
 
-.. autofunction:: empty
-
-.. autofunction:: mapping
-
-.. autofunction:: sequence
-
-.. autofunction:: element
-
-.. autofunction:: instance
+.. autofunction:: node
 
 
 ----------
