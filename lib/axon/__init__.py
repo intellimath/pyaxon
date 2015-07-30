@@ -25,5 +25,6 @@ from axon.objects import *
 from axon.utils import *
 from axon.types import *
 from axon.odict import *
+from axon.errors import AxonError
 
 __version__ = '0.8'

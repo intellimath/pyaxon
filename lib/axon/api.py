@@ -45,11 +45,11 @@ def display_html(vals):
     from IPython.html.widgets import Tab, HTML
 
     # Compact form
-    p1 = dumps(vals)
+    p1 = dumps(vals, crossref=1)
     # Formatted form without braces
-    p2 = dumps(vals, pretty=1)
+    p2 = dumps(vals, pretty=1, crossref=1)
     # Formatted form with braces
-    p3 = dumps(vals, pretty=1, braces=1)
+    p3 = dumps(vals, pretty=1, braces=1, crossref=1)
     
     wg = Tab(
         ( HTML("<pre>%s</pre>" % p1), 
