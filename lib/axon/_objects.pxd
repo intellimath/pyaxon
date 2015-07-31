@@ -34,7 +34,7 @@ from cpython.unicode cimport PyUnicode_AsASCIIString
 from cpython.unicode cimport PyUnicode_FromEncodedObject
 from cpython.bytes cimport PyBytes_AsString
 from cpython.long cimport PyLong_FromString
-#from cpython.dict cimport PyDict_SetItem, PyDict_GetItem
+from cpython.dict cimport PyDict_SetItem, PyDict_GetItem
 from cpython.tuple import PyTuple_New, PyTuple_SETITEM
 from cpython.ref import Py_INCREF
 
@@ -87,16 +87,26 @@ from axon.odict cimport OrderedDict, c_new_odict
 
 cdef public dict name_cache
 
-cdef inline unicode c_as_name(object name):
-    n = name_cache.get(name, None)
-    if n is None:
-        uname = c_as_unicode(name)
-        name_cache[name] = uname
+cdef inline object c_as_name(object name):
+    cdef PyObject* val
+    val = <PyObject*>PyDict_GetItem(name_cache, name)
+    if val == NULL:
+        PyDict_SetItem(name_cache, name, name)
+        return name
     elif name is None:
-        uname = empty_name
+        return empty_name
     else:
-        uname = n
-    return uname
+        return <object>val
+    
+cdef inline object c_get_cached_name(object name0):
+    cdef PyObject* name
+    name = <PyObject*>PyDict_GetItem(name_cache, name0)
+    if name == NULL:
+        name_cache[name0] = name0
+        return name0
+    else:
+        return <object>name
+    
 
 
 # cdef int ATOMIC = 1

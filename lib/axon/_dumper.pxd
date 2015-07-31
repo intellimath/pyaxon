@@ -73,22 +73,6 @@ from axon._common cimport c_as_unicode, c_as_list, c_as_dict, c_as_tuple, dict_g
 
 from axon.odict cimport OrderedDict as axon_odict
 
-
-# cdef inline Mapping as_mapping(object ob):
-#     return <Mapping>ob
-#
-# cdef inline Element as_element(object ob):
-#     return <Element>ob
-#
-# cdef inline Sequence as_sequence(object ob):
-#     return <Sequence>ob
-#
-# cdef inline Instance as_instance(object ob):
-#     return <Instance>ob
-#
-# cdef inline Empty as_empty(object ob):
-#     return <Empty>ob
-
 cdef inline Node as_node(object ob):
     return <Node>ob
 

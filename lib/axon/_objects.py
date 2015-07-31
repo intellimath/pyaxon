@@ -132,6 +132,9 @@ name_cache = {empty_name: empty_name, c_undescore: c_undescore}
 def clear_all_names():
     name_cache = {}
 
+def as_name(name):
+    return c_as_name(c_as_unicode(name))
+
 def as_unicode(o):
     return c_as_unicode(o)
 
@@ -145,16 +148,18 @@ def as_tuple(o):
     return c_as_tuple(o)
     
 c_constants = {
-    c_as_name(c_as_unicode('true')): True,
-    c_as_name(c_as_unicode('false')): False,
-    c_as_name(c_as_unicode('null')): None,
+    # c_as_name(c_as_unicode('true')): True,
+    # c_as_name(c_as_unicode('false')): False,
+    # c_as_name(c_as_unicode('null')): None,
     c_as_name(c_as_unicode('NaN')): float('nan'),
     c_as_name(c_as_unicode('NaND')): _decimal.Decimal(float('nan')),
-    #c_as_name(c_as_unicode('Infinity')): float('inf'),
+    c_as_name(c_as_unicode('Inf')): float('inf'),
+    c_as_name(c_as_unicode('NegInf')): float('-inf'),
 }
  
 reserved_name_dict = {'null':None, 'true':True, 'false':False}
-   
+empty_odict = OrderedDict([])
+empty_list = []
 
 #
 # Readonly dict
@@ -353,9 +358,9 @@ class Node(object):
     #
     def __repr__(self):
         return self.name + '{' + \
-                ', '.join([str(name)+': '+repr(self.attrs[name]) for name in self.attrs or {}]) + \
+                ', '.join([str(name)+': '+repr(self.attrs[name]) for name in self.attrs or empty_odict]) + \
                 (' ' if self.attrs and self.vals else '') + \
-                ', '.join([repr(x) for x in self.vals or ()]) + '}'
+                ', '.join([repr(x) for x in self.vals or empty_list]) + '}'
     #
     def __reduce__(self):
         return node, (self.name, self.attrs, self.vals)
@@ -388,12 +393,13 @@ def node(name, attrs=None, vals=None):
             _attrs = OrderedDict(attrs)
     else:
         _attrs = attrs
+    
     if vals is not None and len(vals) == 0:
         _vals = None
     else:
-        _vals = vals
+        _vals = c_as_list(vals)
     
-    return c_new_node(c_as_name(name), _attrs, c_as_list(_vals))
+    return c_new_node(c_as_name(name), _attrs, _vals)
             
 def dict_as_sequence_factory(items):
     return dict(items)
@@ -422,6 +428,7 @@ class FactoryRegister:
             self.c_factory_dict[name] = factory_func
     #
     def defname(self, name, val):
+        name = c_as_unicode(name)
         self.c_constants[name] = val
 
     def type(self, tp, factory_func=None):

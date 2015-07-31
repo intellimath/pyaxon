@@ -58,7 +58,7 @@ cdef extern from "utils.h":
     inline unicode get_chunk(Loader self, int pos0)
 
 from axon._objects cimport c_undefined, empty_name
-from axon._objects cimport name_cache, c_as_name, c_constants
+from axon._objects cimport c_get_cached_name, c_as_name, c_constants
 from axon._objects cimport c_new_node, c_new_attribute
 from axon._objects cimport Attribute, Node, reserved_name_dict
 

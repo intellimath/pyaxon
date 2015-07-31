@@ -38,10 +38,6 @@ from collections import OrderedDict as odict
 ### Exceptions
 ###
 
-
-def as_name(name):
-    return c_as_name(name)
-
 import cython
 
 #
@@ -536,12 +532,13 @@ class Loader:
                 ch = next_char(self)
 
         name0 = get_chunk(self, pos0)
-        name = dict_get(name_cache, name0, None)
-        if name is None:
-            name_cache[name0] = name0
-            return name0
-        else:
-            return name
+        return c_get_cached_name(name0)
+        # name = dict_get(name_cache, name0, None)
+        # if name is None:
+        #     name_cache[name0] = name0
+        #     return name0
+        # else:
+        #     return name
     #
     def get_key(self):
         pos0 = self.pos

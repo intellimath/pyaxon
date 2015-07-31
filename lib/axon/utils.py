@@ -22,9 +22,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-from axon._loader import as_name
 from axon._objects import undef, factory, type_factory, convert, dict_as_node, reset_factory
-from axon._objects import as_unicode, as_list, as_dict, as_tuple
+from axon._objects import as_unicode, as_list, as_dict, as_tuple, as_name
 from axon._dumper import reduce, dump_as_str
 
 
