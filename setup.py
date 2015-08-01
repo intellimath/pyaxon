@@ -45,6 +45,7 @@ if use_cython:
     from Cython.Compiler import Options
     Options.fast_fail = True
     Options.binding = False
+    
 
     ext_modules = [
         Extension(
@@ -105,7 +106,7 @@ setup(
     download_url = 'https://bitbucket.org/intellimath/pyaxon',
     long_description = long_description,
     platforms = 'Linux, Mac OS X, Windows',
-    keywords = ['Object Notation', 'Serialization'],
+    keywords = ['Object Notation', 'Serialization', 'Configuration'],
     classifiers = [
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
