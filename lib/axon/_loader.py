@@ -143,18 +143,41 @@ class Loader:
 
         self.next_line()
     #
-    def __next__(self):
+    def iload(self):
         '''
-        Get next value.
+        Iterative get value
         '''
+        is_odict = 0
+
         self.skip_spaces()
         if self.eof:
             self.fd.close()
             self._check_pairs()
             if self.errto != sys.stderr:
                 self.errto.close()
-            raise StopIteration
-        return self.get_value(0)
+            return
+
+        val = self.get_value(0, 2)
+        if type(val) is KeyVal:
+            is_odict = 1
+        yield val
+
+        while 1:
+            self.skip_spaces()
+            if self.eof:
+                self.fd.close()
+                self._check_pairs()
+                if self.errto != sys.stderr:
+                    self.errto.close()
+                break
+
+            val = self.get_value(0, 2)
+            if is_odict and not type(val) is KeyVal:
+                errors.error(self, "Expected key:val pair")
+            elif not is_odict and type(val) is KeyVal:
+                errors.error(self, "Unexpected key:val pair")
+            
+            yield val
     #
     def _check_pairs(self):
         if self.bc > 0:
@@ -182,6 +205,21 @@ class Loader:
         Load all values.
         '''
         sequence = []
+        is_odict = 0
+
+        self.skip_spaces()
+        if self.eof:
+            self.fd.close()
+            self._check_pairs()
+            if self.errto != sys.stderr:
+                self.errto.close()
+            return sequence
+
+        val = self.get_value(0, 2)
+        if type(val) is KeyVal:
+            is_odict = 1
+        sequence.append(val)
+
         while 1:
             self.skip_spaces()
             if self.eof:
@@ -191,9 +229,16 @@ class Loader:
                     self.errto.close()
                 break
 
-            val = self.get_value(0)
+            val = self.get_value(0, 2)
+            if is_odict and not type(val) is KeyVal:
+                errors.error(self, "Expected key:val pair")
+            elif not is_odict and type(val) is KeyVal:
+                errors.error(self, "Unexpected key:val pair")
             sequence.append(val)
 
+        # if is_odict:
+        #     return axon_odict(sequence)
+        # else:
         return sequence
     #
     def __iter__(self):

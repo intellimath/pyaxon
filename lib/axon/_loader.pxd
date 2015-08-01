@@ -112,7 +112,10 @@ cdef class Loader:
 
     cpdef _check_pairs(Loader self)
 
-    @cython.locals(sequence=list)
+    @cython.locals(is_odict=bint)
+    cpdef iload(Loader self)
+
+    @cython.locals(sequence=list, is_odict=bint)
     cpdef load(Loader self)
 
     #cdef inline void skip_char(Loader self)

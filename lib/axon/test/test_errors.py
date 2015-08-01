@@ -120,7 +120,7 @@ class AxonErrorTestCase(unittest.TestCase):
     def test_invalid_indent_1(self):
         text = \
 '''
-aaa:
+aaa
     a:1
       b: 2
 '''
@@ -132,7 +132,7 @@ aaa:
     def test_invalid_indent_2(self):
         text = \
 '''
-aaa:
+aaa
     100
   200
 '''
@@ -144,7 +144,7 @@ aaa:
     def test_invalid_indent_3(self):
         text = \
 '''
-aaa:
+aaa
     a:1
   b: 2
 '''
@@ -156,7 +156,7 @@ aaa:
     def test_invalid_indent_4(self):
         text = \
 '''
-aaa:
+aaa
     100
       200
 '''
@@ -172,8 +172,8 @@ aaa:
     def test_invalid_indent_11(self):
         text = \
 '''
-aaa:
-    bbb:
+aaa
+    bbb
         a:1
           b: 2
 '''
@@ -185,7 +185,7 @@ aaa:
     def test_invalid_indent_12(self):
         text = \
 '''
-aaa:
+aaa
     bbb:
         100
       200
@@ -198,8 +198,8 @@ aaa:
     def test_invalid_indent_13(self):
         text = \
 '''
-aaa:
-    bbb:
+aaa
+    bbb
         a:1
       b: 2
 '''
@@ -211,8 +211,8 @@ aaa:
     def test_invalid_indent_14(self):
         text = \
 '''
-aaa:
-    bbb:
+aaa
+    bbb
         100
           200
 '''

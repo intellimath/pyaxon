@@ -578,6 +578,8 @@ class Dumper:
                 self.dump_odict(o)
             elif otype is Attribute:
                 self.dump_attribute(o)
+            elif otype is KeyVal:
+                self.dump_keyval(o)
             elif otype is Node:
                 self.dump_node(o)
             else:
@@ -589,6 +591,8 @@ class Dumper:
                     obtype = type(ob)
                     if obtype is Attribute:
                         self.dump_attribute(ob)
+                    if obtype is KeyVal:
+                        self.dump_keyval(ob)
                     elif obtype is Node:
                         self.dump_node(ob)
                     elif obtype is dict:
@@ -619,6 +623,8 @@ class Dumper:
                 self.pretty_dump_odict(o, new_offset, use_offset)
             elif otype is Attribute:
                 self.pretty_dump_attribute(o, offset, 1)
+            elif otype is KeyVal:
+                self.pretty_dump_keyval(o, offset, 1)
             elif otype is Node:
                 self.pretty_dump_node(o, new_offset, 1)
             else:
@@ -632,6 +638,8 @@ class Dumper:
 
                     if obtype is Attribute:
                         self.pretty_dump_attribute(ob, offset, 1)
+                    elif obtype is KeyVal:
+                        self.pretty_dump_keyval(ob, offset, 1)
                     elif obtype is Node:
                         self.pretty_dump_node(ob, new_offset, 1)
                     elif obtype is dict:
@@ -700,6 +708,16 @@ class Dumper:
 
     def pretty_dump_attribute(self, attr, offset, use_offset):
         self.write(_dump_name(attr.name))
+        self.write(': ')
+        self.pretty_dump_value(attr.val, offset, 1)
+    #
+    def dump_keyval(self, attr):
+        self.write(_dump_key(attr.key))
+        self.write(':')
+        self.dump_value(attr.val)
+
+    def pretty_dump_keyval(self, attr, offset, use_offset):
+        self.write(_dump_key(attr.key))
         self.write(': ')
         self.pretty_dump_value(attr.val, offset, 1)
     #
@@ -1138,6 +1156,8 @@ class Dumper:
             self.collect_node(o)
         elif otype is Attribute:
             self.collect_attribute(o)
+        elif otype is KeyVal:
+            self.collect_keyval(o)
         else:
             reducer = self.c_type_reducers.get(otype, None)
             if reducer is None:
@@ -1149,6 +1169,8 @@ class Dumper:
                     self.collect_node(ro)
                 elif rotype is Attribute:
                     self.collect_attribute(ro)
+                elif rotype is KeyVal:
+                    self.collect_keyval(o)
                 else:
                     errors.error_reducer_wrong_type(rotype)
     #
@@ -1173,6 +1195,9 @@ class Dumper:
             self.collect_value(v)
     #
     def collect_attribute(self, ob):
+        self.collect_value(ob.val)
+    #
+    def collect_keyval(self, ob):
         self.collect_value(ob.val)
     #
     def collect_node(self, ob):

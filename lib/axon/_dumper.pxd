@@ -60,7 +60,7 @@ from cpython.object cimport PyObject
 from cpython.dict cimport PyDict_SetItem, PyDict_GetItem
 from cpython.unicode cimport PyUnicode_FromEncodedObject
 
-from axon._objects cimport Node, Attribute, attribute
+from axon._objects cimport Node, Attribute, attribute, KeyVal
 from axon._objects cimport c_undefined, reserved_name_dict
 #from axon._objects cimport name_cache, c_as_name
 from axon._objects cimport StringWriter
@@ -228,6 +228,8 @@ cdef public class Dumper[object Dumper, type DumperType]:
     #
     cdef dump_attribute(Dumper self, Attribute attr)
     #
+    cdef dump_keyval(Dumper self, KeyVal attr)
+    #
     @cython.locals(i=int)
     cdef dump_dict_values(Dumper self, dict d)
     #
@@ -266,6 +268,9 @@ cdef public class Dumper[object Dumper, type DumperType]:
     #
     @cython.locals(i=int, n=int)
     cdef pretty_dump_attribute(Dumper self, Attribute attr, unicode w, bint use_offset)
+    #
+    @cython.locals(i=int, n=int)
+    cdef pretty_dump_keyval(Dumper self, KeyVal attr, unicode w, bint use_offset)
     #
     @cython.locals(i=int, j=int, flag=int)
     cdef pretty_dump_list_sequence(Dumper self, list l, unicode w, bint use_offset)
@@ -307,6 +312,8 @@ cdef public class Dumper[object Dumper, type DumperType]:
     cdef void collect_node(Dumper self, Node d)
     #
     cdef void collect_attribute(Dumper self, Attribute d)
+    #
+    cdef void collect_keyval(Dumper self, KeyVal d)
     #
     cdef void collect(Dumper self, values)
 

@@ -134,33 +134,11 @@ def loads(text, mode="safe", errto=None, json=0):
     :returns:
         List of values.
     '''
-    loader = iloads(text, mode, errto, json)
-    return loader.load()
-
-def iloads(text, mode="safe", errto=None, json=0):
-    '''\
-    Iterative loading values from unicode text.
-
-    :param text:
-        Unicode text.
-
-    :param mode:
-        Specifies the method of building python objects for complex values
-        (see .. py:func:`load`)
-
-    :param errto:
-        Name of file for reporting errors
-
-    :param json:
-        If true then allow JSON encoded parts.
-
-    :returns:
-        Iterator object. It returns values during iteration.
-    '''
     text = as_unicode(text)
     fd = StringReader(text)
 
-    return iload(fd, mode, errto, json=json)
+    loader = Loader(fd, mode, errto, json)
+    return loader.load()
 
 def load(fd, mode="safe", errto=None, encoding='utf-8', json=0):
     '''
@@ -191,7 +169,7 @@ def load(fd, mode="safe", errto=None, encoding='utf-8', json=0):
     :returns:
         List of values.
     '''
-    loader = iload(fd, mode, errto, encoding, json)
+    loader = Loader(fd, mode, errto, json)
     return loader.load()
 
 def iload(fd, mode="safe", errto=None, encoding='utf-8', json=0):
@@ -208,8 +186,36 @@ def iload(fd, mode="safe", errto=None, encoding='utf-8', json=0):
         fd = io.open(fd, mode='r', encoding=encoding)
 
     loader = Loader(fd, mode, errto, json)
+    for val in loader.iload():
+        yield val
+    
+def iloads(text, mode="safe", errto=None, json=0):
+    '''\
+    Iterative loading values from unicode text.
 
-    return loader
+    :param text:
+        Unicode text.
+
+    :param mode:
+        Specifies the method of building python objects for complex values
+        (see .. py:func:`load`)
+
+    :param errto:
+        Name of file for reporting errors
+
+    :param json:
+        If true then allow JSON encoded parts.
+
+    :returns:
+        Iterator object. It returns values during iteration.
+    '''
+    text = as_unicode(text)
+    fd = StringReader(text)
+
+    loader = Loader(fd, mode, errto, json)
+    for val in loader.iload():
+        yield val
+    
 
 # def itokens(text, mode="safe", errto=None, encoding='utf-8', json=0):
 #     text = as_unicode(text)
