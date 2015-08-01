@@ -88,6 +88,8 @@ cdef class Loader:
     cdef public int lnum
     cdef public object errto
     
+    cdef public bint before08
+    
     #cdef dict global_context
 
     cdef int bc
@@ -194,10 +196,10 @@ cdef class Loader:
     cdef object get_negative_constant(Loader self)
 
     @cython.locals(ch=Py_UCS4, val=object, is_idn=bint)
-    cdef object get_value(Loader self, int idn, int idn0=*, int flag=*)
+    cdef object get_value(Loader self, int idn, int flag=*)
 
     @cython.locals(ch=Py_UCS4, val=object, vals=list, attrs=axon_odict, attr=Attribute)
-    cdef object get_complex_value(Loader self, object name, int idn, int idn0=*)
+    cdef object get_complex_value(Loader self, object name, int idn)
 
     @cython.locals(sequence=list, ch=Py_UCS4, val=object, is_odict=bint)
     cdef object get_list_value(Loader self)
