@@ -22,8 +22,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-from axon._objects import Node, Attribute
-from axon._objects import node, attribute
+from axon._objects import Node, Attribute, KeyVal
+from axon._objects import node, attribute, keyval
 from axon._objects import Builder
 from axon._objects import timezone
 from axon._loader import register_builder
