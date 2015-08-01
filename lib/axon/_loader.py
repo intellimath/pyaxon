@@ -181,6 +181,7 @@ class Loader:
                 self.errto.close()
             return sequence
 
+        idn = self.col
         val = self.get_value(0, 2)
         if type(val) is KeyVal:
             is_odict = 1
@@ -194,7 +195,9 @@ class Loader:
                 if self.errto != sys.stderr:
                     self.errto.close()
                 break
-
+            
+            if self.col != 0:
+                errors.error_indentation(self, idn)
             val = self.get_value(0, 2)
             if is_odict and not type(val) is KeyVal:
                 errors.error(self, "Expected key:val pair")
