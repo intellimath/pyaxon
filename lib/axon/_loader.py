@@ -552,7 +552,7 @@ class Loader:
         ch = current_char(self)
         if ch.isalpha() or ch == '_':
             return self.get_name()
-        elif ch == "'":
+        elif ch == "`":
             return self.get_string(ch)
         else:
             return None
@@ -644,6 +644,8 @@ class Loader:
                         text += "'"
                     elif endch == '"':
                         text += '"'
+                    elif endch == '`':
+                        text += '`'
                     skip_char(self)
                 elif ch == '\n' or ch == '\r':
                     if text is None:
@@ -745,7 +747,7 @@ class Loader:
         else:
             errors.error_invalid_value_with_prefix(self, '-')
     #
-    def get_value(self, idn):
+    def get_value(self, idn, flag=0):
         ch = current_char(self)
         if ch == '#':
             self.skip_comments()
@@ -764,6 +766,14 @@ class Loader:
                 val = self.get_negative_constant()
         elif ch == '"':
             val = self.get_string(ch)
+            ch = self.skip_spaces()
+            if ch == ':':
+                skip_char(self)
+                if flag == 2:
+                    self.skip_spaces()
+                    val = c_new_keyval(val, self.get_value(0))
+                else:
+                    errors.error(self, "Unexpected key:val pair")
         elif ch == '{':
             self.bc += 1
             skip_char(self)
@@ -821,11 +831,23 @@ class Loader:
             if val is c_undefined:
                 errors.error(self, "Undefined name %r" % name)                    
         else:
-            name = self.try_get_name()
+            is_idn = 0
+            if ch.isalpha() or ch == '_':
+                name = self.get_name()
+                is_idn = 1
+            elif ch == "`":
+                name = self.get_string(ch)
+            else:
+                name = None
+            
             if name is None:
-                errors.error(self, "Expected name of attribute or complex value")
+                errors.error(self, "Invalid token")
+
+            if is_idn:
+                val = reserved_name_dict.get(name, c_undefined)
+            else:
+                val = c_undefined
                 
-            val = reserved_name_dict.get(name, c_undefined)
             if val is c_undefined:
 
                 self.skip_spaces()
@@ -856,7 +878,15 @@ class Loader:
                             else:
                                 errors.error_indentation(self, idn)
                         else:
-                            val = c_new_attribute(name, self.get_value(idn))
+                            if flag == 1:
+                                val = c_new_attribute(name, self.get_value(idn))
+                            elif flag == 2:
+                                if is_idn:
+                                    val = c_new_keyval(name, self.get_value(idn))
+                                else:
+                                    errors.error(self, "Unexpected key:val pair")
+                            else:
+                                errors.error(self, "Unexpected attribute")
                     else:
                         errors.error_unexpected_value(self, 'Expected attribute or complex value with the name %r' % name)
 
@@ -892,7 +922,7 @@ class Loader:
             elif ch == '\0':
                 break
             else:
-                val = self.get_value(idn)
+                val = self.get_value(idn, 1)
                 if type(val) is Attribute:
                     if attrs is None:
                         attrs = axon_odict()
@@ -912,8 +942,43 @@ class Loader:
     def get_list_value(self):
 
         sequence = []
+        is_odict = 0
 
         ch = self.skip_spaces()
+        
+        if ch == '#':
+            self.skip_comments()
+            ch = current_char(self)
+        
+        if ch == ']':
+            skip_char(self)
+            self.bs -= 1
+            return []
+        elif ch == ':':
+            ch = next_char(self)
+            if ch == ']':
+                skip_char(self)
+                self.bs -= 1
+                return axon_odict([])
+            else:
+                errors.error(self, "Invalid empty ordered dict")
+        elif ch == '\0':
+            errors.error(self, "Unexpected end inside of the list")
+        
+        val = self.get_value(0, 2)
+        sequence.append(val)
+        
+        if type(val) is KeyVal:
+            is_odict = 1
+            
+        ch = self.skip_spaces()
+
+        if self.json:
+            ch = current_char(self)
+            if ch == ',':
+                skip_char(self)
+                ch = self.skip_spaces()
+            
 
         while 1:
             if ch == '#':
@@ -923,11 +988,17 @@ class Loader:
             if ch == ']':
                 skip_char(self)
                 self.bs -= 1
-                return sequence
+                if is_odict:
+                    return axon_odict(sequence)
+                else:
+                    return sequence
             elif ch == '\0':
                 errors.error(self, "Unexpected end inside of the list")
 
-            val = self.get_value(0)
+            val = self.get_value(0, 2)
+            if is_odict and not type(val) is KeyVal:
+                errors.error(self, "Invalid ordered dict")
+                
             sequence.append(val)
 
             ch = self.skip_spaces()

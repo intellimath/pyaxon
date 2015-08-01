@@ -285,6 +285,42 @@ def c_new_attribute(name, val):
     return a
 
 #
+# KeyVal
+#
+class KeyVal(object):
+    #
+    def __init__(self, key, val):
+        self.key = c_as_unicode(key)
+        self.val = val
+    #
+    def __getitem__(self, index):
+        if index == 0:
+            return self.key
+        elif index == 1:
+            return self.val
+        else:
+            raise IndexError('Index out of range: ' + str(index))
+    #
+    def __iter__(self):
+        yield self.key
+        yield self.val
+    #
+    def __repr__(self):
+        return repr(self.key) + ':' + repr(self.val)
+
+def keyval(key, val):
+    a = KeyVal.__new__(KeyVal)
+    a.key = c_as_unicode(key)
+    a.val = val
+    return a
+
+def c_new_keyval(key, val):
+    a = KeyVal.__new__(KeyVal)
+    a.key = key
+    a.val = val
+    return a
+
+#
 # Node
 #
 class Node(object):

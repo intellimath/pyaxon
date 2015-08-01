@@ -59,8 +59,8 @@ cdef extern from "utils.h":
 
 from axon._objects cimport c_undefined, empty_name
 from axon._objects cimport c_get_cached_name, c_as_name, c_constants
-from axon._objects cimport c_new_node, c_new_attribute
-from axon._objects cimport Attribute, Node, reserved_name_dict
+from axon._objects cimport c_new_node, c_new_attribute, c_new_keyval
+from axon._objects cimport Attribute, KeyVal, Node, reserved_name_dict
 
 from axon._objects cimport Builder, SafeBuilder, StrictBuilder, MixedBuilder
 from axon._objects cimport SimpleBuilder
@@ -190,13 +190,13 @@ cdef class Loader:
     @cython.locals(ch=Py_UCS4)
     cdef object get_negative_constant(Loader self)
 
-    @cython.locals(ch=Py_UCS4, val=object)
-    cdef object get_value(Loader self, int idn)
+    @cython.locals(ch=Py_UCS4, val=object, is_idn=bint)
+    cdef object get_value(Loader self, int idn, int flag=*)
 
     @cython.locals(ch=Py_UCS4, val=object, vals=list, attrs=axon_odict, attr=Attribute)
     cdef object get_complex_value(Loader self, object name, int idn)
 
-    @cython.locals(sequence=list, ch=Py_UCS4, val=object)
+    @cython.locals(sequence=list, ch=Py_UCS4, val=object, is_odict=bint)
     cdef object get_list_value(Loader self)
 
     @cython.locals(sequence=list, v=bint)

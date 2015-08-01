@@ -400,10 +400,10 @@ def _dump_name(ob):
         ch = name[pos]
         if ch.isalnum() or ch == '_' or ch == '.':
             pos += 1
-        elif ch == "'":
+        elif ch == "`":
             pos += 1
             pos0 = pos
-            text += r"\'"
+            text += "`"
         else:
             pos += 1
             is_qname = 1
@@ -414,7 +414,7 @@ def _dump_name(ob):
         else:
             text += name[pos0: pos]
         if is_qname:
-            text = "'" + text + "'"
+            text = "`" + text + "`"
 
     return text
 
@@ -804,9 +804,12 @@ class Dumper:
         self.write('}')
     #
     def dump_odict(self, d):
-        self.write('<')
-        self.dump_odict_values(d)
-        self.write('>')
+        self.write('[')
+        if d:
+            self.dump_odict_values(d)
+        else:
+            self.write(':')
+        self.write(']')
     #
     def dump_tuple(self, d):
         self.write('(')
@@ -996,9 +999,12 @@ class Dumper:
         self.write('}')
     #
     def pretty_dump_odict(self, d, w, use_offset):
-        self.write('<')
-        self.pretty_dump_dict_values(d, w, use_offset)
-        self.write('>')
+        self.write('[')
+        if d:
+            self.pretty_dump_dict_values(d, w, use_offset)
+        else:
+            self.write(':')
+        self.write(']')
     #
     def pretty_dump_dict_values(self, d, w, use_offset):
         n = len(d)
@@ -1122,6 +1128,8 @@ class Dumper:
             self.collect_list(o)
         elif otype is dict:
             self.collect_dict(o)
+        elif otype is axon_odict:
+            self.collect_odict(o)
         elif otype is tuple:
             self.collect_tuple(o)
         elif otype is set:
