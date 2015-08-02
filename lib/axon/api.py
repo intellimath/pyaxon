@@ -42,6 +42,15 @@ def display(text, pretty=1, braces=0, sorted=1, hsize=0, crossref=0):
     print(dumps(val, pretty, braces, sorted, hsize, crossref))
     
 def display_html(vals):
+    '''
+    Convert objects into three AXON forms for output in IPython notebook.
+
+    :param vals:
+       List of objects or ordered dict.
+
+    :returns:
+        IPython TabbedView widget.
+    '''
     from IPython.html.widgets import Tab, HTML
 
     # Compact form
