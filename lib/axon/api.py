@@ -86,10 +86,10 @@ def dumps(vals, pretty=0, braces=0, sorted=1, hsize=0, crossref=0):
         * `False` - compact dumping (default)
 
     :param braces:
-        Flag indicating using braces (json-style) during formatting:
+        Flag indicating using braces (JSON-style) during formatting:
 
-        * `True` - use formatting with braces
-        * `False` - use formatting without braces (default)
+        * `True` - use formatting with braces (JSON-style)
+        * `False` - use formatting without braces (YAML-style, default)
 
     :param crossref:
         Flag for crossreferece support in unsafe mode

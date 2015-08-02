@@ -709,10 +709,9 @@ class Dumper:
     def dump_dict_values(self, d):
         i = 0
 
+        items = d.items()        
         if self.sorted:
-            items = sorted(d.items())
-        else:
-            items = d.items()
+            items = sorted(items)
 
         for k,v in items:
             if i > 0:
