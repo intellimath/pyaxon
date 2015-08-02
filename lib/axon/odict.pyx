@@ -159,8 +159,6 @@ cdef public class OrderedDict[object OrderedDictObject, type OrderedDictType]:
 
     def __setitem__(self, key, val):
         'od.__setitem__(i, y) <==> od[i]=y'
-        # Setting a new item creates a new link at the end of the linked list,
-        # and the inherited dictionary is updated with the new key/value pair.
         
         cdef Link root, last, link
         
