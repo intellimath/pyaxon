@@ -38,8 +38,8 @@ def display(text, pretty=1, braces=0, sorted=1, hsize=0, crossref=0):
     :returns:
         Formatted form of AXON encoded text.
     '''
-    val = loads(text)
-    print(dumps(val, pretty, braces, sorted, hsize, crossref))
+    vals = loads(text)
+    print(dumps(vals, pretty, braces, sorted, hsize, crossref))
     
 def display_html(vals):
     '''
