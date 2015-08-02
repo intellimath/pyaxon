@@ -16,15 +16,16 @@ Release Notes
 		   age: 36
 
 2. Introduce named values which are defined using ``defname(name, value)`` function.
-   Such names in `AXON` message always have `$` prefix (for example, $one, $two, $three).
-3. Attributes of the `Node` objects are `axon.OrederDict` instance now.
+   Such names in ``AXON`` message always have ``$`` prefix (for example, $one, $two, $three).
+3. Attributes of the `Node` objects are ``axon.OrederDict`` instance now.
 4. Introduce new syntax for oredered dict: [... key:val ...] and [:] for empty ordered dict.
    Later <>-syntax for ordered dicts will be removed.
-5. Allow loading of list of key:val pairs at top level of the message. For example::
+5. Extend ``AXON`` for loading of list of key:val pairs at top level of the message. For example::
 
 		name: "Alex"
 		age: 32
 		email: "mail@example.com"
+6. ``pyaxon`` now builds with msvc.
 
 
 **0.7**

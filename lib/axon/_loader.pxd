@@ -130,7 +130,7 @@ cdef class Loader:
     @cython.locals(ch=Py_UCS4)
     cdef inline Py_UCS4 skip_spaces(Loader self)
 
-    @cython.locals(ch=Py_UCS4)
+    @cython.locals(ch=Py_UCS4, prev_ch=Py_UCS4)
     cdef inline void skip_whitespace(Loader self)
 
     @cython.locals(line=unicode, ch=Py_UCS4, n=int)
@@ -198,7 +198,7 @@ cdef class Loader:
     @cython.locals(ch=Py_UCS4, val=object, is_idn=bint)
     cdef object get_value(Loader self, int idn, int flag=*)
 
-    @cython.locals(ch=Py_UCS4, val=object, vals=list, attrs=axon_odict, attr=Attribute)
+    @cython.locals(ch=Py_UCS4, val=object, vals=list, attrs=axon_odict, attr=Attribute, flag=int)
     cdef object get_complex_value(Loader self, object name, int idn)
 
     @cython.locals(sequence=list, ch=Py_UCS4, val=object, is_odict=bint)

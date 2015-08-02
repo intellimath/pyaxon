@@ -28,18 +28,6 @@ in order to describe `AXON`.
 It tries to combine the best of `JSON <http://www.json.org>`_,
 `XML <http://www.w3.org/XML/>`_ and `YAML <http://www.yaml.org>`_.
 
-
-``AXON`` is designed as text based language for data exchange in first place.
-
-* ``AXON`` is easy to understand, read and write.
-
-* ``AXON`` is easy to parse and generate.
-
-* Syntax of ``AXON`` is independent of programming languages.
-
-* ``AXON`` can be used as simple text based language for serialization of objects,
-  documents and variety of data.
-
 Creation of ``AXON`` had following objectives:
 
 * Overcoming lack of support of date/time, decimal and binary data in ``JSON``.
@@ -50,13 +38,15 @@ Creation of ``AXON`` had following objectives:
 * Extension of ``JSON`` for native support of named/taged data structures
   (typed complex data, elements of documents etc.) in order to act in
   cases where ``XML`` is more suitable than ``JSON``.
+  
+* Support both ``JSON``-style and ``YAML``-style of formatting ``AXON`` messages.
 
 * Removing ``','`` as mandatory character-separator for items in containers.
 
 * Saving relative simplicity of the language compared to ``JSON``.
 
 ``AXON`` is designed as text based format that has compact form and
-formatted form in both `C` and `Python` style for ease of developers.
+formatted form in both `JSON/C` and `YAML/Python` style for ease of developers.
 
 ``AXON`` is an object notation for data, which are composed from atomic values
 by several rules of composition:
@@ -80,7 +70,7 @@ by several rules of composition:
     <thead><th>Name</th><th>Rule</th><th>Example</th></thead>
     <tr><td>list</td><td>[ <b>V</b> … <b>V</b> ]</td>
     <td><pre>
-    [1 3.14 3.25$ -∞ ?]
+    [1 3.14 3.25D ∞ -∞ ?]
     </pre></td></tr>
 
     <tr><td>tuple</td><td>( <b>V</b> … <b>V</b> )</td>
@@ -88,34 +78,21 @@ by several rules of composition:
     (true 12:00 2001-12-31 2001-12-31T12:00)
     </pre></td></tr>
 
-    <tr><td>dictionary</td><td>{ <b>K</b>:<b>V</b> … <b>K</b>:<b>V</b> }</td>
+    <tr><td>dict</td><td>{ <b>K</b>:<b>V</b> … <b>K</b>:<b>V</b> }</td>
     <td><pre>
     {alpha:1 beta:2 gamma:3 "other chars":4}
     </pre></td></tr>
+
+    <tr><td>ordered dict</td><td>[ <b>K</b>:<b>V</b> … <b>K</b>:<b>V</b> ]</td>
+    <td><pre>
+    [alpha:1 beta:2 gamma:3 "other chars":4]
+    </pre></td></tr>
    
-    <tr><td>mapping</td><td><b>N</b> { <b>N</b>:<b>V</b> … <b>N</b>:<b>V</b> }</td>
+    <tr><td>node</td><td><b>N</b> { <b>N</b>:<b>V</b> … <b>N</b>:<b>V</b> <b>V</b> … <b>V</b> }</td>
     <td><pre>
     greek {alpha:123 beta:212 gamma:322}
-    </pre></td></tr>
-
-    <tr><td>sequence</td><td><b>N</b> { <b>V</b> … <b>V</b> }</td>
-    <td><pre>
     primes {2 3 5 7 11 13 17 19 23}
-    </pre></td></tr>
-
-    <tr><td>element</td><td><b>N</b> { <b>N</b>:<b>V</b> … <b>N</b>:<b>V</b> <b>V</b> … <b>V</b> }</td>
-    <td><pre>
-    node {id:1 node{id:2 "AAA"} node{id:3 "BBB"}}
-    </pre></td></tr>
-   
-    <tr><td>instance</td><td><b>N</b> { <b>V</b> … <b>V</b> <b>N</b>:<b>V</b> … <b>N</b>:<b>V</b> }</td>
-    <td><pre>
-    datarow { 1 2003-12-01T12:30 T:12.5 R:0.95 W:11 D:"NW"}
-    </pre></td></tr>
-
-    <tr><td>empty</td><td><b>N</b> { }</td>
-    <td><pre>
-    empty { }
+    tree {id:1 leaf{id:2 "AAA"} leaf{id:3 "BBB"}}
     </pre></td></tr>
     </table>
 
@@ -129,114 +106,85 @@ Here is an example of ``AXON`` message:
     <tr><th>statement form</th><th>formatted expression form</th></tr>
     <tr>
     <td><pre>
-    axon:
-        name: "AXON is eXtended Object Notation"
-        short_name: "AXON"
-        python_library: "pyaxon"
-        atomic_values:
-            int: [0 -1 17]
-            float: [3.1428 1.5e-17]
-            decimal: [10d 1000.35D -1.25e6d]
-            bool: [true false]
-            string: "abc абв 中文本"
-            multiline_string: "one
-    two
-    three"
-            date: 2012-12-31
-            time: [12:30:34 12:35:12.000120 12:35+03]
-            datetime: [2012-12-31T12:30 2012-12-31T12:35+03]
-            binary: |UTcJFhV3cl97ZEk+BA0hWggDUj8lbE0bQH5r
-    Uy0nNjwmZDpANClsAj4WeDsfCWkcW2Bdc0VNQ
-    CQVZCBhXxFGJBpSLGs3HGlcbSdgdH4ab34UBT
-    wndTs2MXdSOxIGBgdYclFQYnlDH3NfUSI1LEc
-    HDARDeFcDCBwiPTAZODU=
-        complex_values:
-            anonymous:
-                list: ["one" "two" "three"]
-                dict: {"one":1 "two":2 "three":3}
-                tuple: ("nodes" "edges")
-            named:
-                mapping: rgb:
-                    red:16 green:32 blue:64
-                element: node:
-                    id: 1
-                    node:
-                        id: 2
-                        class: "A"
-                    node:
-                        id: 3
-                        class: "B"
-                sequence: primes:
-                    2 3 5 7 11 13 17 19 23 29 31
-                instance: row:
-                    12 2003-12-01 12:00
-                    T: 12.1 R:0.5 W:5 D:"W"
+	axon
+	  name: "AXON is eXtended Object Notation"
+	  short_name: "AXON"
+	  python_library: "pyaxon"
+	  atomic_values
+	    int: [0 -1 17]
+	    float: [3.1428 1.5e-17]
+	    decimal: [10D 1000.35D -1.25E+6D]
+	    bool: [true false]
+	    string: "abc абв 中文本"
+	    multiline_string: "one
+	two
+	three"
+	    date: 2012-12-31
+	    time: [12:30:34 12:35:12.000120 12:35+03]
+	    datetime: [2012-12-31T12:30 2012-12-31T12:35+03]
+	    binary: |QVhPTiBpcyBlWHRlbmRlZCBPYmplY3QgTm90YXRpb24=
+
+	  complex_values
+	    list: ["one" "two" "three"]
+	    dict: {
+	      one: 1
+	      three: 3
+	      two: 2}
+	    odered_dict: [
+	      one: 1
+	      three: 3
+	      two: 2]
+	    tuple: ("nodes" "edges")
+	    node: person
+	      name: "Alex"
+	      age: 32
     </pre></td>
     <td><pre>
-    axon {
-        name: "AXON is eXtended Object Notation"
-        short_name: "AXON"
-        python_library: "pyaxon"
-        atomic_values {
-            int: [0 -1 17]
-            float: [3.1428 1.5e-17]
-            decimal: [10d 1000.35D -1.25e6d]
-            bool: [true false]
-            string: "abc абв 中文本"
-            multiline_string: "one
-    two
-    three"
-            date: 2012-12-31
-            time: [12:30:34 12:35:12.000120 12:35+03]
-            datetime: [2012-12-31T12:30 2012-12-31T12:35+03]
-            binary: |UTcJFhV3cl97ZEk+BA0hWggDUj8lbE0bQH5r
-    Uy0nNjwmZDpANClsAj4WeDsfCWkcW2Bdc0VNQ
-    CQVZCBhXxFGJBpSLGs3HGlcbSdgdH4ab34UBT
-    wndTs2MXdSOxIGBgdYclFQYnlDH3NfUSI1LEc
-    HDARDeFcDCBwiPTAZODU=
-        }
-        complex_values {
-            anonymous {
-                list: ["one" "two" "three"]
-                dict: {"one":1 "two":2 "three":3}
-                tuple: ("nodes" "edges")
-            }
-            named {
-                mapping: rgb {
-                    red:16 green:32 blue:64}
-                element: node {
-                    id: 1
-                    node {
-                        id: 2
-                        class: "A"}
-                    node {
-                        id: 3
-                        class: "B"}
-                    }
-                sequence: primes {
-                    2 3 5 7 11 13 17 19 23 29 31}
-                instance: row {
-                    12 2003-12-01 12:00
-                    T: 12.1 R:0.5 W:5 D:"W"}
-            }
-        }
-    }
+	axon {
+	  name: "AXON is eXtended Object Notation"
+	  short_name: "AXON"
+	  python_library: "pyaxon"
+	  atomic_values {
+	    int: [0 -1 17]
+	    float: [3.1428 1.5e-17]
+	    decimal: [10D 1000.35D -1.25E+6D]
+	    bool: [true false]
+	    string: "abc абв 中文本"
+	    multiline_string: "one
+	two
+	three"
+	    date: 2012-12-31
+	    time: [12:30:34 12:35:12.000120 12:35+03]
+	    datetime: [2012-12-31T12:30 2012-12-31T12:35+03]
+	    binary: |QVhPTiBpcyBlWHRlbmRlZCBPYmplY3QgTm90YXRpb24=
+	}
+	  complex_values {
+	    list: ["one" "two" "three"]
+	    dict: {
+	      one: 1
+	      three: 3
+	      two: 2}
+	    odered_dict: [
+	      one: 1
+	      three: 3
+	      two: 2]
+	    tuple: ("nodes" "edges")
+	    node: person {
+	      name: "Alex"
+	      age: 32}}}
     </pre></td>
     </tr>
     <tr><th colspan=2>compact expression form</th></tr>
     <tr><td colspan=2><pre>
-    axon{name:"AXON is eXtended Object Notation" python_library:"pyaxon" short_name:"AXON"
-    atomic_values{binary:|UTcJFhV3cl97ZEk+BA0hWggDUj8lbE0bQH5rUy0nNjwmZDpANClsAj4We
-    DsfCWkcW2Bdc0VNQCQVZCBhXxFGJBpSLGs3HGlcbSdgdH4ab34UBTwndTs2MXdSOxIGBgdYclFQYnlDH
-    3NfUSI1LEcHDARDeFcDCBwiPTAZODU=
-    bool:[true false] date:2012-12-31 datetime:[2012-12-31T12:30 2012-12-31T12:35+03]
-    decimal:[10d 1000.35D -1.25E+6d] float:[3.1428 1.5e-17] int:[0 -1 17] multiline_string:"one
-    two
-    three" string:"abc абв 中文本" time:[12:30:34 12:35:12.000120 12:35+03]}
-    complex_values{anonymous{dict:{one:1 three:3 two:2} list:["one" "two" "three"]
-    tuple:("nodes" "edges")} named{element:node{id:1 node{class:"A" id:2} node{class:"B" id:3}}
-    instance:row{12 2003-12-01 12:00 D:"W" R:0.5 T:12.1 W:5} mapping:rgb{blue:64 green:32 red:16}
-    sequence:primes{2 3 5 7 11 13 17 19 23 29 31}}}}
+	axon{name:"AXON is eXtended Object Notation" short_name:"AXON" python_library:"pyaxon"
+	atomic_values{int:[0 -1 17] float:[3.1428 1.5e-17] decimal:[10D 1000.35D -1.25E+6D] 
+	bool:[true false] string:"abc абв 中文本" multiline_string:"one
+	two
+	three" date:2012-12-31 time:[12:30:34 12:35:12.000120 12:35+03]
+	datetime:[2012-12-31T12:30 2012-12-31T12:35+03]
+	binary:|QVhPTiBpcyBlWHRlbmRlZCBPYmplY3QgTm90YXRpb24=
+	} complex_values{list:["one" "two" "three"] dict:{one:1 three:3 two:2}
+	odered_dict:[one:1 two:2 three:3] tuple:("nodes" "edges") node:person{name:"Alex" age:32}}}
     </pre></td></tr>
     </table>                    
 

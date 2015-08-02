@@ -289,17 +289,22 @@ class Loader:
         self.is_nl = 0
 
         ch = current_char(self)
+        prev_ch = '\0'
         while ch <= ' ':
-            if ch == '\n' or ch == '\r':
+            if ch == '\n':
                 self.next_line()
-                self.is_nl = 1
+                if prev_ch != '\\':
+                    self.is_nl = 1
                 if self.eof:
                     return 0
+                prev_ch = ch
                 ch = current_char(self)
             elif ch == '\t':
+                prev_ch = ch
                 ch = next_char(self)
                 self.col += 8
             else:
+                prev_ch = ch
                 ch = next_char(self)
                 self.col += 1
             
@@ -949,6 +954,7 @@ class Loader:
         attrs = None
         vals = None         
         ch = self.skip_spaces()
+        flag = 0
         while 1:
             if ch == '#':
                 self.skip_comments()
@@ -963,22 +969,24 @@ class Loader:
                 elif self.is_nl:
                     errors.error_indentation(self, idn)
             elif self.eof:
-                errors.error(self, "Unexpected end inside of the complex value")
+                errors.error(self, "Unexpected end inside complex value with name %r" + name)
             
             if ch == '}':
                 self.bc -= 1
                 skip_char(self)
                 break
-            elif ch == '\0':
-                break
             else:
                 val = self.get_value(idn, 1)
                 if type(val) is Attribute:
+                    flag = 1
                     if attrs is None:
                         attrs = axon_odict()
                     attr = val
                     attrs[attr.name] = attr.val
+                    if flag > 1:
+                        errors.error_unexpected_attribute(self, attr.name)
                 else:
+                    flag = 2
                     if vals is None:
                         vals = [val]
                     else:

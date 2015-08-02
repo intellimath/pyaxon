@@ -48,7 +48,7 @@ copyright = u'2011-2015, Zaur Shibzukhov'
 # built documents.
 #
 # The short X.Y version.
-version = u'0.6β'
+version = u'0.8β'
 # The full version, including alpha/beta/rc tags.
 release = version
 
