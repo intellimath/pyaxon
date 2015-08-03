@@ -30,8 +30,10 @@
 import axon.types as types
 from axon.types import builtins
 import axon.errors as errors
+from axon.objects import keyval
 
 from collections import OrderedDict as odict
+from collections import MutableMapping 
 
 IS_NAME=1
 IS_KEY=0
@@ -1074,9 +1076,19 @@ class Dumper:
         if self.crossref:
             self.collect(seq)
             self.apply_crossref()
+        
+        is_mapping = 0
+        if isinstance(seq, MutableMapping):
+            is_mapping = 1
+            
+        if is_mapping:
+            iterseq = iter(seq.items())
+        else:
+            iterseq = iter(seq)
 
-        iterseq = iter(seq)
         v = next(iterseq)
+        if is_mapping:
+            v = keyval(*v)
 
         if self.pretty:
             self.pretty_dump_value(v, '', 0)
@@ -1085,10 +1097,14 @@ class Dumper:
 
         if self.pretty:
             for v in iterseq:
+                if is_mapping:
+                    v = keyval(*v)
                 self.write('\n')
                 self.pretty_dump_value(v, '', 0)
         else:
             for v in iterseq:
+                if is_mapping:
+                    v = keyval(*v)
                 self.write('\n')
                 self.dump_value(v)
     #

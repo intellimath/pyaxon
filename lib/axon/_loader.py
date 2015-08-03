@@ -196,8 +196,8 @@ class Loader:
                     self.errto.close()
                 break
             
-            if self.col != 0:
-                errors.error_indentation(self, idn)
+            #if self.col != 0:
+            #    errors.error_indentation(self, idn)
             val = self.get_value(0, 2)
             if is_odict and not type(val) is KeyVal:
                 errors.error(self, "Expected key:val pair")
@@ -205,10 +205,10 @@ class Loader:
                 errors.error(self, "Unexpected key:val pair")
             sequence.append(val)
 
-        # if is_odict:
-        #     return axon_odict(sequence)
-        # else:
-        return sequence
+        if is_odict:
+            return axon_odict(sequence)
+        else:
+            return sequence
     #
     def iload(self):
         '''
