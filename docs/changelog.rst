@@ -15,17 +15,22 @@ History of changes
           name: "Alex"
           age: 36
 
-2. Introduce named values which are defined using ``defname(name, value)`` function.
-   Such names in ``AXON`` message always have ``$`` prefix (for example, ``$one``, ``$two``, ``$three``).
+2. Introduce used defined constants using ``defname(name, value)`` function.
+   Such names in ``AXON`` message always have ``$`` prefix (for example, ``$one``, ``$PI``).
 3. Attributes of the ``Node`` objects are ``axon.OrederDict`` instance now to preserve order
    of attributes.
 4. Introduce new syntax for oredered dict: ``[... key:val ...]`` and ``[:]`` for empty ordered dict.
    Later ``<>``-syntax for ordered dicts will be removed.
-5. Extend ``AXON`` for loading of list of key:val pairs at top level of the message. For example::
+5. Extend ``AXON`` for converting text into ``axon.OrderedDict`` object  
+   and dumping instances of ``collections.MutableMapping`` to text containing sequence 
+   of ``key:val`` pairs. 
+   For example::
 
 		name: "Alex"
 		age: 32
 		email: "mail@example.com"
+		
+   will converted to ``axon.OrderedDict([('name','Alex'), ('age',32), ('email','mail@example.com')])``. 
 		
 6. ``pyaxon`` now builds with MSVC.
 

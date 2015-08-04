@@ -178,6 +178,9 @@ def load(fd, mode="safe", errto=None, encoding='utf-8', json=0):
     :returns:
         List of values.
     '''
+    if type(fd) in (str_type, unicode_type):
+        fd = io.open(fd, mode='r', encoding=encoding)
+
     loader = Loader(fd, mode, errto, json)
     return loader.load()
 
