@@ -197,9 +197,11 @@
             
             <li><a href="#dict-item" title="dict-item">dict-item</a></li>
             
+            <li><a href="#indented-data-item" title="indented-data-item">indented-data-item</a></li>
+            
             <li><a href="#list" title="list">list</a></li>
             
-            <li><a href="#node" title="node">node</a></li>
+            <li><a href="#node-braces" title="node-braces">node-braces</a></li>
             
             <li><a href="#tuple" title="tuple">tuple</a></li>
             
@@ -289,21 +291,13 @@
          </ul>
          
       </p><br><p style="font-size: 14px; font-weight:bold"><a name="named-complex-value">named-complex-value:</a></p>
-      <img border="0" src="diagram/named-complex-value.png" height="212" width="178" usemap="#named-complex-value.map"><map name="named-complex-value.map">
-         <area shape="rect" coords="49,1,123,33" href="#mapping" title="mapping">
-         <area shape="rect" coords="49,45,119,77" href="#element" title="element">
-         <area shape="rect" coords="49,89,129,121" href="#sequence" title="sequence">
-         <area shape="rect" coords="49,133,121,165" href="#instance" title="instance">
-         <area shape="rect" coords="49,177,107,209" href="#empty" title="empty"></map>
+      <img border="0" src="diagram/named-complex-value.png" height="36" width="110" usemap="#named-complex-value.map"><map name="named-complex-value.map">
+         <area shape="rect" coords="29,1,81,33" href="#node" title="node"></map>
       
       <p>
          
          <div class="ebnf"><pre><a href="#named-complex-value" title="named-complex-value" shape="rect">named-complex-value</a>
-         ::= <a href="#mapping" title="mapping" shape="rect">mapping</a>
-           | <a href="#element" title="element" shape="rect">element</a>
-           | <a href="#sequence" title="sequence" shape="rect">sequence</a>
-           | <a href="#instance" title="instance" shape="rect">instance</a>
-           | <a href="#empty" title="empty" shape="rect">empty</a></pre></div>
+         ::= <a href="#node" title="node" shape="rect">node</a></pre></div>
          
       </p>
       
@@ -430,18 +424,128 @@
          </ul>
          
       </p><br><p style="font-size: 14px; font-weight:bold"><a name="node">node:</a></p>
-      <img border="0" src="diagram/node.png" height="70" width="484" usemap="#node.map"><map name="node.map">
+      <img border="0" src="diagram/node.png" height="80" width="212" usemap="#node.map"><map name="node.map">
+         <area shape="rect" coords="49,1,147,33" href="#node-braces" title="node-braces">
+         <area shape="rect" coords="49,45,163,77" href="#node-nobraces" title="node-nobraces"></map>
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#node" title="node" shape="rect">node</a>     ::= <a href="#node-braces" title="node-braces" shape="rect">node-braces</a>
+           | <a href="#node-nobraces" title="node-nobraces" shape="rect">node-nobraces</a></pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#named-complex-value" title="named-complex-value">named-complex-value</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="node-braces">node-braces:</a></p>
+      <img border="0" src="diagram/node-braces.png" height="70" width="484" usemap="#node-braces.map"><map name="node-braces.map">
          <area shape="rect" coords="29,35,83,67" href="#name" title="name">
          <area shape="rect" coords="171,1,247,33" href="#data-attr" title="data-attr">
          <area shape="rect" coords="307,1,387,33" href="#data-item" title="data-item"></map>
       
       <p>
          
-         <div class="ebnf"><pre><a href="#node" title="node" shape="rect">node</a>     ::= <a href="#name" title="name" shape="rect">name</a> '{' <a href="#data-attr" title="data-attr" shape="rect">data-attr</a>* <a href="#data-item" title="data-item" shape="rect">data-item</a>* '}'</pre></div>
+         <div class="ebnf"><pre><a href="#node-braces" title="node-braces" shape="rect">node-braces</a>
+         ::= <a href="#name" title="name" shape="rect">name</a> '{' <a href="#data-attr" title="data-attr" shape="rect">data-attr</a>* <a href="#data-item" title="data-item" shape="rect">data-item</a>* '}'</pre></div>
          
       </p>
       
-      <p>no references</p><br><p style="font-size: 14px; font-weight:bold"><a name="data-attr">data-attr:</a></p>
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#node" title="node">node</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="node-nobraces">node-nobraces:</a></p>
+      <img border="0" src="diagram/node-nobraces.png" height="70" width="512" usemap="#node-nobraces.map"><map name="node-nobraces.map">
+         <area shape="rect" coords="29,35,83,67" href="#name" title="name">
+         <area shape="rect" coords="123,1,261,33" href="#indented-data-attr" title="indented-data-attr">
+         <area shape="rect" coords="321,1,463,33" href="#indented-data-item" title="indented-data-item"></map>
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#node-nobraces" title="node-nobraces" shape="rect">node-nobraces</a>
+         ::= <a href="#name" title="name" shape="rect">name</a> <a href="#indented-data-attr" title="indented-data-attr" shape="rect">indented-data-attr</a>* <a href="#indented-data-item" title="indented-data-item" shape="rect">indented-data-item</a>*</pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#node" title="node">node</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="indented-data-attr">indented-data-attr:</a></p>
+      <img border="0" src="diagram/indented-data-attr.png" height="36" width="230" usemap="#indented-data-attr.map"><map name="indented-data-attr.map">
+         <area shape="rect" coords="29,1,105,33" href="#nl-indent" title="nl-indent">
+         <area shape="rect" coords="125,1,201,33" href="#data-attr" title="data-attr"></map>
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#indented-data-attr" title="indented-data-attr" shape="rect">indented-data-attr</a>
+         ::= <a href="#nl-indent" title="nl-indent" shape="rect">nl-indent</a> <a href="#data-attr" title="data-attr" shape="rect">data-attr</a></pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#node-nobraces" title="node-nobraces">node-nobraces</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="indented-data-item">indented-data-item:</a></p>
+      <img border="0" src="diagram/indented-data-item.png" height="36" width="234" usemap="#indented-data-item.map"><map name="indented-data-item.map">
+         <area shape="rect" coords="29,1,105,33" href="#nl-indent" title="nl-indent">
+         <area shape="rect" coords="125,1,205,33" href="#data-item" title="data-item"></map>
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#indented-data-item" title="indented-data-item" shape="rect">indented-data-item</a>
+         ::= <a href="#nl-indent" title="nl-indent" shape="rect">nl-indent</a> <a href="#data-item" title="data-item" shape="rect">data-item</a></pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#node-nobraces" title="node-nobraces">node-nobraces</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="nl-indent">nl-indent:</a></p>
+      <img border="0" src="diagram/nl-indent.png" height="36" width="398">
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#nl-indent" title="nl-indent" shape="rect">nl-indent</a>
+         ::= 'new line + constant indentation relative to name'</pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#indented-data-attr" title="indented-data-attr">indented-data-attr</a></li>
+            
+            <li><a href="#indented-data-item" title="indented-data-item">indented-data-item</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="data-attr">data-attr:</a></p>
       <img border="0" src="diagram/data-attr.png" height="36" width="256" usemap="#data-attr.map"><map name="data-attr.map">
          <area shape="rect" coords="29,1,83,33" href="#name" title="name">
          <area shape="rect" coords="147,1,227,33" href="#data-item" title="data-item"></map>
@@ -457,7 +561,9 @@
          
          <ul>
             
-            <li><a href="#node" title="node">node</a></li>
+            <li><a href="#indented-data-attr" title="indented-data-attr">indented-data-attr</a></li>
+            
+            <li><a href="#node-braces" title="node-braces">node-braces</a></li>
             
          </ul>
          
@@ -479,7 +585,9 @@
             
             <li><a href="#data-attr" title="data-attr">data-attr</a></li>
             
-            <li><a href="#node" title="node">node</a></li>
+            <li><a href="#node-braces" title="node-braces">node-braces</a></li>
+            
+            <li><a href="#node-nobraces" title="node-nobraces">node-nobraces</a></li>
             
          </ul>
          

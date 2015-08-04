@@ -8,7 +8,7 @@ value ::= complex-value | atomic-value
 complex-value ::= anonymous-complex-value | named-complex-value
 
 anonymous-complex-value ::= dict | list | tuple | odict
-named-complex-value ::= mapping | element | sequence | instance | empty
+named-complex-value ::= node
 
 dict ::= '{' dict-item* '}'
 odict ::= '[]' dict-item* ']'
@@ -20,7 +20,15 @@ list ::= '[' data-item* ']'
 
 tuple ::= '(' data-item* ')'
 
-node ::= name '{' data-attr* data-item* '}'
+node ::= node-braces | node-nobraces
+
+node-braces ::= name '{' data-attr* data-item* '}' 
+node-nobraces ::= name indented-data-attr* indented-data-item*
+
+indented-data-attr ::= nl-indent data-attr
+indented-data-item ::= nl-indent data-item
+
+nl-indent ::= 'new line + constant indentation relative to name'
 
 data-attr ::= name ':' data-item
 
