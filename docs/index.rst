@@ -196,7 +196,7 @@ Python pyaxon library
 `pyaxon <https://pypi.python.org/pypi/pyaxon>`_ is an `MIT Licensed <http://opensource.org/licenses/MIT>`_
 `python <http://www.python.org>`_ library for ``AXON``.
 
-There are some `IPython` `notebooks <https://bitbucket.org/intellimath/pyaxon/examples>`_.
+There are some `IPython` `notebooks <https://bitbucket.org/intellimath/pyaxon/src/default/examples>`_.
 
 `Repository <https://bitbucket.org/intellimath/pyaxon>`_ for ``AXON`` and ``pyaxon``.
 Mirror on `github <https://github.com/intellimath/pyaxon>`_.
