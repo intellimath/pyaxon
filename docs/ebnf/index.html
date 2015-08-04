@@ -3,7 +3,7 @@
 <html>
    <head>
       <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-      <meta name="generator" content="Railroad Diagram Generator 1.39.959"><style type="text/css" xml:space="preserve">
+      <meta name="generator" content="Railroad Diagram Generator 1.40.1033"><style type="text/css" xml:space="preserve">
     ::-moz-selection
     {
       color: #FFFCF0;
@@ -197,13 +197,9 @@
             
             <li><a href="#dict-item" title="dict-item">dict-item</a></li>
             
-            <li><a href="#element" title="element">element</a></li>
-            
-            <li><a href="#instance" title="instance">instance</a></li>
-            
             <li><a href="#list" title="list">list</a></li>
             
-            <li><a href="#sequence" title="sequence">sequence</a></li>
+            <li><a href="#node" title="node">node</a></li>
             
             <li><a href="#tuple" title="tuple">tuple</a></li>
             
@@ -338,12 +334,12 @@
          </ul>
          
       </p><br><p style="font-size: 14px; font-weight:bold"><a name="odict">odict:</a></p>
-      <img border="0" src="diagram/odict.png" height="70" width="272" usemap="#odict.map"><map name="odict.map">
-         <area shape="rect" coords="99,1,173,33" href="#dict-item" title="dict-item"></map>
+      <img border="0" src="diagram/odict.png" height="70" width="270" usemap="#odict.map"><map name="odict.map">
+         <area shape="rect" coords="101,1,175,33" href="#dict-item" title="dict-item"></map>
       
       <p>
          
-         <div class="ebnf"><pre><a href="#odict" title="odict" shape="rect">odict</a>    ::= '&lt;' <a href="#dict-item" title="dict-item" shape="rect">dict-item</a>* '&gt;'</pre></div>
+         <div class="ebnf"><pre><a href="#odict" title="odict" shape="rect">odict</a>    ::= '[]' <a href="#dict-item" title="dict-item" shape="rect">dict-item</a>* ']'</pre></div>
          
       </p>
       
@@ -433,103 +429,19 @@
             
          </ul>
          
-      </p><br><p style="font-size: 14px; font-weight:bold"><a name="mapping">mapping:</a></p>
-      <img border="0" src="diagram/mapping.png" height="52" width="344" usemap="#mapping.map"><map name="mapping.map">
-         <area shape="rect" coords="29,17,83,49" href="#name" title="name">
-         <area shape="rect" coords="171,17,247,49" href="#data-attr" title="data-attr"></map>
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="node">node:</a></p>
+      <img border="0" src="diagram/node.png" height="70" width="484" usemap="#node.map"><map name="node.map">
+         <area shape="rect" coords="29,35,83,67" href="#name" title="name">
+         <area shape="rect" coords="171,1,247,33" href="#data-attr" title="data-attr">
+         <area shape="rect" coords="307,1,387,33" href="#data-item" title="data-item"></map>
       
       <p>
          
-         <div class="ebnf"><pre><a href="#mapping" title="mapping" shape="rect">mapping</a>  ::= <a href="#name" title="name" shape="rect">name</a> '{' <a href="#data-attr" title="data-attr" shape="rect">data-attr</a>+ '}'</pre></div>
+         <div class="ebnf"><pre><a href="#node" title="node" shape="rect">node</a>     ::= <a href="#name" title="name" shape="rect">name</a> '{' <a href="#data-attr" title="data-attr" shape="rect">data-attr</a>* <a href="#data-item" title="data-item" shape="rect">data-item</a>* '}'</pre></div>
          
       </p>
       
-      <p>referenced by:
-         
-         <ul>
-            
-            <li><a href="#named-complex-value" title="named-complex-value">named-complex-value</a></li>
-            
-         </ul>
-         
-      </p><br><p style="font-size: 14px; font-weight:bold"><a name="element">element:</a></p>
-      <img border="0" src="diagram/element.png" height="52" width="484" usemap="#element.map"><map name="element.map">
-         <area shape="rect" coords="29,17,83,49" href="#name" title="name">
-         <area shape="rect" coords="171,17,247,49" href="#data-attr" title="data-attr">
-         <area shape="rect" coords="307,17,387,49" href="#data-item" title="data-item"></map>
-      
-      <p>
-         
-         <div class="ebnf"><pre><a href="#element" title="element" shape="rect">element</a>  ::= <a href="#name" title="name" shape="rect">name</a> '{' <a href="#data-attr" title="data-attr" shape="rect">data-attr</a>+ <a href="#data-item" title="data-item" shape="rect">data-item</a>+ '}'</pre></div>
-         
-      </p>
-      
-      <p>referenced by:
-         
-         <ul>
-            
-            <li><a href="#named-complex-value" title="named-complex-value">named-complex-value</a></li>
-            
-         </ul>
-         
-      </p><br><p style="font-size: 14px; font-weight:bold"><a name="sequence">sequence:</a></p>
-      <img border="0" src="diagram/sequence.png" height="52" width="348" usemap="#sequence.map"><map name="sequence.map">
-         <area shape="rect" coords="29,17,83,49" href="#name" title="name">
-         <area shape="rect" coords="171,17,251,49" href="#data-item" title="data-item"></map>
-      
-      <p>
-         
-         <div class="ebnf"><pre><a href="#sequence" title="sequence" shape="rect">sequence</a> ::= <a href="#name" title="name" shape="rect">name</a> '{' <a href="#data-item" title="data-item" shape="rect">data-item</a>+ '}'</pre></div>
-         
-      </p>
-      
-      <p>referenced by:
-         
-         <ul>
-            
-            <li><a href="#named-complex-value" title="named-complex-value">named-complex-value</a></li>
-            
-         </ul>
-         
-      </p><br><p style="font-size: 14px; font-weight:bold"><a name="instance">instance:</a></p>
-      <img border="0" src="diagram/instance.png" height="52" width="484" usemap="#instance.map"><map name="instance.map">
-         <area shape="rect" coords="29,17,83,49" href="#name" title="name">
-         <area shape="rect" coords="171,17,251,49" href="#data-item" title="data-item">
-         <area shape="rect" coords="311,17,387,49" href="#data-attr" title="data-attr"></map>
-      
-      <p>
-         
-         <div class="ebnf"><pre><a href="#instance" title="instance" shape="rect">instance</a> ::= <a href="#name" title="name" shape="rect">name</a> '{' <a href="#data-item" title="data-item" shape="rect">data-item</a>+ <a href="#data-attr" title="data-attr" shape="rect">data-attr</a>+ '}'</pre></div>
-         
-      </p>
-      
-      <p>referenced by:
-         
-         <ul>
-            
-            <li><a href="#named-complex-value" title="named-complex-value">named-complex-value</a></li>
-            
-         </ul>
-         
-      </p><br><p style="font-size: 14px; font-weight:bold"><a name="empty">empty:</a></p>
-      <img border="0" src="diagram/empty.png" height="36" width="208" usemap="#empty.map"><map name="empty.map">
-         <area shape="rect" coords="29,1,83,33" href="#name" title="name"></map>
-      
-      <p>
-         
-         <div class="ebnf"><pre><a href="#empty" title="empty" shape="rect">empty</a>    ::= <a href="#name" title="name" shape="rect">name</a> '{' '}'</pre></div>
-         
-      </p>
-      
-      <p>referenced by:
-         
-         <ul>
-            
-            <li><a href="#named-complex-value" title="named-complex-value">named-complex-value</a></li>
-            
-         </ul>
-         
-      </p><br><p style="font-size: 14px; font-weight:bold"><a name="data-attr">data-attr:</a></p>
+      <p>no references</p><br><p style="font-size: 14px; font-weight:bold"><a name="data-attr">data-attr:</a></p>
       <img border="0" src="diagram/data-attr.png" height="36" width="256" usemap="#data-attr.map"><map name="data-attr.map">
          <area shape="rect" coords="29,1,83,33" href="#name" title="name">
          <area shape="rect" coords="147,1,227,33" href="#data-item" title="data-item"></map>
@@ -545,11 +457,7 @@
          
          <ul>
             
-            <li><a href="#element" title="element">element</a></li>
-            
-            <li><a href="#instance" title="instance">instance</a></li>
-            
-            <li><a href="#mapping" title="mapping">mapping</a></li>
+            <li><a href="#node" title="node">node</a></li>
             
          </ul>
          
@@ -571,15 +479,7 @@
             
             <li><a href="#data-attr" title="data-attr">data-attr</a></li>
             
-            <li><a href="#element" title="element">element</a></li>
-            
-            <li><a href="#empty" title="empty">empty</a></li>
-            
-            <li><a href="#instance" title="instance">instance</a></li>
-            
-            <li><a href="#mapping" title="mapping">mapping</a></li>
-            
-            <li><a href="#sequence" title="sequence">sequence</a></li>
+            <li><a href="#node" title="node">node</a></li>
             
          </ul>
          
@@ -1046,24 +946,22 @@
          </ul>
          
       </p><br><p style="font-size: 14px; font-weight:bold"><a name="onstant-infinity">onstant-infinity:</a></p>
-      <img border="0" src="diagram/onstant-infinity.png" height="80" width="166">
+      <img border="0" src="diagram/onstant-infinity.png" height="36" width="84">
       
       <p>
          
          <div class="ebnf"><pre><a href="#onstant-infinity" title="onstant-infinity" shape="rect">onstant-infinity</a>
-         ::= 'Infinity'
-           | '∞'</pre></div>
+         ::= '∞'</pre></div>
          
       </p>
       
       <p>no references</p><br><p style="font-size: 14px; font-weight:bold"><a name="constant-nan">constant-nan:</a></p>
-      <img border="0" src="diagram/constant-nan.png" height="80" width="146">
+      <img border="0" src="diagram/constant-nan.png" height="36" width="84">
       
       <p>
          
          <div class="ebnf"><pre><a href="#constant-nan" title="constant-nan" shape="rect">constant-nan</a>
-         ::= 'NaN'
-           | '?'</pre></div>
+         ::= '?'</pre></div>
          
       </p>
       

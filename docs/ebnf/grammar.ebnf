@@ -11,7 +11,7 @@ anonymous-complex-value ::= dict | list | tuple | odict
 named-complex-value ::= mapping | element | sequence | instance | empty
 
 dict ::= '{' dict-item* '}'
-odict ::= '<' dict-item* '>'
+odict ::= '[]' dict-item* ']'
 
 dict-item ::= key ':' data-item
 key ::= identifier | text
@@ -20,11 +20,7 @@ list ::= '[' data-item* ']'
 
 tuple ::= '(' data-item* ')'
 
-mapping ::= name '{' data-attr+ '}'
-element ::= name '{' data-attr+ data-item+ '}'
-sequence ::= name '{' data-item+ '}'
-instance ::= name '{' data-item+ data-attr+ '}'
-empty ::= name '{' '}'
+node ::= name '{' data-attr* data-item* '}'
 
 data-attr ::= name ':' data-item
 
@@ -66,7 +62,7 @@ time-offset ::= ('+'|'-') hours (':' minutes)?
 datetime ::= date 'T' time time-offset?
 
 constant ::= 'null' | 'true' | 'false' | '-'? constant-infinity | constant-nan
-onstant-infinity ::= 'Infinity' | '∞'
-constant-nan ::= 'NaN' | '?'
+onstant-infinity ::= '∞'
+constant-nan ::= '?'
 
 binary-data ::= '|' 'Base64 encoded multiline ascii string'
