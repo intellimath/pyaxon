@@ -85,8 +85,8 @@ Dump, load objects in "safe" mode::
 	
     >>> vals = axon.loads('person{name:"nick" age:32 email:"nail@example.com"}')
     >>> print(type(vals[0]))
-	<class 'axon._objects.Node'>
-	>>> print(vals[0])
+    <class 'axon._objects.Node'>
+    >>> print(vals[0])
     node('person', {'email': 'nail@example.com', 'age': 32, 'name': 'nick'})
 
     >>> text = axon.dumps(vals)
