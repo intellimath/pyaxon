@@ -832,10 +832,18 @@ class Dumper:
         if o.vals is not None:
             n = len(o.vals)
 
-        if n == 0 and m == 0:
-            if self.pretty == 2:
-                self.write(' {}')
-            return
+        if m == 0:
+            if n == 0:
+                if self.pretty == 2:
+                    self.write(' {}')
+                return
+            elif n == 1:
+                v = o.vals[0]
+                if self.is_simple_type(v):
+                    self.write(' {')
+                    self.dump_value(v)
+                    self.write('}')
+                    return
             
         if self.pretty == 1:
             if n > 0 or m > 0:
