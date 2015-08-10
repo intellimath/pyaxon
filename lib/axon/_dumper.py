@@ -390,7 +390,10 @@ def _dump_name(ob):
         elif ch == "`":
             pos += 1
             pos0 = pos
-            text += "`"
+            if text is None:
+                text = "\\`"
+            else:
+                text += "\\`"
         else:
             pos += 1
             is_qname = 1
@@ -427,7 +430,10 @@ def _dump_key(ob):
                     text = c_unicode_substr(ob, pos0, pos)
                 else:
                     text += c_unicode_substr(ob, pos0, pos)
-            text += '\\"'
+            if text is None:
+                text = '\\"'
+            else:
+                text += '\\"'
             pos += 1
             pos0 = pos
             is_qname = 1

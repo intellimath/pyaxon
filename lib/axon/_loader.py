@@ -701,6 +701,8 @@ class Loader:
                         text += '"'
                     elif endch == '`':
                         text += '`'
+                    else:
+                        raise errors.error(self, "String error")
                     skip_char(self)
                 elif ch == '\n' or ch == '\r':
                     if text is None:
