@@ -1,37 +1,25 @@
 #!/usr/bin/env python
+from __future__ import print_function, unicode_literals
 
-import axon
-import xml.etree.ElementTree as etree
-
-@axon.reduce(etree.Element)
-def reduce_ElementTree(e):
-	attrs = {axon.as_unicode(name):val for name,val in e.attrib.items()}
-	if e.text:
-		vals = [e.text]
-	else:
-		vals = []
-	for child in e.getchildren():
-		vals.append(child)
-		if child.tail:
-			vals.append(child.tail)
-			child.tail = None
-	if len(attrs) == 0:
-		attrs = None
-	if len(vals) == 0:
-		vals = None
-	return axon.node(axon.as_unicode(e.tag), attrs, vals)
-	
-
-def main(from_file, to_file):
-	tree = etree.parse(from_file)
-	root = tree._root
-	axon.dump(to_file, [root], pretty=1)
-	
+from axon.utils import xml2axon
+import io
+import sys
 	
 if __name__ == '__main__':
-	import sys
-	if len(sys.argv) != 3:
+    
+    is_stringio = 0
+    if len(sys.argv) == 2:
+        from_file = sys.argv[1]
+        is_stringio = 1
+    elif len(sys.argv) > 3:
 		print('Usage: xml2axon <from_file> <to_file>')
 		sys.exit()
-	from_file, to_file = sys.argv[1], sys.argv[2]
-	main(from_file, to_file)
+    else:
+        from_file, to_file = sys.argv[1], sys.argv[2]
+	xml2axon(from_file, to_file)
+    if is_stringio:
+        text = xml2axon(from_file)
+        print(text)
+    else:
+        xml2axon(from_file, to_file)
+        
