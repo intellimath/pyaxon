@@ -30,6 +30,7 @@ from axon._dumper import reduce, dump_as_str
 
 import axon
 import xml.etree.ElementTree as etree
+import json
 
 @reduce(etree.Element)
 def reduce_ElementTree(e):
@@ -52,11 +53,44 @@ def reduce_ElementTree(e):
 del reduce_ElementTree
 	
 
-def xml2axon(from_file, to_file='<string>'):
+def xml2axon(from_file, to_file=None):
+    '''
+    Convert from `XML` to `AXON`.
+    
+    :from_file:
+        The path of input file with `XML`.
+        
+    :to_file:
+        The path of output file with `XML`` (default is `None`). 
+        If `to_file` is valid path then result of convertion to `AXON` will write to the file.      
+    
+    :result:
+        If `to_file` is `None` then return string with `AXON`, else return `None`.
+    '''
     tree = etree.parse(from_file)
     root = tree._root
-    if to_file == '<string>':
+    if to_file is None:
         return axon.dumps([root], pretty=1)
     else:
         axon.dump(to_file, [root], pretty=1)
+
+def json2axon(from_file, to_file=None):
+    '''
+    Convert from `JSON` to `AXON`.
+    
+    :from_file:
+        The path of input file with `JSON`.
+        
+    :to_file:
+        The path of output file with `JSON` (default is `None`). 
+        If `to_file` is valid path then result of convertion to `AXON` will write to the file.      
+    
+    :result:
+        If `to_file` is `None` then return string with `AXON`, else return `None`.
+    '''
+    val = json.load(from_file)
+    if to_file is None:
+        return axon.dumps([val], pretty=1)
+    else:
+        axon.dump(to_file, [val], pretty=1)
 
