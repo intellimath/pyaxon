@@ -53,44 +53,53 @@ def reduce_ElementTree(e):
 del reduce_ElementTree
 	
 
-def xml2axon(from_file, to_file=None):
+def xml2axon(from_, to_=None):
     '''
     Convert from `XML` to `AXON`.
     
-    :from_file:
-        The path of input file with `XML`.
+    :from:
+        The path of input file with `XML` or `XML` string.
         
-    :to_file:
+    :to:
         The path of output file with `XML`` (default is `None`). 
-        If `to_file` is valid path then result of convertion to `AXON` will write to the file.      
+        If `to` is valid path then result of convertion to `AXON` will write to the file.      
     
     :result:
-        If `to_file` is `None` then return string with `AXON`, else return `None`.
+        If `to` is `None` then return string with `AXON`, else return `None`.
     '''
-    tree = etree.parse(from_file)
+    _text = from_.lstrip()
+    if _text.startswith('<'):
+        tree = etree.fromstring(from_)
+    else:
+        tree = etree.parse(from_)
     root = tree._root
-    if to_file is None:
+    
+    if to_ is None:
         return axon.dumps([root], pretty=1)
     else:
-        axon.dump(to_file, [root], pretty=1)
+        axon.dump(to_, [root], pretty=1)
 
-def json2axon(from_file, to_file=None):
+def json2axon(from_, to_=None):
     '''
     Convert from `JSON` to `AXON`.
     
-    :from_file:
-        The path of input file with `JSON`.
+    :from:
+        The path of input file with `JSON` or `JSON` string.
         
-    :to_file:
+    :to:
         The path of output file with `JSON` (default is `None`). 
-        If `to_file` is valid path then result of convertion to `AXON` will write to the file.      
+        If `to` is valid path then result of convertion to `AXON` will write to the file.      
     
     :result:
-        If `to_file` is `None` then return string with `AXON`, else return `None`.
+        If `to` is `None` then return string with `AXON`, else return `None`.
     '''
-    val = json.load(from_file)
-    if to_file is None:
+    text = from_.lstrip()
+    if text.startswith('[') or text.startswith('{'):
+        val = json.loads(from_)
+    else:
+        val = json.load(from_)
+
+    if to_ is None:
         return axon.dumps([val], pretty=1)
     else:
-        axon.dump(to_file, [val], pretty=1)
-
+        axon.dump(to_, [val], pretty=1)
