@@ -44,7 +44,7 @@ if use_cython:
     from Cython.Distutils import Extension, build_ext
     from Cython.Compiler import Options
     Options.fast_fail = True
-    Options.binding = False
+    Options.emit_code_comments = False
     
 
     ext_modules = [
