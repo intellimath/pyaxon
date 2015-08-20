@@ -33,7 +33,9 @@ It tries to combine the best of `JSON <http://www.json.org>`_,
 It combines in itself:
 
 * **simplicity** of ``JSON``, 
+
 * **extensibility** of ``XML`` and 
+
 * **readability** of ``YAML``.
 
 Creation of ``AXON`` had following objectives:
