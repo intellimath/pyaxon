@@ -28,6 +28,9 @@ in order to describe `AXON`.
 It tries to combine the best of `JSON <http://www.json.org>`_,
 `XML <http://www.w3.org/XML/>`_ and `YAML <http://www.yaml.org>`_.
 
+``AXON`` is designed as text based language for data exchange in first place. 
+It combines in itself *simplicity* of ``JSON``, *extensibility* of ``XML`` and *readability* of ``YAML``.
+
 Creation of ``AXON`` had following objectives:
 
 * Overcoming lack of support of date/time, decimal and binary data in ``JSON``.
