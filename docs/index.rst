@@ -30,7 +30,8 @@ It tries to combine the best of `JSON <http://www.json.org>`_,
 
 ``AXON`` is designed as text based language for data exchange in first place.
 
-It combines in itself 
+It combines in itself:
+
 * **simplicity** of ``JSON``, 
 * **extensibility** of ``XML`` and 
 * **readability** of ``YAML``.
