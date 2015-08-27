@@ -161,7 +161,7 @@ html_show_sphinx = False
 #html_use_opensearch = ''
 
 # This is the file name suffix for HTML files (e.g. ".xhtml").
-#html_file_suffix = None
+html_file_suffix = ".html"
 
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'axondoc'
@@ -170,15 +170,15 @@ htmlhelp_basename = 'axondoc'
 # -- Options for LaTeX output --------------------------------------------------
 
 # The paper size ('letter' or 'a4').
-#latex_paper_size = 'letter'
+#latex_paper_size = 'a4'
 
 # The font size ('10pt', '11pt' or '12pt').
-#latex_font_size = '10pt'
+latex_font_size = '12pt'
 
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 #latex_documents = [
-#  ('index', 'simpleon.tex', u'SimpleON Documentation',
+#  ('index', 'axon.tex', u'AXON Documentation',
 #   u'Shibzukhov Zaur', 'manual'),
 #]
 
