@@ -134,7 +134,7 @@ Here is an example of ``AXON`` message:
 	    datetime: [2012-12-31T12:30 2012-12-31T12:35+03]
 	    binary: |QVhPTiBpcyBlWHRlbmRlZCBPYmplY3QgTm90YXRpb24=
 
-	  complex_values
+	complex_values
 	    list: ["one" "two" "three"]
 	    dict: {
 	      one: 1
@@ -168,7 +168,7 @@ Here is an example of ``AXON`` message:
 	    datetime: [2012-12-31T12:30 2012-12-31T12:35+03]
 	    binary: |QVhPTiBpcyBlWHRlbmRlZCBPYmplY3QgTm90YXRpb24=
 	}
-	  complex_values {
+	complex_values {
 	    list: ["one" "two" "three"]
 	    dict: {
 	      one: 1
