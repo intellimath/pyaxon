@@ -22,7 +22,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-from distutils.core import setup
+#from distutils.core import setup
+from setuptools import setup
 
 from distutils.command.build_py import build_py as _build_py
 
