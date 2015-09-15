@@ -111,6 +111,7 @@ build: false  # Not a C# project, build stuff at the test step instead.
 test_script:
   # Build the compiled extension and run the project tests
   #- "%CMD_IN_ENV% python setup.py nosetests"
+  - "%CMD_IN_ENV% python setup.py install"
   - "%CMD_IN_ENV% python test_all.py"
 
 after_test:
