@@ -4,12 +4,12 @@
 
 #if PY_MAJOR_VERSION == 3
 
-    PyObject* PyFloat_FromString(PyObject*);
+    /*PyObject* PyFloat_FromString(PyObject*);*/
     #define c_float_fromstring(text) (PyFloat_FromString((PyObject*)text))
 
 #else
 
-    PyObject* PyFloat_FromString(PyObject*, char **);
+    /*PyObject* PyFloat_FromString(PyObject*, char **);*/
     #define c_float_fromstring(text) (PyFloat_FromString((PyObject*)text, NULL))
 
 #endif

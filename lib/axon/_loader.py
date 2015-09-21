@@ -182,7 +182,7 @@ class Loader:
             return sequence
 
         idn = self.col
-        val = self.get_value(0, 2)
+        val = self.get_value(0, 0, 2)
         if type(val) is KeyVal:
             is_odict = 1
         sequence.append(val)
@@ -198,7 +198,7 @@ class Loader:
             
             #if self.col != 0:
             #    errors.error_indentation(self, idn)
-            val = self.get_value(0, 2)
+            val = self.get_value(0, 0, 2)
             if is_odict and not type(val) is KeyVal:
                 errors.error(self, "Expected key:val pair")
             elif not is_odict and type(val) is KeyVal:
@@ -224,7 +224,7 @@ class Loader:
                 self.errto.close()
             return
 
-        val = self.get_value(0, 2)
+        val = self.get_value(0, 0, 2)
         if type(val) is KeyVal:
             is_odict = 1
         yield val
@@ -238,7 +238,7 @@ class Loader:
                     self.errto.close()
                 break
 
-            val = self.get_value(0, 2)
+            val = self.get_value(0, 0, 2)
             if is_odict and not type(val) is KeyVal:
                 errors.error(self, "Expected key:val pair")
             elif not is_odict and type(val) is KeyVal:
@@ -804,7 +804,7 @@ class Loader:
         else:
             errors.error_invalid_value_with_prefix(self, '-')
     #
-    def get_value(self, idn, flag=0):
+    def get_value(self, idn=0, idn0=0, flag=0):
         ch = current_char(self)
         if ch == '#':
             self.skip_comments()
@@ -828,7 +828,7 @@ class Loader:
                 skip_char(self)
                 if flag == 2:
                     self.skip_spaces()
-                    val = c_new_keyval(val, self.get_value(0))
+                    val = c_new_keyval(val, self.get_value())
                 else:
                     errors.error(self, "Unexpected key:val pair")
         elif ch == '{':
@@ -913,7 +913,7 @@ class Loader:
                     if self.eof or self.col <= idn:
                         val = self.builder.create_node(name, None, None)
                     elif self.col > idn:
-                        val = self.get_complex_value(name, self.col)
+                        val = self.get_complex_value(name, self.col, idn)
                     else:
                         errors.error_indentation(self, idn)
                 else:
@@ -922,7 +922,7 @@ class Loader:
                         self.bc += 1
                         skip_char(self)
                         self.skip_spaces()
-                        val = self.get_complex_value(name, 0)
+                        val = self.get_complex_value(name, 0, idn)
                     elif ch == ':':
                         skip_char(self)
                         ch = self.skip_spaces()
@@ -931,15 +931,15 @@ class Loader:
                             if self.eof or self.col <= idn:
                                 val = self.builder.create_node(name, None, None)
                             elif self.col > idn:
-                                val = self.get_complex_value(name, 0)
+                                val = self.get_complex_value(name)
                             else:
                                 errors.error_indentation(self, idn)
                         else:
                             if flag == 1:
-                                val = c_new_attribute(name, self.get_value(0))
+                                val = c_new_attribute(name, self.get_value(idn, idn))
                             elif flag == 2:
                                 if is_idn:
-                                    val = c_new_keyval(name, self.get_value(0))
+                                    val = c_new_keyval(name, self.get_value(idn, idn))
                                 else:
                                     errors.error(self, "Unexpected key:val pair")
                             else:
@@ -952,7 +952,7 @@ class Loader:
 
         return val
     #
-    def get_complex_value(self, name, idn):
+    def get_complex_value(self, name, idn=0, idn0=0):
         attrs = None
         vals = None         
         ch = self.skip_spaces()
@@ -963,7 +963,7 @@ class Loader:
                 ch = current_char(self)
                 
             if idn:
-                if self.eof or self.col < idn:
+                if self.eof or self.col <= idn0:
                     val = self.builder.create_node(name, attrs, vals)
                     break
                 elif self.col == idn:
@@ -978,17 +978,13 @@ class Loader:
                 skip_char(self)
                 break
             else:
-                val = self.get_value(idn, 1)
+                val = self.get_value(idn, idn0, 1)
                 if type(val) is Attribute:
-                    flag = 1
                     if attrs is None:
                         attrs = axon_odict()
                     attr = val
                     attrs[attr.name] = attr.val
-                    if flag > 1:
-                        errors.error_unexpected_attribute(self, attr.name)
                 else:
-                    flag = 2
                     if vals is None:
                         vals = [val]
                     else:
@@ -1025,7 +1021,7 @@ class Loader:
         elif ch == '\0':
             errors.error(self, "Unexpected end inside of the list")
         
-        val = self.get_value(0, 2)
+        val = self.get_value(0, 0, 2)
         sequence.append(val)
         
         if type(val) is KeyVal:
@@ -1055,7 +1051,7 @@ class Loader:
             elif ch == '\0':
                 errors.error(self, "Unexpected end inside of the list")
 
-            val = self.get_value(0, 2)
+            val = self.get_value(0, 0, 2)
             if is_odict and not type(val) is KeyVal:
                 errors.error(self, "Invalid ordered dict")
                 
@@ -1087,7 +1083,7 @@ class Loader:
             elif ch == '\0':
                 errors.error(self, "Unexpected end inside of the tuple")
 
-            val = self.get_value(0)
+            val = self.get_value()
             sequence.append(val)
 
             ch = self.skip_spaces()
@@ -1111,7 +1107,7 @@ class Loader:
                     skip_char(self)
                     self.skip_spaces()
 
-                    val = self.get_value(0)
+                    val = self.get_value()
                     mapping[key] = val
                 else:
                     errors.error(self, "Expected ':' after the key in the dict")
@@ -1149,7 +1145,7 @@ class Loader:
                     skip_char(self)
                     self.skip_spaces()
 
-                    val = self.get_value(0)
+                    val = self.get_value()
                     sequence.append((key,val))
                 else:
                     errors.error(self, "Expected ':' after the key in the ordered dict")
