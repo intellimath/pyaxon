@@ -603,23 +603,23 @@ class Loader:
 
         return get_chunk(self, pos0)
     #
-    def try_get_name(self):
-        ch = current_char(self)
-        if ch.isalpha() or ch == '_':
-            return self.get_name()
-        elif ch == "`":
-            return self.get_string(ch)
-        else:
-            return None
+    #def try_get_name(self):
+    #    ch = current_char(self)
+    #    if ch.isalpha() or ch == '_':
+    #        return self.get_name()
+    #    elif ch == "`":
+    #        return self.get_string(ch)
+    #    else:
+    #        return None
     #
-    def try_get_key(self):
-        ch = current_char(self)
-        if ch.isalpha() or ch == '_':
-            return self.get_key()
-        elif ch == '"':
-            return self.get_string(ch)
-        else:
-            return None
+    #def try_get_key(self):
+    #    ch = current_char(self)
+    #    if ch.isalpha() or ch == '_':
+    #        return self.get_key()
+    #    elif ch == '"':
+    #        return self.get_string(ch)
+    #    else:
+    #        return None
     #
     def try_get_label(self):
         pos0 = self.pos
@@ -804,7 +804,7 @@ class Loader:
         else:
             errors.error_invalid_value_with_prefix(self, '-')
     #
-    def get_value(self, idn=0, idn0=0, flag=0):
+    def get_value(self, idn, idn0, flag=0):
         ch = current_char(self)
         if ch == '#':
             self.skip_comments()
@@ -828,7 +828,7 @@ class Loader:
                 skip_char(self)
                 if flag == 2:
                     self.skip_spaces()
-                    val = c_new_keyval(val, self.get_value())
+                    val = c_new_keyval(val, self.get_value(0,0))
                 else:
                     errors.error(self, "Unexpected key:val pair")
         elif ch == '{':
@@ -879,7 +879,7 @@ class Loader:
 
             self.skip_spaces()
 
-            val = self.get_value(pos0)
+            val = self.get_value(idn, idn0)
             self.labeled_objects[label] = val
         elif ch == '$':
             skip_char(self)
@@ -931,7 +931,7 @@ class Loader:
                             if self.eof or self.col <= idn:
                                 val = self.builder.create_node(name, None, None)
                             elif self.col > idn:
-                                val = self.get_complex_value(name)
+                                val = self.get_complex_value(name, self.col, idn)
                             else:
                                 errors.error_indentation(self, idn)
                         else:
@@ -952,7 +952,7 @@ class Loader:
 
         return val
     #
-    def get_complex_value(self, name, idn=0, idn0=0):
+    def get_complex_value(self, name, idn, idn0):
         attrs = None
         vals = None         
         ch = self.skip_spaces()
@@ -1083,7 +1083,7 @@ class Loader:
             elif ch == '\0':
                 errors.error(self, "Unexpected end inside of the tuple")
 
-            val = self.get_value()
+            val = self.get_value(0, 0)
             sequence.append(val)
 
             ch = self.skip_spaces()
@@ -1097,8 +1097,16 @@ class Loader:
         
             if ch == '#':
                 self.skip_comments()
+                ch = current_char(self)
 
-            key = self.try_get_key()
+            #key = self.try_get_key()
+            
+            if ch.isalpha() or ch == '_':
+                key = self.get_key()
+            elif ch == '"':
+                key = self.get_string(ch)
+            else:
+                key = None
 
             ch = self.skip_spaces()
             
@@ -1107,7 +1115,7 @@ class Loader:
                     skip_char(self)
                     self.skip_spaces()
 
-                    val = self.get_value()
+                    val = self.get_value(0, 0)
                     mapping[key] = val
                 else:
                     errors.error(self, "Expected ':' after the key in the dict")
@@ -1135,8 +1143,16 @@ class Loader:
         while 1:
             if ch == '#':
                 self.skip_comments()
+                ch = current_char(self)
 
-            key = self.try_get_key()
+            #key = self.try_get_key()
+            
+            if ch.isalpha() or ch == '_':
+                key = self.get_key()
+            elif ch == '"':
+                key = self.get_string(ch)
+            else:
+                key = None
 
             ch = self.skip_spaces()
             
@@ -1145,7 +1161,7 @@ class Loader:
                     skip_char(self)
                     self.skip_spaces()
 
-                    val = self.get_value()
+                    val = self.get_value(0, 0)
                     sequence.append((key,val))
                 else:
                     errors.error(self, "Expected ':' after the key in the ordered dict")

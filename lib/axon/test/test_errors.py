@@ -221,6 +221,22 @@ aaa
         except AxonError:
             pass
 
+    def test_invalid_indent_15(self):
+        text = \
+'''
+aaa
+    bbb
+        100
+        200
+      ccc
+        a:1
+        b:2
+'''
+        try:
+            vs = loads(text)
+        except AxonError:
+            pass
+
     def test_invalid_key_1(self):
         try:
             text = dumps([{('foo', 'bar'): True}])

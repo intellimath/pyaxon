@@ -459,7 +459,7 @@ text_14_o = '''
 aaa
   a: 1
   b: 2
-  c: c
+  c: &xxx c
     e: 1
     f: f
       r: 2
@@ -527,7 +527,7 @@ text_14c_2 = '''aaa
 
 text_15_o = '''aaa
   1 2
-  bbb {1 2 3}
+  &xxx bbb {1 2 3}
   3 4
 '''
 text_15_0 = '''aaa{1 2 bbb{1 2 3} 3 4}'''
