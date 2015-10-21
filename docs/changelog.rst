@@ -1,6 +1,11 @@
 History of changes
 ------------------
 
+**0.8.1**
+
+1. Now node objects support access to subnodes using attribute access.
+2. Now pyaxon support continues integration via appveyor.
+
 **0.8**
 
 1. Now name of complex value in formatted form without {} hasn't suffix ':'. For example::

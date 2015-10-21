@@ -92,7 +92,7 @@ long_description = open('README.rst').read()
 
 setup(
     name = 'pyaxon',
-    version = '0.8',
+    version = '0.8.1',
     description = 'Python library for AXON',
     author = 'Zaur Shibzukhov',
     author_email = 'szport@gmail.com',
