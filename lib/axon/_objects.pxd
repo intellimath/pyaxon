@@ -209,6 +209,9 @@ cdef public class Node[type NodeType, object NodeObject]:
     cdef OrderedDict attrs
     cdef list vals
 
+    @cython.locals(vals=list, node=Node, val=object)
+    cdef object _getbyname(self, object name)
+
 @cython.locals(o=Node)
 cdef public object c_new_node(object name, OrderedDict attrs, list vals)
 

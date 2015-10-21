@@ -356,10 +356,33 @@ class Node(object):
         if name.startswith('__'):
             return self.__getattribute__(name)
         else:
-            val = self.attrs.get(name, c_undefined)
+            if self.attrs is not None:
+                val = self.attrs.get(name, c_undefined)
+            else:
+                val = c_undefined
+                
             if val is c_undefined:
-                raise AttributeError("Undefined attribute " + name)
+                val = self._getbyname(name)
+                if val is c_undefined:
+                    raise AttributeError("Undefined attribute " + name)
+                else:
+                    return val
             return val
+    #
+    def _getbyname(self, name):
+        vals = []
+        for val in self.vals:
+            if type(val) is Node:
+                node = val
+                if node.name == name:
+                    vals.append(val)
+        n = len(vals)
+        if n == 0:
+            return c_undefined
+        elif n == 1:
+            return vals[0]
+        else:
+            return vals        
     #
     def __setattr__(self, name, val):
         if name.startswith('__'):
