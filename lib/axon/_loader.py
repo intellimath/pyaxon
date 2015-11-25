@@ -575,6 +575,18 @@ class Loader:
         else:
             return self.sbuilder.create_float(text)
     #
+    def _get_name(self):
+        pos0 = self.pos
+        ch = current_char(self)
+        while ch.isalnum() or ch == '_':
+            ch = next_char(self)
+        
+        if self.pos == pos0:
+            return ''
+                    
+        name0 = get_chunk(self, pos0)
+        return c_get_cached_name(name0)
+    #
     def get_name(self):
         pos0 = self.pos
         ch = next_char(self)
@@ -587,13 +599,8 @@ class Loader:
                 ch = next_char(self)
 
         name0 = get_chunk(self, pos0)
-        return c_get_cached_name(name0)
-        # name = dict_get(name_cache, name0, None)
-        # if name is None:
-        #     name_cache[name0] = name0
-        #     return name0
-        # else:
-        #     return name
+        name = c_get_cached_name(name0)
+        return name
     #
     def get_key(self):
         pos0 = self.pos
@@ -603,25 +610,7 @@ class Loader:
 
         return get_chunk(self, pos0)
     #
-    #def try_get_name(self):
-    #    ch = current_char(self)
-    #    if ch.isalpha() or ch == '_':
-    #        return self.get_name()
-    #    elif ch == "`":
-    #        return self.get_string(ch)
-    #    else:
-    #        return None
-    #
-    #def try_get_key(self):
-    #    ch = current_char(self)
-    #    if ch.isalpha() or ch == '_':
-    #        return self.get_key()
-    #    elif ch == '"':
-    #        return self.get_string(ch)
-    #    else:
-    #        return None
-    #
-    def try_get_label(self):
+    def get_label(self):
         pos0 = self.pos
         ch = current_char(self)
 
@@ -865,17 +854,19 @@ class Loader:
                 val = self.sbuilder.create_nan()
         elif ch == '*':
             skip_char(self)
-            label = self.try_get_label()
-            if self.eof:
-                errors.error_unexpected_end(self)
-            if label is not None:
-                val = self.labeled_objects.get(label, c_undefined)
+            label = self.get_label()
+            #if self.eof:
+            #    errors.error_unexpected_end(self)
+            if label is None:
+                errors.error_expected_label(self)
             else:
-                errors.error(self, "Expected label here")
+                val = self.labeled_objects.get(label, c_undefined)
         elif ch == '&':
             pos0 = self.pos
             skip_char(self)
-            label = self.try_get_label()
+            label = self.get_label()
+            if label is None:
+                errors.error_expected_label(self)
 
             self.skip_spaces()
 
@@ -1088,10 +1079,48 @@ class Loader:
 
             ch = self.skip_spaces()
     #
-    def get_dict_value(self):
-        mapping = {}
+    def get_metadata(self):
+        metadata = None
 
         ch = self.skip_spaces()
+        
+        while ch == '@':
+            skip_char(self)
+            name = self._get_name()
+            if name is None:
+                errors.error(self, "Expected name after '@' in the dict")
+            
+            ch = self.skip_spaces()
+            
+            if ch == ':':
+                skip_char(self)
+            else:
+                errors.error(self, "Expected ':' after name in metadata")
+
+            self.skip_spaces()
+            
+            val = self.get_value(0, 0)
+            
+            if metadata is None:
+                metadata = {}
+            
+            metadata[name] = val
+
+            ch = self.skip_spaces()
+        
+        return metadata
+        
+    def get_dict_value(self):
+        mapping = {}
+        metadata = None
+
+        ch = self.skip_spaces()
+        
+        if ch == '@':
+            metadata = self.get_metadata()
+            ch = self.skip_spaces()
+        else:
+            metadata = None
 
         while 1:
         
@@ -1099,8 +1128,6 @@ class Loader:
                 self.skip_comments()
                 ch = current_char(self)
 
-            #key = self.try_get_key()
-            
             if ch.isalpha() or ch == '_':
                 key = self.get_key()
             elif ch == '"':
@@ -1123,7 +1150,10 @@ class Loader:
                 if ch == '}':
                     skip_char(self)
                     self.bc -= 1
-                    return mapping
+                    if metadata is None:
+                        return mapping
+                    else:
+                        return self.builder.create_dict_ex(mapping, metadata)
                 elif ch == '\0':
                     errors.error(self, "Unexpected end inside of the dict")
                 else:

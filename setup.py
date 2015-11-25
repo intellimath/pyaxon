@@ -51,19 +51,23 @@ if use_cython:
     ext_modules = [
         Extension(
             "axon._objects",
-            ["lib/axon/_objects.py"]
+            ["lib/axon/_objects.py"],
+            extra_compile_args=['-Wno-unused-function'],
         ),
         Extension(
             "axon._loader",
-            ["lib/axon/_loader.py"]
+            ["lib/axon/_loader.py"],
+            extra_compile_args=['-Wno-unused-function'],
         ),
         Extension(
             "axon._dumper",
-            ["lib/axon/_dumper.py"]
+            ["lib/axon/_dumper.py"],
+            extra_compile_args=['-Wno-unused-function'],
         ),
         Extension(
             "axon.odict",
-            ["lib/axon/odict.pyx"]
+            ["lib/axon/odict.pyx"],
+            extra_compile_args=['-Wno-unused-function'],
         ),
     ]
 else:
@@ -72,19 +76,23 @@ else:
     ext_modules = [
         Extension(
             "axon._objects",
-            sources=["lib/axon/_objects.c"]
+            sources=["lib/axon/_objects.c"],
+            extra_compile_args=['-Wno-unused-function'],
         ),
         Extension(
             "axon._loader",
             sources=["lib/axon/_loader.c"],
+            extra_compile_args=['-Wno-unused-function'],
         ),
         Extension(
             "axon._dumper",
-            sources=["lib/axon/_dumper.c"]
+            sources=["lib/axon/_dumper.c"],
+            extra_compile_args=['-Wno-unused-function'],
         ),
         Extension(
             "axon.odict",
-            ["lib/axon/odict.c"]
+            ["lib/axon/odict.c"],
+            extra_compile_args=['-Wno-unused-function'],
         ),
     ]
 

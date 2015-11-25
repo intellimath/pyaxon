@@ -320,6 +320,42 @@ def c_new_keyval(key, val):
     a.val = val
     return a
 
+class DictEx(dict):
+    @property
+    def __metadata__(self):
+        return self.metadata
+    #
+    # def __str__(self):
+    #     s1 = dict.__str__(self)
+    #     s2 = ", ".join(["@"+key+":"+repr(val) for key,val in self.metadata.items()])
+    #     return '{' + s2 + ', ' + s1[1:-1] + '}'
+    
+class ListEx(list):
+    @property
+    def __metadata__(self):
+        return self.metadata
+    #
+    # def __str__(self):
+    #     s1 = list.__str__(self)
+    #     s2 = ", ".join(["@"+key+":"+repr(val) for key,val in self.metadata.items()])
+    #     return '[' + s2 + ', ' + s1[1:-1] + ']'
+        
+def c_new_dict_ex(d, meta):
+    o = DictEx(d)
+    o.metadata = meta
+    return o
+    
+def c_new_list_ex(l, meta):
+    o = ListEx(l)
+    o.metadata = meta
+    return o
+
+def new_dict_ex(d, meta):
+    return c_new_dict_ex(d, meta)
+    
+def new_list_ex(l, meta):
+    return c_new_list_ex(l, meta)
+
 #
 # Node
 #
@@ -336,6 +372,10 @@ class Node(object):
     @property
     def __vals__(self):
         return self.vals
+
+    @property
+    def __meta__(self):
+        return self.meta
 
     def __init__(self, name, attrs=None, vals=None):
         self.name = c_as_name(name)
@@ -416,10 +456,18 @@ class Node(object):
             raise _error_incomparable_types(self, other)
     #
     def __repr__(self):
-        return self.name + '{' + \
-                ', '.join([str(name)+': '+repr(self.attrs[name]) for name in self.attrs or empty_odict]) + \
-                (' ' if self.attrs and self.vals else '') + \
-                ', '.join([repr(x) for x in self.vals or empty_list]) + '}'
+        attrs = self.attrs
+        vals = self.vals
+        if attrs:
+            attrs_text = ', '.join([str(name)+': '+repr(attrs[name]) for name in attrs])
+        else:
+            attrs_text = ''
+        if vals:
+            vals_text = ', '.join([repr(x) for x in vals])
+        else:
+            vals_text = ''
+        sp = (' ' if attrs and vals else '')
+        return self.name + '{' + attrs_text + sp + vals_text + '}'
     #
     def __reduce__(self):
         return node, (self.name, self.attrs, self.vals)
@@ -531,11 +579,23 @@ def dict_as_node(d):
 class Builder:
     def create_node(self, name, attrs, vals):
         return self.node(name, attrs, vals)
+    #
+    def create_dict_ex(self, d, meta):
+        return self.dict_ex(d, meta)
+    #
+    def create_list_ex(self, l, meta):
+        return self.list_ex(l, meta)
 
 class SafeBuilder(Builder):
     #
     def create_node(self, name, attrs, vals):
-        return c_new_node(name, attrs, vals) 
+        return c_new_node(name, attrs, vals)
+    #
+    def create_dict_ex(self, d, meta):
+        return c_new_dict_ex(d, meta)
+    #
+    def create_list_ex(self, l, meta):
+        return c_new_list_ex(l, meta)
 
 class StrictBuilder(Builder):
 
@@ -550,6 +610,27 @@ class StrictBuilder(Builder):
             errors.error_no_handler(name)
         else:
             return handler(attrs, vals)
+    #
+    def create_dict_ex(self, d, meta):
+        name = meta.get('@', None)
+        if name is None:
+            return d
+        handler = self.c_factory_dict.get(name)
+        if handler is None:
+            errors.error_no_handler(name)
+        else:
+            return handler(d, meta)
+    #
+    def create_list_ex(self, l, meta):
+        name = meta.get('@', None)
+        if name is None:
+            return l
+        handler = self.c_factory_dict.get(name)
+        if handler is None:
+            errors.error_no_handler(name)
+        else:
+            return handler(l, meta)
+
 
 class MixedBuilder(Builder):
 
@@ -564,7 +645,27 @@ class MixedBuilder(Builder):
             return c_new_node(name, attrs, vals)
         else:
             return handler(attrs, vals)
-
+    #
+    def create_dict_ex(self, d, meta):
+        name = meta.get('@', None)
+        if name is None:
+            return d
+        handler = self.c_factory_dict.get(name)
+        if handler is None:
+            return node(name, d, None)
+        else:
+            return handler(d, meta)
+    #
+    def create_list_ex(self, l, meta):
+        name = meta.get('@', None)
+        if name is None:
+            return l
+        handler = self.c_factory_dict.get(name)
+        if handler is None:
+            return node(name, None, l)
+        else:
+            return handler(l, meta)
+            
 
 _inf = float('inf')
 _ninf = float('-inf')

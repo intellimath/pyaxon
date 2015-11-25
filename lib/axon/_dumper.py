@@ -374,7 +374,9 @@ def _dump_name(ob):
 
     n = len(name)
     if n == 0:
-        raise ValueError('Empty name')
+        return name
+        #raise ValueError('Empty name')
+        
 
     ch = name[pos]
     if ch.isalpha() or ch == '_':
@@ -405,6 +407,8 @@ def _dump_name(ob):
             text += name[pos0: pos]
         if is_qname:
             text = "`" + text + "`"
+    else:
+        text = ''
 
     return text
 
@@ -413,6 +417,7 @@ def _dump_key(ob):
     pos = 0
     text = None
     is_qname = 0
+    text = None
 
     n = c_unicode_length(ob)
     ch = c_unicode_char(ob, pos)
@@ -569,6 +574,8 @@ class Dumper:
                 self.dump_node(o)
             elif otype is axon_odict or otype is odict:
                 self.dump_odict(o)
+            elif otype is DictEx:
+                self.dump_dict_ex(o)
             elif otype is Attribute:
                 self.dump_attribute(o)
             elif otype is KeyVal:
@@ -590,6 +597,8 @@ class Dumper:
                         self.dump_node(ob)
                     elif otype is axon_odict or obtype is odict:
                         self.dump_odict(ob)
+                    elif obtype is DictEx:
+                        self.dump_dict_ex(o)
                     elif obtype is Attribute:
                         self.dump_attribute(ob)
                     elif obtype is KeyVal:
@@ -614,6 +623,8 @@ class Dumper:
                 self.pretty_dump_node(o, new_offset, 1)
             elif otype is axon_odict or otype is odict:
                 self.pretty_dump_odict(o, new_offset, use_offset)
+            elif otype is DictEx:
+                self.pretty_dump_dict_ex(o, new_offset, use_offset)
             elif otype is Attribute:
                 self.pretty_dump_attribute(o, offset, 1)
             elif otype is KeyVal:
@@ -637,6 +648,8 @@ class Dumper:
                         self.pretty_dump_node(ob, new_offset, 1)
                     elif otype is axon_odict or otype is odict:
                         self.pretty_dump_odict(o, new_offset, use_offset)
+                    elif obtype is DictEx:
+                        self.pretty_dump_dict_ex(o, new_offset, use_offset)
                     elif obtype is Attribute:
                         self.pretty_dump_attribute(ob, offset, 1)
                     elif obtype is KeyVal:
@@ -711,6 +724,26 @@ class Dumper:
         self.write(_dump_key(attr.key))
         self.write(': ')
         self.pretty_dump_value(attr.val, offset, 1)
+    #
+    def dump_metadata_values(self, d):
+        i = 0
+
+        items = d.items()        
+        if self.sorted:
+            items = sorted(items)
+
+        for k,v in items:
+            if i > 0:
+                self.write(' ')
+
+            self.write('@')
+            text = c_as_unicode(k)
+            self.write(_dump_name(text))
+
+            self.write(':')
+
+            self.dump_value(v)
+            i += 1
     #
     def dump_dict_values(self, d):
         i = 0
@@ -805,6 +838,14 @@ class Dumper:
         self.write('[')
         self.dump_list_sequence(l)
         self.write(']')
+    #
+    def dump_dict_ex(self, d):
+        self.write('{')
+        if d.metadata is not None:
+            self.dump_metadata_values(d.metadata)
+            self.write(' ')
+        self.dump_dict_values(d)
+        self.write('}')
     #
     def dump_dict(self, d):
         self.write('{')
@@ -1014,6 +1055,16 @@ class Dumper:
         self.pretty_dump_dict_values(d, w, use_offset)
         self.write('}')
     #
+    def pretty_dump_dict_ex(self, d, w, use_offset):
+        self.write('{')
+        if d.metadata:
+            self.pretty_dump_metadata(d.metadata, w, use_offset)
+            #self.write('\n')
+            #self.write(w)       
+            use_offset = 1     
+        self.pretty_dump_dict_values(d, w, use_offset)
+        self.write('}')
+    #
     def pretty_dump_odict(self, d, w, use_offset):
         self.write('[')
         if d:
@@ -1021,6 +1072,49 @@ class Dumper:
         else:
             self.write(':')
         self.write(']')
+    #
+    def pretty_dump_metadata(self, d, w, use_offset):
+        n = len(d)
+        if n == 0:
+            return
+        elif n == 1:
+            for key, val in d.items():            
+                if self.is_simple_type(val):
+                    text = c_as_unicode(key)
+                    self.write('@')
+                    self.write(_dump_name(text))
+                    self.write(': ')
+                    self.dump_simple_value(val)
+                    return
+                else:
+                    break
+
+        items = d.items()        
+        if self.sorted:
+            items = sorted(items)
+
+        i = 0
+        for k, v in items:
+        
+            if i > 0:
+                use_offset = 1
+
+            if use_offset:
+                self.write('\n')
+                self.write(w)
+            else:
+                if n > 1:
+                  self.write(' ')
+
+            text = c_as_unicode(k)
+            self.write('@')
+            self.write(_dump_name(text))
+            
+            self.write(': ')
+            
+            self.pretty_dump_value(v, w, 1)
+
+            i += 1
     #
     def pretty_dump_dict_values(self, d, w, use_offset):
         n = len(d)

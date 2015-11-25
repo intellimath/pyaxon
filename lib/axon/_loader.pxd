@@ -159,19 +159,16 @@ cdef class Loader:
     cdef object get_number(Loader self)
 
     @cython.locals(ch=Py_UCS4, pos0=int)
+    cdef object _get_name(Loader self)
+
+    @cython.locals(ch=Py_UCS4, pos0=int)
     cdef object get_name(Loader self)
 
     @cython.locals(ch=Py_UCS4, pos0=int)
     cdef object get_key(Loader self)
 
-    #@cython.locals(ch=Py_UCS4)
-    #cdef inline object try_get_name(Loader self)
-
-    #@cython.locals(ch=Py_UCS4)
-    #cdef inline object try_get_key(Loader self)
-
     @cython.locals(pos0=int, ch=Py_UCS4)
-    cdef object try_get_label(Loader self)
+    cdef object get_label(Loader self)
 
     @cython.locals(ch=Py_UCS4, flag=bint, i=int, val=int,
                    dig=int, ch0=int)
@@ -207,7 +204,10 @@ cdef class Loader:
     @cython.locals(sequence=list, v=bint)
     cdef object get_tuple_value(Loader self)
 
-    @cython.locals(ch=Py_UCS4, mapping=dict)
+    @cython.locals(ch=Py_UCS4, metadata=dict)
+    cdef object get_metadata(Loader self)
+
+    @cython.locals(ch=Py_UCS4, mapping=dict, metadata=dict)
     cdef object get_dict_value(Loader self)
 
     @cython.locals(ch=Py_UCS4, sequence=list)

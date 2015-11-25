@@ -202,6 +202,14 @@ cdef public KeyVal c_new_keyval(unicode key, object val)
 
 cdef dict reserved_name_dict 
 
+@cython.final
+cdef public class DictEx(dict)[type DictExType, object DictExType]:
+    cdef dict metadata
+
+@cython.final
+cdef public class ListEx(list)[type ListExType, object ListExType]:
+    cdef dict metadata
+
 @cython.freelist(128)
 @cython.final
 cdef public class Node[type NodeType, object NodeObject]:
@@ -214,6 +222,11 @@ cdef public class Node[type NodeType, object NodeObject]:
 
 @cython.locals(o=Node)
 cdef public object c_new_node(object name, OrderedDict attrs, list vals)
+
+@cython.locals(o=DictEx)
+cdef public object c_new_dict_ex(dict d, dict meta)
+@cython.locals(o=ListEx)
+cdef public object c_new_list_ex(list l, dict meta)
 
 #@cython.locals(sequence=list)
 #cpdef node_from_items(name, args)
@@ -229,9 +242,13 @@ cdef public dict c_factory_dict
 
 cdef class Builder:
     cdef public object create_node(self, object, OrderedDict, list)
+    cdef public object create_dict_ex(self, dict, dict)
+    cdef public object create_list_ex(self, list, dict)
 
 cdef class SafeBuilder(Builder):
     cdef public object create_node(self, object, OrderedDict, list)
+    cdef public object create_dict_ex(self, dict, dict)
+    cdef public object create_list_ex(self, list, dict)
 
 cdef class StrictBuilder(Builder):
     cdef FactoryRegister register
@@ -239,6 +256,8 @@ cdef class StrictBuilder(Builder):
     cdef public dict c_type_factory_dict    
 
     cdef public object create_node(self, object, OrderedDict, list)
+    cdef public object create_dict_ex(self, dict, dict)
+    cdef public object create_list_ex(self, list, dict)
 
 cdef class MixedBuilder(Builder):
     cdef FactoryRegister register
@@ -246,6 +265,8 @@ cdef class MixedBuilder(Builder):
     cdef public dict c_type_factory_dict
     
     cdef public object create_node(self, object, OrderedDict, list)
+    cdef public object create_dict_ex(self, dict, dict)
+    cdef public object create_list_ex(self, list, dict)
 
 cdef object _str2decimal
 
