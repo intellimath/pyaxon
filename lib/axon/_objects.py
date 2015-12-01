@@ -324,21 +324,34 @@ class DictEx(dict):
     @property
     def __metadata__(self):
         return self.metadata
+        
+    def __getitem__(self, name):
+            if name[0] == '@':
+                return self.metadata[name[1:]]
+            else:
+                return dict.__getitem__(self, name)
     #
-    # def __str__(self):
-    #     s1 = dict.__str__(self)
-    #     s2 = ", ".join(["@"+key+":"+repr(val) for key,val in self.metadata.items()])
-    #     return '{' + s2 + ', ' + s1[1:-1] + '}'
+    def __setitem__(self, name, val):
+            if name[0] == '@':
+                self.metadata[name[1:]] = val
+            else:
+                dict.__setitem__(self, name, val)
+    
+    #
+    def __str__(self):
+        s1 = dict.__str__(self)
+        s2 = ", ".join(["@"+key+":"+repr(self.metadata[key]) for key in self.metadata or {}])
+        return '{' + s2 + ', ' + s1[1:-1] + '}'
     
 class ListEx(list):
     @property
     def __metadata__(self):
         return self.metadata
     #
-    # def __str__(self):
-    #     s1 = list.__str__(self)
-    #     s2 = ", ".join(["@"+key+":"+repr(val) for key,val in self.metadata.items()])
-    #     return '[' + s2 + ', ' + s1[1:-1] + ']'
+    def __str__(self):
+        s1 = list.__str__(self)
+        s2 = ", ".join(["@"+key+":"+repr(self.metadata[key]) for key in self.metadata or {}])
+        return '[' + s2 + ', ' + s1[1:-1] + ']'
         
 def c_new_dict_ex(d, meta):
     o = DictEx(d)
