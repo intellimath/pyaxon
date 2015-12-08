@@ -1103,8 +1103,8 @@ class Dumper:
                 self.write('\n')
                 self.write(w)
             else:
-                if n > 1:
-                  self.write(' ')
+                #if n > 1:
+                self.write(' ')
 
             text = c_as_unicode(k)
             self.write('@')
