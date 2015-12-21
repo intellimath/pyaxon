@@ -352,6 +352,16 @@ class ListEx(list):
         s1 = list.__str__(self)
         s2 = ", ".join(["@"+key+":"+repr(self.metadata[key]) for key in self.metadata or {}])
         return '[' + s2 + ', ' + s1[1:-1] + ']'
+
+class TupleEx(list):
+    @property
+    def __metadata__(self):
+        return self.metadata
+    #
+    def __str__(self):
+        s1 = list.__str__(self)
+        s2 = ", ".join(["@"+key+":"+repr(self.metadata[key]) for key in self.metadata or {}])
+        return '()' + s2 + ', ' + s1[1:-1] + ')'
         
 def c_new_dict_ex(d, meta):
     o = DictEx(d)
@@ -363,11 +373,19 @@ def c_new_list_ex(l, meta):
     o.metadata = meta
     return o
 
+def c_new_tuple_ex(l, meta):
+    o = TupleEx(l)
+    o.metadata = meta
+    return o
+
 def new_dict_ex(d, meta):
     return c_new_dict_ex(d, meta)
     
 def new_list_ex(l, meta):
     return c_new_list_ex(l, meta)
+
+def new_tuple_ex(l, meta):
+    return c_new_tuple_ex(l, meta)
 
 #
 # Node
@@ -598,6 +616,9 @@ class Builder:
     #
     def create_list_ex(self, l, meta):
         return self.list_ex(l, meta)
+    #
+    def create_tuple_ex(self, l, meta):
+        return self.tuple_ex(l, meta)
 
 class SafeBuilder(Builder):
     #
@@ -609,6 +630,9 @@ class SafeBuilder(Builder):
     #
     def create_list_ex(self, l, meta):
         return c_new_list_ex(l, meta)
+    #
+    def create_tuple_ex(self, l, meta):
+        return self.tuple_ex(l, meta)
 
 class StrictBuilder(Builder):
 
@@ -635,6 +659,16 @@ class StrictBuilder(Builder):
             return handler(d, meta)
     #
     def create_list_ex(self, l, meta):
+        name = meta.get('@', None)
+        if name is None:
+            return l
+        handler = self.c_factory_dict.get(name)
+        if handler is None:
+            errors.error_no_handler(name)
+        else:
+            return handler(l, meta)
+    #
+    def create_tuple_ex(self, l, meta):
         name = meta.get('@', None)
         if name is None:
             return l
@@ -670,6 +704,16 @@ class MixedBuilder(Builder):
             return handler(d, meta)
     #
     def create_list_ex(self, l, meta):
+        name = meta.get('@', None)
+        if name is None:
+            return l
+        handler = self.c_factory_dict.get(name)
+        if handler is None:
+            return node(name, None, l)
+        else:
+            return handler(l, meta)
+    #
+    def create_tuple_ex(self, l, meta):
         name = meta.get('@', None)
         if name is None:
             return l

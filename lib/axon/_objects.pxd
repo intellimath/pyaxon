@@ -210,6 +210,10 @@ cdef public class DictEx(dict)[type DictExType, object DictExType]:
 cdef public class ListEx(list)[type ListExType, object ListExType]:
     cdef dict metadata
 
+@cython.final
+cdef public class TupleEx(list)[type TupleExType, object TupleExType]:
+    cdef dict metadata
+
 @cython.freelist(128)
 @cython.final
 cdef public class Node[type NodeType, object NodeObject]:
@@ -227,6 +231,8 @@ cdef public object c_new_node(object name, OrderedDict attrs, list vals)
 cdef public object c_new_dict_ex(dict d, dict meta)
 @cython.locals(o=ListEx)
 cdef public object c_new_list_ex(list l, dict meta)
+@cython.locals(o=TupleEx)
+cdef public object c_new_tuple_ex(list l, dict meta)
 
 #@cython.locals(sequence=list)
 #cpdef node_from_items(name, args)
@@ -244,11 +250,13 @@ cdef class Builder:
     cdef public object create_node(self, object, OrderedDict, list)
     cdef public object create_dict_ex(self, dict, dict)
     cdef public object create_list_ex(self, list, dict)
+    cdef public object create_tuple_ex(self, list, dict)
 
 cdef class SafeBuilder(Builder):
     cdef public object create_node(self, object, OrderedDict, list)
     cdef public object create_dict_ex(self, dict, dict)
     cdef public object create_list_ex(self, list, dict)
+    cdef public object create_tuple_ex(self, list, dict)
 
 cdef class StrictBuilder(Builder):
     cdef FactoryRegister register
@@ -258,6 +266,7 @@ cdef class StrictBuilder(Builder):
     cdef public object create_node(self, object, OrderedDict, list)
     cdef public object create_dict_ex(self, dict, dict)
     cdef public object create_list_ex(self, list, dict)
+    cdef public object create_tuple_ex(self, list, dict)
 
 cdef class MixedBuilder(Builder):
     cdef FactoryRegister register
@@ -267,6 +276,7 @@ cdef class MixedBuilder(Builder):
     cdef public object create_node(self, object, OrderedDict, list)
     cdef public object create_dict_ex(self, dict, dict)
     cdef public object create_list_ex(self, list, dict)
+    cdef public object create_tuple_ex(self, list, dict)
 
 cdef object _str2decimal
 

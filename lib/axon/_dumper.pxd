@@ -60,7 +60,7 @@ from cpython.object cimport PyObject
 from cpython.dict cimport PyDict_SetItem, PyDict_GetItem
 from cpython.unicode cimport PyUnicode_FromEncodedObject
 
-from axon._objects cimport Node, Attribute, attribute, KeyVal, DictEx, ListEx
+from axon._objects cimport Node, Attribute, attribute, KeyVal, DictEx, ListEx, TupleEx
 from axon._objects cimport c_undefined, reserved_name_dict
 #from axon._objects cimport name_cache, c_as_name
 from axon._objects cimport StringWriter
@@ -245,8 +245,12 @@ cdef public class Dumper[object Dumper, type DumperType]:
     @cython.locals(i=int)
     cdef dump_list_sequence(Dumper self, list l)
     #
+    cdef dump_tuple_ex(Dumper self, TupleEx l)
+    #
     @cython.locals(i=int)
     cdef dump_tuple_sequence(Dumper self, tuple l)
+    #
+    cdef dump_list_ex(Dumper self, ListEx l)
     #
     cdef dump_list(Dumper self, list l)
     #
@@ -283,8 +287,8 @@ cdef public class Dumper[object Dumper, type DumperType]:
     @cython.locals(i=int, j=int, flag=int)
     cdef pretty_dump_list_sequence(Dumper self, list l, unicode w, bint use_offset)
     #
-    @cython.locals(i=int, j=int, flag=int)
-    cdef pretty_dump_tuple_sequence(Dumper self, tuple l, unicode w, bint use_offset)
+    @cython.locals(n=int)
+    cdef pretty_dump_list_ex(Dumper self, ListEx l, unicode w, bint use_offset)
     #
     @cython.locals(n=int)
     cdef pretty_dump_list(Dumper self, list l, unicode w, bint use_offset)
@@ -296,6 +300,9 @@ cdef public class Dumper[object Dumper, type DumperType]:
     cdef pretty_dump_dict(Dumper self, dict d, unicode w, bint use_offset)
     #
     cdef pretty_dump_odict(Dumper self, object d, unicode w, bint use_offset)
+    #
+    @cython.locals(n=int)
+    cdef pretty_dump_tuple_ex(Dumper self, TupleEx l, unicode w, bint use_offset)
     #
     @cython.locals(n=int)
     cdef pretty_dump_tuple(Dumper self, tuple l, unicode w, bint use_offset)
@@ -311,11 +318,15 @@ cdef public class Dumper[object Dumper, type DumperType]:
     #
     cdef void collect_list(Dumper self, list lst)
     #
+    cdef void collect_list_ex(Dumper self, ListEx lst)
+    #
     cdef void collect_tuple(Dumper self, tuple lst)
     #
     cdef void collect_set(Dumper self, set lst)
     #
     cdef void collect_dict(Dumper self, dict d)
+    #
+    cdef void collect_dict_ex(Dumper self, DictEx d)
     #
     cdef void collect_odict(Dumper self, axon_odict d)
     #

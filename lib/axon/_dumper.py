@@ -576,6 +576,10 @@ class Dumper:
                 self.dump_odict(o)
             elif otype is DictEx:
                 self.dump_dict_ex(o)
+            elif otype is ListEx:
+                self.dump_list_ex(o)
+            elif otype is TupleEx:
+                self.dump_tuple_ex(o)
             elif otype is Attribute:
                 self.dump_attribute(o)
             elif otype is KeyVal:
@@ -599,6 +603,10 @@ class Dumper:
                         self.dump_odict(ob)
                     elif obtype is DictEx:
                         self.dump_dict_ex(o)
+                    elif obtype is ListEx:
+                        self.dump_list_ex(o)
+                    elif obtype is TupleEx:
+                        self.dump_tuple_ex(o)
                     elif obtype is Attribute:
                         self.dump_attribute(ob)
                     elif obtype is KeyVal:
@@ -625,6 +633,10 @@ class Dumper:
                 self.pretty_dump_odict(o, new_offset, use_offset)
             elif otype is DictEx:
                 self.pretty_dump_dict_ex(o, new_offset, use_offset)
+            elif otype is ListEx:
+                self.pretty_dump_list_ex(o, new_offset, use_offset)
+            elif otype is TupleEx:
+                self.pretty_dump_tuple_ex(o, new_offset, use_offset)
             elif otype is Attribute:
                 self.pretty_dump_attribute(o, offset, 1)
             elif otype is KeyVal:
@@ -650,6 +662,10 @@ class Dumper:
                         self.pretty_dump_odict(o, new_offset, use_offset)
                     elif obtype is DictEx:
                         self.pretty_dump_dict_ex(o, new_offset, use_offset)
+                    elif obtype is ListEx:
+                        self.pretty_dump_list_ex(o, new_offset, use_offset)
+                    elif obtype is TupleEx:
+                        self.pretty_dump_tuple_ex(o, new_offset, use_offset)
                     elif obtype is Attribute:
                         self.pretty_dump_attribute(ob, offset, 1)
                     elif obtype is KeyVal:
@@ -834,6 +850,14 @@ class Dumper:
             self.dump_list_sequence(o.vals)
         self.write('}')
     #
+    def dump_list_ex(self, l):
+        self.write('[')
+        if l.metadata is not None:
+             self.dump_metadata_values(l.metadata)
+             self.write(' ')
+        self.dump_list_sequence(l)
+        self.write(']')
+    #
     def dump_list(self, l):
         self.write('[')
         self.dump_list_sequence(l)
@@ -859,6 +883,14 @@ class Dumper:
         else:
             self.write(':')
         self.write(']')
+    #
+    def dump_tuple_ex(self, l):
+        self.write('()')
+        if l.metadata is not None:
+             self.dump_metadata_values(l.metadata)
+             self.write(' ')
+        self.dump_list_sequence(l)
+        self.write(')')
     #
     def dump_tuple(self, d):
         self.write('(')
@@ -1002,6 +1034,22 @@ class Dumper:
         self.pretty_dump_list_sequence(l, w, use_offset)
         self.write(']')
     #
+    def pretty_dump_list_ex(self, l, w, use_offset):
+        self.write('[')
+        if l.metadata:
+            self.pretty_dump_metadata(l.metadata, w, use_offset)                
+            use_offset = 1
+            n = len(l)
+            if n == 1 and self.is_simple_type(l[0]):
+                self.write('\n')
+                self.write(w)
+            elif n <= self.hsize and self.is_all_simple_list(l, n):
+                self.write('\n')
+                self.write(w)
+                
+        self.pretty_dump_list_sequence(l, w, use_offset)
+        self.write(']')
+    #    
     def pretty_dump_list_sequence(self, l, w, use_offset):
         n = len(l)
         if n == 0:
@@ -1159,11 +1207,24 @@ class Dumper:
     #
     def pretty_dump_tuple(self, l, w, use_offset):
         self.write('(')
-        self.pretty_dump_tuple_sequence(l, w, use_offset)
+        self.pretty_dump_list_sequence(list(l), w, use_offset)
         self.write(')')
     #
-    def pretty_dump_tuple_sequence(self, l, w, use_offset):
-        self.pretty_dump_list_sequence(list(l), w, use_offset)
+    def pretty_dump_tuple_ex(self, l, w, use_offset):
+        self.write('()')
+        if l.metadata:
+            self.pretty_dump_metadata(l.metadata, w, use_offset)                
+            use_offset = 1
+            n = len(l)
+            if n == 1 and self.is_simple_type(l[0]):
+                self.write('\n')
+                self.write(w)
+            elif n <= self.hsize and self.is_all_simple_list(l, n):
+                self.write('\n')
+                self.write(w)
+                
+        self.pretty_dump_list_sequence(l, w, use_offset)
+        self.write(')')
     #
     def dump(self, seq):
         '''
@@ -1262,6 +1323,10 @@ class Dumper:
             self.collect_node(o)
         elif otype is Attribute:
             self.collect_attribute(o)
+        elif otype is DictEx:
+            self.collect_dict_ex(o)
+        elif otype is ListEx:
+            self.collect_list_ex(o)
         elif otype is KeyVal:
             self.collect_keyval(o)
         else:
@@ -1284,6 +1349,10 @@ class Dumper:
         for v in lst:
             self.collect_value(v)
     #
+    def collect_list_ex(self, lst):
+        for v in lst:
+            self.collect_value(v)
+    #
     def collect_tuple(self, lst):
         for v in lst:
             self.collect_value(v)
@@ -1293,6 +1362,10 @@ class Dumper:
             self.collect_value(v)
     #
     def collect_dict(self, d):
+        for v in d.values():
+            self.collect_value(v)
+    #
+    def collect_dict_ex(self, d):
         for v in d.values():
             self.collect_value(v)
     #

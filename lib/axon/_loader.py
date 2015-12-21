@@ -990,8 +990,15 @@ class Loader:
 
         sequence = []
         is_odict = 0
+        metadata = None
 
         ch = self.skip_spaces()
+        
+        if ch == '@':
+            metadata = self.get_metadata()
+            ch = self.skip_spaces()
+        else:
+            metadata = None        
         
         if ch == '#':
             self.skip_comments()
@@ -1038,7 +1045,10 @@ class Loader:
                 if is_odict:
                     return axon_odict(sequence)
                 else:
-                    return sequence
+                    if metadata is None:
+                        return sequence
+                    else:
+                        return self.builder.create_list_ex(sequence, metadata)
             elif ch == '\0':
                 errors.error(self, "Unexpected end inside of the list")
 
@@ -1059,8 +1069,16 @@ class Loader:
     def get_tuple_value(self):
 
         sequence = []
+        metadata = None
 
         ch = self.skip_spaces()
+        
+        if ch == '@':
+            metadata = self.get_metadata()
+            ch = self.skip_spaces()
+        else:
+            metadata = None
+        
 
         while 1:
             if ch == '#':
@@ -1070,7 +1088,10 @@ class Loader:
             if ch == ')':
                 skip_char(self)
                 self.bq -= 1
-                return tuple(sequence)
+                if metadata is None:
+                    return tuple(sequence)
+                else:
+                    return self.builder.create_tuple_ex(sequence, metadata)
             elif ch == '\0':
                 errors.error(self, "Unexpected end inside of the tuple")
 

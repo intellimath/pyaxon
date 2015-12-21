@@ -198,10 +198,10 @@ cdef class Loader:
     @cython.locals(ch=Py_UCS4, val=object, vals=list, attrs=axon_odict, attr=Attribute, flag=int)
     cdef object get_complex_value(Loader self, object name, int idn, int idn0)
 
-    @cython.locals(sequence=list, ch=Py_UCS4, val=object, is_odict=bint)
+    @cython.locals(sequence=list, ch=Py_UCS4, val=object, is_odict=bint, metadata=dict)
     cdef object get_list_value(Loader self)
 
-    @cython.locals(sequence=list, v=bint)
+    @cython.locals(sequence=list, v=bint, metadata=dict)
     cdef object get_tuple_value(Loader self)
 
     @cython.locals(ch=Py_UCS4, metadata=dict)
