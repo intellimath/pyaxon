@@ -404,10 +404,6 @@ class Node(object):
     def __vals__(self):
         return self.vals
 
-    @property
-    def __meta__(self):
-        return self.meta
-
     def __init__(self, name, attrs=None, vals=None):
         self.name = c_as_name(name)
         if attrs is not None and len(attrs) == 0:
@@ -431,13 +427,13 @@ class Node(object):
                 val = self.attrs.get(name, c_undefined)
             else:
                 val = c_undefined
+            if val is c_undefined:
+                raise AttributeError("Undefined attribute " + name)
                 
             if val is c_undefined:
                 val = self._getbyname(name)
                 if val is c_undefined:
-                    raise AttributeError("Undefined attribute " + name)
-                else:
-                    return val
+                    raise AttributeError("Undefined element " + name)
             return val
     #
     def _getbyname(self, name):
@@ -502,12 +498,90 @@ class Node(object):
     #
     def __reduce__(self):
         return node, (self.name, self.attrs, self.vals)
+        
+class NodeEx(Node):
+    #
+    @property
+    def __meta__(self):
+        return self.metadata
+    #
+    def __getattr__(self, name):
+        if name.startswith('__'):
+            return self.__getattribute__(name)
+        else:
+            if name.startswith('@'):
+                if self.metadata:
+                    val = self.metadata.get(name[1:], c_undefined)
+                else:
+                    val = c_undefined
+                if val is c_undefined:
+                    raise AttributeError("Undefined metadata attribute " + name)
+            else:
+                if self.attrs is not None:
+                    val = self.attrs.get(name, c_undefined)
+                else:
+                    val = c_undefined
+                if val is c_undefined:
+                    raise AttributeError("Undefined attribute " + name)
+                
+            if val is c_undefined:
+                val = self._getbyname(name)
+                if val is c_undefined:
+                    raise AttributeError("Undefined element " + name)
+            return val
+    #
+    def __richcmp__(self, other, op):
+        if type(self) is NodeEx:
+            v = (self.name == other.name) and \
+                (self.metadata == other.metadata) and \
+                (self.attrs == other.attrs) and \
+                (self.vals == other.vals)
+            if op == 2:
+                return v
+            elif op == 3:
+                return not v
+            else:
+                raise _error_unsupported_comparison(self)
+        else:
+            raise _error_incomparable_types(self, other)
+    #
+    def __repr__(self):
+        attrs = self.attrs
+        vals = self.vals
+        metadata = self.metadata
+        if metadata:
+            metadata_text = ', '.join([str(name)+': '+repr(attrs[name]) for name in metadata])
+        else:
+            metadata_text = ''
+        if attrs:
+            attrs_text = ', '.join([str(name)+': '+repr(attrs[name]) for name in attrs])
+        else:
+            attrs_text = ''
+        if vals:
+            vals_text = ', '.join([repr(x) for x in vals])
+        else:
+            vals_text = ''
+        sp1 = (' ' if metadata and (attrs or vals) else '')
+        sp2 = (' ' if attrs and vals else '')
+        return self.name + '{' + metadata_text + sp1 + attrs_text + sp2 + vals_text + '}'
+    #
+    def __reduce__(self):
+        return node_ex, (self.name, self.attrs, self.vals, self.metadata)
+    
 
 def c_new_node(name, attrs, vals):
     o = Node.__new__(Node)
     o.name = name
     o.attrs = attrs
     o.vals = vals
+    return o
+
+def c_new_node_ex(name, attrs, vals, metadata):
+    o = NodeEx.__new__(NodeEx)
+    o.name = name
+    o.attrs = attrs
+    o.vals = vals
+    o.metadata = metadata
     return o
 
 def node(name, attrs=None, vals=None):
@@ -538,6 +612,54 @@ def node(name, attrs=None, vals=None):
         _vals = c_as_list(vals)
     
     return c_new_node(c_as_name(name), _attrs, _vals)
+
+def node_ex(name, attrs=None, vals=None, metadata=None):
+    '''
+    Factory function for creating node.
+
+    :param name:
+
+        name of the sequence.
+
+    :param attrs:
+
+        python ordered dict containing attributes.
+        
+    :param vals:
+
+        python sequence containing values.
+        
+    :param metadata:
+
+        python dict containing metadata.
+    '''
+    if attrs is not None:
+        if len(attrs) == 0:
+            _attrs = None
+        elif type(attrs) is OrderedDict:
+            _attrs = attrs
+        else:
+            _attrs = OrderedDict(attrs)
+    else:
+        _attrs = attrs
+    
+    if vals is not None and len(vals) == 0:
+        _vals = None
+    else:
+        _vals = c_as_list(vals)
+        
+    if metadata is not None:
+        if len(metadata) == 0:
+            _metadata = None
+        elif type(metadata) is dict:
+            _metadata = metadata
+        else:
+            _metadata = {}
+    else:
+        _metadata = metadata
+        
+    
+    return c_new_node_ex(c_as_name(name), _attrs, _vals, _metadata)
             
 def dict_as_sequence_factory(items):
     return dict(items)

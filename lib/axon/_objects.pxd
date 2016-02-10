@@ -215,7 +215,6 @@ cdef public class TupleEx(list)[type TupleExType, object TupleExType]:
     cdef dict metadata
 
 @cython.freelist(128)
-@cython.final
 cdef public class Node[type NodeType, object NodeObject]:
     cdef object name
     cdef OrderedDict attrs
@@ -224,8 +223,15 @@ cdef public class Node[type NodeType, object NodeObject]:
     @cython.locals(vals=list, node=Node, val=object)
     cdef object _getbyname(self, object name)
 
+@cython.final
+cdef public class NodeEx(Node)[type NodeExType, object NodeExObject]:
+    cdef dict metadata
+
 @cython.locals(o=Node)
 cdef public object c_new_node(object name, OrderedDict attrs, list vals)
+
+@cython.locals(o=NodeEx)
+cdef public object c_new_node_ex(object name, OrderedDict attrs, list vals, dict metadata)
 
 @cython.locals(o=DictEx)
 cdef public object c_new_dict_ex(dict d, dict meta)

@@ -1249,7 +1249,10 @@ class Dumper:
             is_mapping = 1
             
         if is_mapping:
-            iterseq = iter(seq.items())
+            if self.sorted and seq is dict:
+                iterseq = iter(sorted(seq.items()))
+            else:
+                iterseq = iter(seq.items())
         else:
             iterseq = iter(seq)
 
