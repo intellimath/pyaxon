@@ -52,17 +52,17 @@ if use_cython:
         Extension(
             "axon._objects",
             ["lib/axon/_objects.py"],
-            extra_compile_args=['-Wno-unused-function', '-Wno-unreachable-code'],
+            #extra_compile_args=['-Wno-unused-function', '-Wno-unreachable-code'],
         ),
         Extension(
             "axon._loader",
             ["lib/axon/_loader.py"],
-            extra_compile_args=['-Wno-unused-function', '-Wno-unreachable-code'],
+            #extra_compile_args=['-Wno-unused-function', '-Wno-unreachable-code'],
         ),
         Extension(
             "axon._dumper",
             ["lib/axon/_dumper.py"],
-            extra_compile_args=['-Wno-unused-function', '-Wno-unreachable-code'],
+            #extra_compile_args=['-Wno-unused-function', '-Wno-unreachable-code'],
         ),
         Extension(
             "axon.odict",
@@ -77,22 +77,22 @@ else:
         Extension(
             "axon._objects",
             sources=["lib/axon/_objects.c"],
-            extra_compile_args=['-Wno-unused-function', '-Wno-unreachable-code'],
+            #extra_compile_args=['-Wno-unused-function', '-Wno-unreachable-code'],
         ),
         Extension(
             "axon._loader",
             sources=["lib/axon/_loader.c"],
-            extra_compile_args=['-Wno-unused-function', '-Wno-unreachable-code'],
+            #extra_compile_args=['-Wno-unused-function', '-Wno-unreachable-code'],
         ),
         Extension(
             "axon._dumper",
             sources=["lib/axon/_dumper.c"],
-            extra_compile_args=['-Wno-unused-function', '-Wno-unreachable-code'],
+            #extra_compile_args=['-Wno-unused-function', '-Wno-unreachable-code'],
         ),
         Extension(
             "axon.odict",
             ["lib/axon/odict.c"],
-            extra_compile_args=['-Wno-unused-function', '-Wno-unreachable-code'],
+            #extra_compile_args=['-Wno-unused-function', '-Wno-unreachable-code'],
         ),
     ]
 
