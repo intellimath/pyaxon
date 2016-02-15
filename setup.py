@@ -111,7 +111,7 @@ setup(
     ext_modules = ext_modules,
     package_dir = {'': 'lib'},
     packages = ['axon', 'axon.test', 'axon.test.benchmark'],
-    scripts = ['bin/xml2axon'],
+    scripts = ['bin/xml2axon', 'bin/json2axon'],
     url = 'http://intellimath.bitbucket.org/axon',
     download_url = 'https://bitbucket.org/intellimath/pyaxon',
     long_description = long_description,
