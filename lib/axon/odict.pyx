@@ -448,11 +448,14 @@ cdef public class OrderedDict[object OrderedDictObject, type OrderedDictType]:
 
 collections.MutableMapping.register(OrderedDict)
 
-cdef OrderedDict c_new_odict(list args):
-    cdef OrderedDict od
+cdef public class OrderedDictEx(OrderedDict)[object OrderedDictExObject, type OrderedDictExType]:
+    def __init__(self, *args, **kwds):
+        OrderedDict.__init__(self, *args, **kwds)
+
+
+cdef c_init_odict(OrderedDict od, list args):
     cdef Link root, last, link
-    
-    od = OrderedDict.__new__(OrderedDict)
+
     od.map = {}
     root = <Link>Link.__new__(Link)
     root.prev = root.next = <cython.void*>root
@@ -470,8 +473,25 @@ cdef OrderedDict c_new_odict(list args):
             last.next =  root.prev = <cython.void*>link
             
             dict.__setitem__(od.map, key, link)
-    return od
 
+cdef OrderedDict c_new_odict(list args):
+    cdef OrderedDict od
+    
+    od = OrderedDict.__new__(OrderedDict)
+    c_init_odict(od, args)
+    return od
+    
+cdef OrderedDictEx c_new_odict_ex(list args, dict metadata):
+    cdef OrderedDictEx od
+
+    od = OrderedDictEx.__new__(OrderedDictEx)
+    c_init_odict(od, args)
+    od.metadata = metadata
+    return od
+    
 def odict(args):
     return c_new_odict(c_as_list(args))            
+
+def odict_ex(args, metadata):
+    return c_new_odict_ex(c_as_list(args), c_as_dict(metadata))            
 

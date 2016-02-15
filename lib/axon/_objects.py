@@ -320,72 +320,117 @@ def c_new_keyval(key, val):
     a.val = val
     return a
 
-class DictEx(dict):
-    @property
-    def __metadata__(self):
-        return self.metadata
-        
-    def __getitem__(self, name):
-            if name[0] == '@':
-                return self.metadata[name[1:]]
-            else:
-                return dict.__getitem__(self, name)
-    #
-    def __setitem__(self, name, val):
-            if name[0] == '@':
-                self.metadata[name[1:]] = val
-            else:
-                dict.__setitem__(self, name, val)
-    
-    #
-    def __str__(self):
-        s1 = dict.__str__(self)
-        s2 = ", ".join(["@"+key+":"+repr(self.metadata[key]) for key in self.metadata or {}])
-        return '{' + s2 + ', ' + s1[1:-1] + '}'
-    
-class ListEx(list):
-    @property
-    def __metadata__(self):
-        return self.metadata
-    #
-    def __str__(self):
-        s1 = list.__str__(self)
-        s2 = ", ".join(["@"+key+":"+repr(self.metadata[key]) for key in self.metadata or {}])
-        return '[' + s2 + ', ' + s1[1:-1] + ']'
-
-class TupleEx(list):
-    @property
-    def __metadata__(self):
-        return self.metadata
-    #
-    def __str__(self):
-        s1 = list.__str__(self)
-        s2 = ", ".join(["@"+key+":"+repr(self.metadata[key]) for key in self.metadata or {}])
-        return '()' + s2 + ', ' + s1[1:-1] + ')'
-        
-def c_new_dict_ex(d, meta):
-    o = DictEx(d)
-    o.metadata = meta
-    return o
-    
-def c_new_list_ex(l, meta):
-    o = ListEx(l)
-    o.metadata = meta
-    return o
-
-def c_new_tuple_ex(l, meta):
-    o = TupleEx(l)
-    o.metadata = meta
-    return o
-
-def new_dict_ex(d, meta):
-    return c_new_dict_ex(d, meta)
-    
-def new_list_ex(l, meta):
-    return c_new_list_ex(l, meta)
-
-def new_tuple_ex(l, meta):
-    return c_new_tuple_ex(l, meta)
+# class ObjectWithMetadata(object):
+#     #
+#     def __init__(self, ob, metadata):
+#         self.metadata = metadata
+#         self.ob = ob
+#     #
+#     def __getitem__(self, i):
+#         return self.ob[i]
+#     #
+#     def __setitem__(self, i, v):
+#         self.ob[i] = v
+#     #
+#     def __delitem__(self, i):
+#         del self.ob[i]
+#     #
+#     def __contains__(self, v):
+#         return v in self.ob
+#     #
+#     def __bool__(self):
+#         return self.ob and self.metadata
+#     #
+#     def __iter__(self):
+#         return iter(self.ob)
+#     #
+#     def __str__(self):
+#         return str(self.ob) + ' / ' + str(self.metadata)
+#     #
+#     def __repr__(self):
+#         return str(self.ob) + ' / ' + str(self.metadata)
+#     #
+#     def __getattr__(self, name):
+#         if name == '__metadata__':
+#             return self.metadata
+#         else:
+#             return self.ob.__getattribute__(name)
+#
+# def c_add_metadata(ob, metadata):
+#     o = ObjectWithMetadata.__new__(ObjectWithMetadata)
+#     o.ob = ob
+#     o.metadata = metadata
+#     return o
+#
+# def add_metadata(ob, metadata):
+#     return c_add_metadata(ob, metadata)
+#
+# class DictEx(dict):
+#     @property
+#     def __metadata__(self):
+#         return self.metadata
+#
+#     def __getitem__(self, name):
+#             if name[0] == '@':
+#                 return self.metadata[name[1:]]
+#             else:
+#                 return dict.__getitem__(self, name)
+#     #
+#     def __setitem__(self, name, val):
+#             if name[0] == '@':
+#                 self.metadata[name[1:]] = val
+#             else:
+#                 dict.__setitem__(self, name, val)
+#
+#     #
+#     def __str__(self):
+#         s1 = dict.__str__(self)
+#         s2 = ", ".join(["@"+key+":"+repr(self.metadata[key]) for key in self.metadata or {}])
+#         return '{' + s2 + ', ' + s1[1:-1] + '}'
+#
+# class ListEx(list):
+#     @property
+#     def __metadata__(self):
+#         return self.metadata
+#     #
+#     def __str__(self):
+#         s1 = list.__str__(self)
+#         s2 = ", ".join(["@"+key+":"+repr(self.metadata[key]) for key in self.metadata or {}])
+#         return '[' + s2 + ', ' + s1[1:-1] + ']'
+#
+# class TupleEx(list):
+#     @property
+#     def __metadata__(self):
+#         return self.metadata
+#     #
+#     def __str__(self):
+#         s1 = list.__str__(self)
+#         s2 = ", ".join(["@"+key+":"+repr(self.metadata[key]) for key in self.metadata or {}])
+#         return '()' + s2 + ', ' + s1[1:-1] + ')'
+#
+# def c_new_dict_ex(d, meta):
+#     o = DictEx(d)
+#     o.metadata = meta
+#     return o
+#
+# def c_new_list_ex(l, meta):
+#     o = ListEx(l)
+#     o.metadata = meta
+#     return o
+#
+# def c_new_tuple_ex(l, meta):
+#     o = TupleEx(l)
+#     o.metadata = meta
+#     return o
+#
+# def new_dict_ex(d, meta):
+#     return c_new_dict_ex(d, meta)
+#
+# def new_list_ex(l, meta):
+#     return c_new_list_ex(l, meta)
+#
+# def new_tuple_ex(l, meta):
+#     return c_new_tuple_ex(l, meta)
 
 #
 # Node
@@ -499,74 +544,74 @@ class Node(object):
     def __reduce__(self):
         return node, (self.name, self.attrs, self.vals)
         
-class NodeEx(Node):
-    #
-    @property
-    def __meta__(self):
-        return self.metadata
-    #
-    def __getattr__(self, name):
-        if name.startswith('__'):
-            return self.__getattribute__(name)
-        else:
-            if name.startswith('@'):
-                if self.metadata:
-                    val = self.metadata.get(name[1:], c_undefined)
-                else:
-                    val = c_undefined
-                if val is c_undefined:
-                    raise AttributeError("Undefined metadata attribute " + name)
-            else:
-                if self.attrs is not None:
-                    val = self.attrs.get(name, c_undefined)
-                else:
-                    val = c_undefined
-                if val is c_undefined:
-                    raise AttributeError("Undefined attribute " + name)
-                
-            if val is c_undefined:
-                val = self._getbyname(name)
-                if val is c_undefined:
-                    raise AttributeError("Undefined element " + name)
-            return val
-    #
-    def __richcmp__(self, other, op):
-        if type(self) is NodeEx:
-            v = (self.name == other.name) and \
-                (self.metadata == other.metadata) and \
-                (self.attrs == other.attrs) and \
-                (self.vals == other.vals)
-            if op == 2:
-                return v
-            elif op == 3:
-                return not v
-            else:
-                raise _error_unsupported_comparison(self)
-        else:
-            raise _error_incomparable_types(self, other)
-    #
-    def __repr__(self):
-        attrs = self.attrs
-        vals = self.vals
-        metadata = self.metadata
-        if metadata:
-            metadata_text = ', '.join([str(name)+': '+repr(attrs[name]) for name in metadata])
-        else:
-            metadata_text = ''
-        if attrs:
-            attrs_text = ', '.join([str(name)+': '+repr(attrs[name]) for name in attrs])
-        else:
-            attrs_text = ''
-        if vals:
-            vals_text = ', '.join([repr(x) for x in vals])
-        else:
-            vals_text = ''
-        sp1 = (' ' if metadata and (attrs or vals) else '')
-        sp2 = (' ' if attrs and vals else '')
-        return self.name + '{' + metadata_text + sp1 + attrs_text + sp2 + vals_text + '}'
-    #
-    def __reduce__(self):
-        return node_ex, (self.name, self.attrs, self.vals, self.metadata)
+# class NodeEx(Node):
+#     #
+#     @property
+#     def __meta__(self):
+#         return self.metadata
+#     #
+#     def __getattr__(self, name):
+#         if name.startswith('__'):
+#             return self.__getattribute__(name)
+#         else:
+#             if name.startswith('@'):
+#                 if self.metadata:
+#                     val = self.metadata.get(name[1:], c_undefined)
+#                 else:
+#                     val = c_undefined
+#                 if val is c_undefined:
+#                     raise AttributeError("Undefined metadata attribute " + name)
+#             else:
+#                 if self.attrs is not None:
+#                     val = self.attrs.get(name, c_undefined)
+#                 else:
+#                     val = c_undefined
+#                 if val is c_undefined:
+#                     raise AttributeError("Undefined attribute " + name)
+#
+#             if val is c_undefined:
+#                 val = self._getbyname(name)
+#                 if val is c_undefined:
+#                     raise AttributeError("Undefined element " + name)
+#             return val
+#     #
+#     def __richcmp__(self, other, op):
+#         if type(self) is NodeEx:
+#             v = (self.name == other.name) and \
+#                 (self.metadata == other.metadata) and \
+#                 (self.attrs == other.attrs) and \
+#                 (self.vals == other.vals)
+#             if op == 2:
+#                 return v
+#             elif op == 3:
+#                 return not v
+#             else:
+#                 raise _error_unsupported_comparison(self)
+#         else:
+#             raise _error_incomparable_types(self, other)
+#     #
+#     def __repr__(self):
+#         attrs = self.attrs
+#         vals = self.vals
+#         metadata = self.metadata
+#         if metadata:
+#             metadata_text = ', '.join([str(name)+': '+repr(attrs[name]) for name in metadata])
+#         else:
+#             metadata_text = ''
+#         if attrs:
+#             attrs_text = ', '.join([str(name)+': '+repr(attrs[name]) for name in attrs])
+#         else:
+#             attrs_text = ''
+#         if vals:
+#             vals_text = ', '.join([repr(x) for x in vals])
+#         else:
+#             vals_text = ''
+#         sp1 = (' ' if metadata and (attrs or vals) else '')
+#         sp2 = (' ' if attrs and vals else '')
+#         return self.name + '{' + metadata_text + sp1 + attrs_text + sp2 + vals_text + '}'
+#     #
+#     def __reduce__(self):
+#         return node_ex, (self.name, self.attrs, self.vals, self.metadata)
     
 
 def c_new_node(name, attrs, vals):
@@ -576,13 +621,13 @@ def c_new_node(name, attrs, vals):
     o.vals = vals
     return o
 
-def c_new_node_ex(name, attrs, vals, metadata):
-    o = NodeEx.__new__(NodeEx)
-    o.name = name
-    o.attrs = attrs
-    o.vals = vals
-    o.metadata = metadata
-    return o
+# def c_new_node_ex(name, attrs, vals, metadata):
+#     o = NodeEx.__new__(NodeEx)
+#     o.name = name
+#     o.attrs = attrs
+#     o.vals = vals
+#     o.metadata = metadata
+#     return o
 
 def node(name, attrs=None, vals=None):
     '''
@@ -613,53 +658,53 @@ def node(name, attrs=None, vals=None):
     
     return c_new_node(c_as_name(name), _attrs, _vals)
 
-def node_ex(name, attrs=None, vals=None, metadata=None):
-    '''
-    Factory function for creating node.
-
-    :param name:
-
-        name of the sequence.
-
-    :param attrs:
-
-        python ordered dict containing attributes.
-        
-    :param vals:
-
-        python sequence containing values.
-        
-    :param metadata:
-
-        python dict containing metadata.
-    '''
-    if attrs is not None:
-        if len(attrs) == 0:
-            _attrs = None
-        elif type(attrs) is OrderedDict:
-            _attrs = attrs
-        else:
-            _attrs = OrderedDict(attrs)
-    else:
-        _attrs = attrs
-    
-    if vals is not None and len(vals) == 0:
-        _vals = None
-    else:
-        _vals = c_as_list(vals)
-        
-    if metadata is not None:
-        if len(metadata) == 0:
-            _metadata = None
-        elif type(metadata) is dict:
-            _metadata = metadata
-        else:
-            _metadata = {}
-    else:
-        _metadata = metadata
-        
-    
-    return c_new_node_ex(c_as_name(name), _attrs, _vals, _metadata)
+# def node_ex(name, attrs=None, vals=None, metadata=None):
+#     '''
+#     Factory function for creating node.
+#
+#     :param name:
+#
+#         name of the sequence.
+#
+#     :param attrs:
+#
+#         python ordered dict containing attributes.
+#
+#     :param vals:
+#
+#         python sequence containing values.
+#
+#     :param metadata:
+#
+#         python dict containing metadata.
+#     '''
+#     if attrs is not None:
+#         if len(attrs) == 0:
+#             _attrs = None
+#         elif type(attrs) is OrderedDict:
+#             _attrs = attrs
+#         else:
+#             _attrs = OrderedDict(attrs)
+#     else:
+#         _attrs = attrs
+#
+#     if vals is not None and len(vals) == 0:
+#         _vals = None
+#     else:
+#         _vals = c_as_list(vals)
+#
+#     if metadata is not None:
+#         if len(metadata) == 0:
+#             _metadata = None
+#         elif type(metadata) is dict:
+#             _metadata = metadata
+#         else:
+#             _metadata = {}
+#     else:
+#         _metadata = metadata
+#
+#
+#     return c_new_node_ex(c_as_name(name), _attrs, _vals, _metadata)
             
 def dict_as_sequence_factory(items):
     return dict(items)
@@ -733,28 +778,40 @@ class Builder:
     def create_node(self, name, attrs, vals):
         return self.node(name, attrs, vals)
     #
-    def create_dict_ex(self, d, meta):
-        return self.dict_ex(d, meta)
-    #
-    def create_list_ex(self, l, meta):
-        return self.list_ex(l, meta)
-    #
-    def create_tuple_ex(self, l, meta):
-        return self.tuple_ex(l, meta)
+    # def create_node_ex(self, name, attrs, vals, meta):
+    #     return self.node_ex(name, attrs, vals, meta)
+    # #
+    # def create_dict_ex(self, d, meta):
+    #     return self.dict_ex(d, meta)
+    # #
+    # def create_odict_ex(self, d, meta):
+    #     return c_new_odict_ex(d, meta)
+    # #
+    # def create_list_ex(self, l, meta):
+    #     return self.list_ex(l, meta)
+    # #
+    # def create_tuple_ex(self, l, meta):
+    #     return self.tuple_ex(l, meta)
 
 class SafeBuilder(Builder):
     #
     def create_node(self, name, attrs, vals):
         return c_new_node(name, attrs, vals)
     #
-    def create_dict_ex(self, d, meta):
-        return c_new_dict_ex(d, meta)
-    #
-    def create_list_ex(self, l, meta):
-        return c_new_list_ex(l, meta)
-    #
-    def create_tuple_ex(self, l, meta):
-        return self.tuple_ex(l, meta)
+    # def create_node_ex(self, name, attrs, vals, meta):
+    #     return c_new_node_ex(name, attrs, vals, meta)
+    # #
+    # def create_dict_ex(self, d, meta):
+    #     return c_new_dict_ex(d, meta)
+    # #
+    # def create_odict_ex(self, d, meta):
+    #     return c_new_odict_ex(d, meta)
+    # #
+    # def create_list_ex(self, l, meta):
+    #     return c_new_list_ex(l, meta)
+    # #
+    # def create_tuple_ex(self, l, meta):
+    #     return self.tuple_ex(l, meta)
 
 class StrictBuilder(Builder):
 
@@ -770,35 +827,52 @@ class StrictBuilder(Builder):
         else:
             return handler(attrs, vals)
     #
-    def create_dict_ex(self, d, meta):
-        name = meta.get('@', None)
-        if name is None:
-            return d
-        handler = self.c_factory_dict.get(name)
-        if handler is None:
-            errors.error_no_handler(name)
-        else:
-            return handler(d, meta)
-    #
-    def create_list_ex(self, l, meta):
-        name = meta.get('@', None)
-        if name is None:
-            return l
-        handler = self.c_factory_dict.get(name)
-        if handler is None:
-            errors.error_no_handler(name)
-        else:
-            return handler(l, meta)
-    #
-    def create_tuple_ex(self, l, meta):
-        name = meta.get('@', None)
-        if name is None:
-            return l
-        handler = self.c_factory_dict.get(name)
-        if handler is None:
-            errors.error_no_handler(name)
-        else:
-            return handler(l, meta)
+    # def create_node_ex(self, name, attrs, vals, meta):
+    #     handler = self.c_factory_dict.get(name)
+    #     if handler is None:
+    #         errors.error_no_handler(name)
+    #     else:
+    #         return handler(attrs, vals, meta)
+    # #
+    # def create_dict_ex(self, d, meta):
+    #     name = meta.get('@', None)
+    #     if name is None:
+    #         return d
+    #     handler = self.c_factory_dict.get(name)
+    #     if handler is None:
+    #         errors.error_no_handler(name)
+    #     else:
+    #         return handler(d, meta)
+    # #
+    # def create_odict_ex(self, d, meta):
+    #     name = meta.get('@', None)
+    #     if name is None:
+    #         return d
+    #     handler = self.c_factory_dict.get(name)
+    #     if handler is None:
+    #         errors.error_no_handler(name)
+    #     else:
+    #         return handler(d, meta)
+    # #
+    # def create_list_ex(self, l, meta):
+    #     name = meta.get('@', None)
+    #     if name is None:
+    #         return l
+    #     handler = self.c_factory_dict.get(name)
+    #     if handler is None:
+    #         errors.error_no_handler(name)
+    #     else:
+    #         return handler(l, meta)
+    # #
+    # def create_tuple_ex(self, l, meta):
+    #     name = meta.get('@', None)
+    #     if name is None:
+    #         return l
+    #     handler = self.c_factory_dict.get(name)
+    #     if handler is None:
+    #         errors.error_no_handler(name)
+    #     else:
+    #         return handler(l, meta)
 
 
 class MixedBuilder(Builder):
@@ -815,35 +889,52 @@ class MixedBuilder(Builder):
         else:
             return handler(attrs, vals)
     #
-    def create_dict_ex(self, d, meta):
-        name = meta.get('@', None)
-        if name is None:
-            return d
-        handler = self.c_factory_dict.get(name)
-        if handler is None:
-            return node(name, d, None)
-        else:
-            return handler(d, meta)
-    #
-    def create_list_ex(self, l, meta):
-        name = meta.get('@', None)
-        if name is None:
-            return l
-        handler = self.c_factory_dict.get(name)
-        if handler is None:
-            return node(name, None, l)
-        else:
-            return handler(l, meta)
-    #
-    def create_tuple_ex(self, l, meta):
-        name = meta.get('@', None)
-        if name is None:
-            return l
-        handler = self.c_factory_dict.get(name)
-        if handler is None:
-            return node(name, None, l)
-        else:
-            return handler(l, meta)
+    # def create_node_ex(self, name, attrs, vals, meta):
+    #     handler = self.c_factory_dict.get(name)
+    #     if handler is None:
+    #         return c_new_node_ex(name, attrs, vals, meta)
+    #     else:
+    #         return handler(attrs, vals, meta)
+    # #
+    # def create_dict_ex(self, d, meta):
+    #     name = meta.get('@', None)
+    #     if name is None:
+    #         return d
+    #     handler = self.c_factory_dict.get(name)
+    #     if handler is None:
+    #         return node(name, d, None)
+    #     else:
+    #         return handler(d, meta)
+    # #
+    # def create_odict_ex(self, d, meta):
+    #     name = meta.get('@', None)
+    #     if name is None:
+    #         return d
+    #     handler = self.c_factory_dict.get(name)
+    #     if handler is None:
+    #         return node(name, d, None)
+    #     else:
+    #         return handler(d, meta)
+    # #
+    # def create_list_ex(self, l, meta):
+    #     name = meta.get('@', None)
+    #     if name is None:
+    #         return l
+    #     handler = self.c_factory_dict.get(name)
+    #     if handler is None:
+    #         return node(name, None, l)
+    #     else:
+    #         return handler(l, meta)
+    # #
+    # def create_tuple_ex(self, l, meta):
+    #     name = meta.get('@', None)
+    #     if name is None:
+    #         return l
+    #     handler = self.c_factory_dict.get(name)
+    #     if handler is None:
+    #         return node(name, None, l)
+    #     else:
+    #         return handler(l, meta)
             
 
 _inf = float('inf')

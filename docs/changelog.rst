@@ -1,6 +1,10 @@
 History of changes
 ------------------
 
+**0.8.2**
+
+1. Fix dump of toplevel dict when sort=1.
+
 **0.8.1**
 
 1. Now node objects support access to subnodes using attribute access.

@@ -61,6 +61,7 @@ from axon._objects cimport c_undefined, empty_name
 from axon._objects cimport c_get_cached_name, c_as_name, c_constants
 from axon._objects cimport c_new_node, c_new_attribute, c_new_keyval
 from axon._objects cimport Attribute, KeyVal, Node, reserved_name_dict
+#from axon._objects cimport c_add_metadata
 
 from axon._objects cimport Builder, SafeBuilder, StrictBuilder, MixedBuilder
 from axon._objects cimport SimpleBuilder
@@ -71,6 +72,7 @@ from axon._common cimport c_as_unicode, c_as_list, c_as_dict, c_as_tuple, dict_g
 #from axon._objects cimport ATOMIC, END, COMPLEX, ATTRIBUTE, KEY, REFERENCE, LABEL, LIST, DICT, TUPLE
 
 from axon.odict cimport OrderedDict as axon_odict, c_new_odict
+from axon.odict cimport OrderedDictEx as axon_odict_ex, c_new_odict_ex
 
 cdef object unicode_type, str_type, int_type, long_type
 cdef object bool_type, float_type, bytes_type
@@ -195,7 +197,7 @@ cdef class Loader:
     @cython.locals(ch=Py_UCS4, val=object, is_idn=bint)
     cdef object get_value(Loader self, int idn, int idn0, int flag=*)
 
-    @cython.locals(ch=Py_UCS4, val=object, vals=list, attrs=axon_odict, attr=Attribute, flag=int)
+    @cython.locals(ch=Py_UCS4, val=object, vals=list, attrs=axon_odict, attr=Attribute, flag=int, metadata=dict)
     cdef object get_complex_value(Loader self, object name, int idn, int idn0)
 
     @cython.locals(sequence=list, ch=Py_UCS4, val=object, is_odict=bint, metadata=dict)
@@ -204,8 +206,8 @@ cdef class Loader:
     @cython.locals(sequence=list, v=bint, metadata=dict)
     cdef object get_tuple_value(Loader self)
 
-    @cython.locals(ch=Py_UCS4, metadata=dict)
-    cdef object get_metadata(Loader self)
+    #@cython.locals(ch=Py_UCS4, metadata=dict)
+    #cdef object get_metadata(Loader self)
 
     @cython.locals(ch=Py_UCS4, mapping=dict, metadata=dict)
     cdef object get_dict_value(Loader self)

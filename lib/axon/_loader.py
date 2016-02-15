@@ -945,8 +945,16 @@ class Loader:
     #
     def get_complex_value(self, name, idn, idn0):
         attrs = None
-        vals = None         
+        vals = None
+        #metadata = None
         ch = self.skip_spaces()
+        
+        # if ch == '@':
+        #     metadata = self.get_metadata()
+        #     ch = self.skip_spaces()
+        # else:
+        #     metadata = None
+        
         flag = 0
         while 1:
             if ch == '#':
@@ -955,7 +963,7 @@ class Loader:
                 
             if idn:
                 if self.eof or self.col <= idn0:
-                    val = self.builder.create_node(name, attrs, vals)
+                    #val = self.builder.create_node(name, attrs, vals)
                     break
                 elif self.col == idn:
                     pass
@@ -984,21 +992,23 @@ class Loader:
             ch = self.skip_spaces()            
 
         val = self.builder.create_node(name, attrs, vals)
+        # if metadata is not None:
+        #     val = c_add_metadata(val, metadata)
         return val
     #
     def get_list_value(self):
 
         sequence = []
         is_odict = 0
-        metadata = None
+        #metadata = None
 
         ch = self.skip_spaces()
         
-        if ch == '@':
-            metadata = self.get_metadata()
-            ch = self.skip_spaces()
-        else:
-            metadata = None        
+        # if ch == '@':
+        #     metadata = self.get_metadata()
+        #     ch = self.skip_spaces()
+        # else:
+        #     metadata = None
         
         if ch == '#':
             self.skip_comments()
@@ -1043,12 +1053,17 @@ class Loader:
                 skip_char(self)
                 self.bs -= 1
                 if is_odict:
-                    return axon_odict(sequence)
+                    return c_new_odict(sequence)
+                    # if metadata is None:
+                    #     return c_new_odict(sequence)
+                    # else:
+                    #     return self.builder.create_odict_ex(sequence, metadata)
                 else:
-                    if metadata is None:
-                        return sequence
-                    else:
-                        return self.builder.create_list_ex(sequence, metadata)
+                    return sequence
+                    # if metadata is None:
+                    #     return sequence
+                    # else:
+                    #     return self.builder.create_list_ex(sequence, metadata)
             elif ch == '\0':
                 errors.error(self, "Unexpected end inside of the list")
 
@@ -1069,17 +1084,16 @@ class Loader:
     def get_tuple_value(self):
 
         sequence = []
-        metadata = None
+        #metadata = None
 
         ch = self.skip_spaces()
         
-        if ch == '@':
-            metadata = self.get_metadata()
-            ch = self.skip_spaces()
-        else:
-            metadata = None
+        # if ch == '@':
+        #     metadata = self.get_metadata()
+        #     ch = self.skip_spaces()
+        # else:
+        #     metadata = None
         
-
         while 1:
             if ch == '#':
                 self.skip_comments()
@@ -1088,10 +1102,11 @@ class Loader:
             if ch == ')':
                 skip_char(self)
                 self.bq -= 1
-                if metadata is None:
-                    return tuple(sequence)
-                else:
-                    return self.builder.create_tuple_ex(sequence, metadata)
+                return tuple(sequence)
+                # if metadata is None:
+                #     return tuple(sequence)
+                # else:
+                #     return self.builder.create_tuple_ex(sequence, metadata)
             elif ch == '\0':
                 errors.error(self, "Unexpected end inside of the tuple")
 
@@ -1100,48 +1115,48 @@ class Loader:
 
             ch = self.skip_spaces()
     #
-    def get_metadata(self):
-        metadata = None
-
-        ch = self.skip_spaces()
-        
-        while ch == '@':
-            skip_char(self)
-            name = self._get_name()
-            if name is None:
-                errors.error(self, "Expected name after '@' in the dict")
-            
-            ch = self.skip_spaces()
-            
-            if ch == ':':
-                skip_char(self)
-            else:
-                errors.error(self, "Expected ':' after name in metadata")
-
-            self.skip_spaces()
-            
-            val = self.get_value(0, 0)
-            
-            if metadata is None:
-                metadata = {}
-            
-            metadata[name] = val
-
-            ch = self.skip_spaces()
-        
-        return metadata
+    # def get_metadata(self):
+    #     metadata = None
+    #
+    #     ch = self.skip_spaces()
+    #
+    #     while ch == '@':
+    #         skip_char(self)
+    #         name = self._get_name()
+    #         if name is None:
+    #             errors.error(self, "Expected name after '@' in the dict")
+    #
+    #         ch = self.skip_spaces()
+    #
+    #         if ch == ':':
+    #             skip_char(self)
+    #         else:
+    #             errors.error(self, "Expected ':' after name in metadata")
+    #
+    #         self.skip_spaces()
+    #
+    #         val = self.get_value(0, 0)
+    #
+    #         if metadata is None:
+    #             metadata = {}
+    #
+    #         metadata[name] = val
+    #
+    #         ch = self.skip_spaces()
+    #
+    #     return metadata
         
     def get_dict_value(self):
         mapping = {}
-        metadata = None
+        #metadata = None
 
         ch = self.skip_spaces()
         
-        if ch == '@':
-            metadata = self.get_metadata()
-            ch = self.skip_spaces()
-        else:
-            metadata = None
+        # if ch == '@':
+        #     metadata = self.get_metadata()
+        #     ch = self.skip_spaces()
+        # else:
+        #     metadata = None
 
         while 1:
         
@@ -1171,10 +1186,11 @@ class Loader:
                 if ch == '}':
                     skip_char(self)
                     self.bc -= 1
-                    if metadata is None:
-                        return mapping
-                    else:
-                        return self.builder.create_dict_ex(mapping, metadata)
+                    return mapping
+                    # if metadata is None:
+                    #     return mapping
+                    # else:
+                    #     return self.builder.create_dict_ex(mapping, metadata)
                 elif ch == '\0':
                     errors.error(self, "Unexpected end inside of the dict")
                 else:

@@ -84,6 +84,7 @@ cdef public unicode c_undescore
 
 from axon._common cimport c_as_unicode, c_as_list, c_as_dict, c_as_tuple, dict_get
 from axon.odict cimport OrderedDict, c_new_odict
+from axon.odict cimport OrderedDictEx, c_new_odict_ex
 
 cdef public dict name_cache
 
@@ -202,19 +203,24 @@ cdef public KeyVal c_new_keyval(unicode key, object val)
 
 cdef dict reserved_name_dict 
 
-@cython.final
-cdef public class DictEx(dict)[type DictExType, object DictExType]:
-    cdef dict metadata
-
-@cython.final
-cdef public class ListEx(list)[type ListExType, object ListExType]:
-    cdef dict metadata
-
-@cython.final
-cdef public class TupleEx(list)[type TupleExType, object TupleExType]:
-    cdef dict metadata
+# cdef class ObjectWithMetadata:
+#     cdef object ob
+#     cdef dict metadata
+#
+# @cython.final
+# cdef public class DictEx(dict)[type DictExType, object DictExObject]:
+#     cdef dict metadata
+#
+# @cython.final
+# cdef public class ListEx(list)[type ListExType, object ListExObject]:
+#     cdef dict metadata
+#
+# @cython.final
+# cdef public class TupleEx(list)[type TupleExType, object TupleExObject]:
+#     cdef dict metadata
 
 @cython.freelist(128)
+@cython.final
 cdef public class Node[type NodeType, object NodeObject]:
     cdef object name
     cdef OrderedDict attrs
@@ -223,22 +229,25 @@ cdef public class Node[type NodeType, object NodeObject]:
     @cython.locals(vals=list, node=Node, val=object)
     cdef object _getbyname(self, object name)
 
-@cython.final
-cdef public class NodeEx(Node)[type NodeExType, object NodeExObject]:
-    cdef dict metadata
+# @cython.final
+# cdef public class NodeEx(Node)[type NodeExType, object NodeExObject]:
+#     cdef dict metadata
 
 @cython.locals(o=Node)
 cdef public object c_new_node(object name, OrderedDict attrs, list vals)
 
-@cython.locals(o=NodeEx)
-cdef public object c_new_node_ex(object name, OrderedDict attrs, list vals, dict metadata)
+# @cython.locals(o=ObjectWithMetadata)
+# cdef public object c_add_metadata(object ob, dict metadata)
 
-@cython.locals(o=DictEx)
-cdef public object c_new_dict_ex(dict d, dict meta)
-@cython.locals(o=ListEx)
-cdef public object c_new_list_ex(list l, dict meta)
-@cython.locals(o=TupleEx)
-cdef public object c_new_tuple_ex(list l, dict meta)
+# @cython.locals(o=NodeEx)
+# cdef public object c_new_node_ex(object name, OrderedDict attrs, list vals, dict metadata)
+#
+# @cython.locals(o=DictEx)
+# cdef public object c_new_dict_ex(dict d, dict meta)
+# @cython.locals(o=ListEx)
+# cdef public object c_new_list_ex(list l, dict meta)
+# @cython.locals(o=TupleEx)
+# cdef public object c_new_tuple_ex(list l, dict meta)
 
 #@cython.locals(sequence=list)
 #cpdef node_from_items(name, args)
@@ -254,15 +263,19 @@ cdef public dict c_factory_dict
 
 cdef class Builder:
     cdef public object create_node(self, object, OrderedDict, list)
-    cdef public object create_dict_ex(self, dict, dict)
-    cdef public object create_list_ex(self, list, dict)
-    cdef public object create_tuple_ex(self, list, dict)
+    # cdef public object create_node_ex(self, object, OrderedDict, list, dict)
+    # cdef public object create_dict_ex(self, dict, dict)
+    # cdef public object create_odict_ex(self, list, dict)
+    # cdef public object create_list_ex(self, list, dict)
+    # cdef public object create_tuple_ex(self, list, dict)
 
 cdef class SafeBuilder(Builder):
     cdef public object create_node(self, object, OrderedDict, list)
-    cdef public object create_dict_ex(self, dict, dict)
-    cdef public object create_list_ex(self, list, dict)
-    cdef public object create_tuple_ex(self, list, dict)
+    # cdef public object create_node_ex(self, object, OrderedDict, list, dict)
+    # cdef public object create_dict_ex(self, dict, dict)
+    # cdef public object create_odict_ex(self, list, dict)
+    # cdef public object create_list_ex(self, list, dict)
+    # cdef public object create_tuple_ex(self, list, dict)
 
 cdef class StrictBuilder(Builder):
     cdef FactoryRegister register
@@ -270,9 +283,11 @@ cdef class StrictBuilder(Builder):
     cdef public dict c_type_factory_dict    
 
     cdef public object create_node(self, object, OrderedDict, list)
-    cdef public object create_dict_ex(self, dict, dict)
-    cdef public object create_list_ex(self, list, dict)
-    cdef public object create_tuple_ex(self, list, dict)
+    # cdef public object create_node_ex(self, object, OrderedDict, list, dict)
+    # cdef public object create_dict_ex(self, dict, dict)
+    # cdef public object create_odict_ex(self, list, dict)
+    # cdef public object create_list_ex(self, list, dict)
+    # cdef public object create_tuple_ex(self, list, dict)
 
 cdef class MixedBuilder(Builder):
     cdef FactoryRegister register
@@ -280,9 +295,11 @@ cdef class MixedBuilder(Builder):
     cdef public dict c_type_factory_dict
     
     cdef public object create_node(self, object, OrderedDict, list)
-    cdef public object create_dict_ex(self, dict, dict)
-    cdef public object create_list_ex(self, list, dict)
-    cdef public object create_tuple_ex(self, list, dict)
+    # cdef public object create_node_ex(self, object, OrderedDict, list, dict)
+    # cdef public object create_dict_ex(self, dict, dict)
+    # cdef public object create_odict_ex(self, list, dict)
+    # cdef public object create_list_ex(self, list, dict)
+    # cdef public object create_tuple_ex(self, list, dict)
 
 cdef object _str2decimal
 
