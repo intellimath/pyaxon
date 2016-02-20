@@ -22,6 +22,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
+from codecs import open
+
 #from distutils.core import setup
 from setuptools import setup
 
@@ -96,7 +98,7 @@ else:
         ),
     ]
 
-long_description = open('README.rst').read()
+long_description = open('README.rst', encoding='utf-8').read()
 
 setup(
     name = 'pyaxon',
