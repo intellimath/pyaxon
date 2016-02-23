@@ -22,7 +22,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-from codecs import open
+from io import open
 
 #from distutils.core import setup
 from setuptools import setup
