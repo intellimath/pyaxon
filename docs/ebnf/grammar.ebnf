@@ -11,7 +11,7 @@ anonymous-complex-value ::= dict | list | tuple | odict
 named-complex-value ::= node
 
 dict ::= '{' dict-item* '}'
-odict ::= '[]' dict-item* ']'
+odict ::= '[' dict-item* ']'
 
 dict-item ::= key ':' data-item
 key ::= identifier | text
