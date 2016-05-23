@@ -84,7 +84,7 @@ cdef public unicode c_undescore
 
 from axon._common cimport c_as_unicode, c_as_list, c_as_dict, c_as_tuple, dict_get
 from axon.odict cimport OrderedDict, c_new_odict
-from axon.odict cimport OrderedDictEx, c_new_odict_ex
+#from axon.odict cimport OrderedDictEx, c_new_odict_ex
 
 cdef public dict name_cache
 

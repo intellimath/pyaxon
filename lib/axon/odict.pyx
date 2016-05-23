@@ -448,9 +448,9 @@ cdef public class OrderedDict[object OrderedDictObject, type OrderedDictType]:
 
 collections.MutableMapping.register(OrderedDict)
 
-cdef public class OrderedDictEx(OrderedDict)[object OrderedDictExObject, type OrderedDictExType]:
-    def __init__(self, *args, **kwds):
-        OrderedDict.__init__(self, *args, **kwds)
+#cdef public class OrderedDictEx(OrderedDict)[object OrderedDictExObject, type OrderedDictExType]:
+    # def __init__(self, *args, **kwds):
+    #     OrderedDict.__init__(self, *args, **kwds)
 
 
 cdef c_init_odict(OrderedDict od, list args):
@@ -481,17 +481,16 @@ cdef OrderedDict c_new_odict(list args):
     c_init_odict(od, args)
     return od
     
-cdef OrderedDictEx c_new_odict_ex(list args, dict metadata):
-    cdef OrderedDictEx od
-
-    od = OrderedDictEx.__new__(OrderedDictEx)
-    c_init_odict(od, args)
-    od.metadata = metadata
-    return od
+# cdef OrderedDictEx c_new_odict_ex(list args, dict metadata):
+#     cdef OrderedDictEx od
+#
+#     od = OrderedDictEx.__new__(OrderedDictEx)
+#     c_init_odict(od, args)
+#     od.metadata = metadata
+#     return od
     
 def odict(args):
     return c_new_odict(c_as_list(args))            
 
-def odict_ex(args, metadata):
-    return c_new_odict_ex(c_as_list(args), c_as_dict(metadata))            
-
+# def odict_ex(args, metadata):
+#     return c_new_odict_ex(c_as_list(args), c_as_dict(metadata))

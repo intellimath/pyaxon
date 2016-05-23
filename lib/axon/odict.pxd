@@ -71,10 +71,10 @@ cdef public class OrderedDict[object OrderedDictObject, type OrderedDictType]:
     cdef Link root
     cdef dict map
 
-cdef public class OrderedDictEx(OrderedDict)[object OrderedDictExObject, type OrderedDictExType]:
-    cdef dict metadata
+#cdef public class OrderedDictEx(OrderedDict)[object OrderedDictExObject, type OrderedDictExType]:
+#    cdef dict metadata
 
 cdef c_init_odict(OrderedDict od, list args)
     
 cdef OrderedDict c_new_odict(list args)
-cdef OrderedDictEx c_new_odict_ex(list args, dict metadata)
+#cdef OrderedDictEx c_new_odict_ex(list args, dict metadata)
