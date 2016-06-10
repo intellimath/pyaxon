@@ -459,10 +459,7 @@ class Node(object):
         if vals is not None and len(vals) == 0:
             self.vals = None
         elif vals is not None:
-            if type(vals) is list:
-                self.vals = vals
-            else:
-                self.vals = list(vals)
+            self.vals = c_as_list(vals)
     #
     def __getattr__(self, name):
         if name.startswith('__'):
@@ -472,16 +469,16 @@ class Node(object):
                 val = self.attrs.get(name, c_undefined)
             else:
                 val = c_undefined
-            if val is c_undefined:
-                raise AttributeError("Undefined attribute " + name)
+            #if val is c_undefined:
+            #    raise AttributeError("Undefined attribute " + name)
                 
             if val is c_undefined:
-                val = self._getbyname(name)
+                val = self.__getbyname(name)
                 if val is c_undefined:
                     raise AttributeError("Undefined element " + name)
             return val
     #
-    def _getbyname(self, name):
+    def __getbyname(self, name):
         vals = []
         for val in self.vals:
             if type(val) is Node:
