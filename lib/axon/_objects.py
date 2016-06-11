@@ -468,7 +468,11 @@ class Node(object):
             if self.attrs is not None:
                 val = self.attrs.get(name, c_undefined)
             else:
+                val = c_undefined
+
+            if val is c_undefined:
                 raise AttributeError("Undefined name: " + name)
+
             return val
     #
     def __setattr__(self, name, val):
@@ -499,7 +503,9 @@ class Node(object):
         return self
     #
     def __iter__(self):
-        if self.vals is not None:
+        if self.vals is None:
+            return iter([])
+        else:
             return iter(self.vals)
     #
     def __nonzero__(self):
