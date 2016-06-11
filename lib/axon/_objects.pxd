@@ -226,9 +226,6 @@ cdef public class Node[type NodeType, object NodeObject]:
     cdef OrderedDict attrs
     cdef list vals
 
-    @cython.locals(vals=list, node=Node, val=object)
-    cdef object __getbyname(self, object name)
-
 # @cython.final
 # cdef public class NodeEx(Node)[type NodeExType, object NodeExObject]:
 #     cdef dict metadata

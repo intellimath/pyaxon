@@ -468,30 +468,8 @@ class Node(object):
             if self.attrs is not None:
                 val = self.attrs.get(name, c_undefined)
             else:
-                val = c_undefined
-            #if val is c_undefined:
-            #    raise AttributeError("Undefined attribute " + name)
-                
-            if val is c_undefined:
-                val = self.__getbyname(name)
-                if val is c_undefined:
-                    raise AttributeError("Undefined element " + name)
+                raise AttributeError("Undefined name: " + name)
             return val
-    #
-    def __getbyname(self, name):
-        vals = []
-        for val in self.vals:
-            if type(val) is Node:
-                node = val
-                if node.name == name:
-                    vals.append(val)
-        n = len(vals)
-        if n == 0:
-            return c_undefined
-        elif n == 1:
-            return vals[0]
-        else:
-            return vals        
     #
     def __setattr__(self, name, val):
         if name.startswith('__'):
@@ -500,17 +478,32 @@ class Node(object):
             self.attrs[name] = val
     #
     def __getitem__(self, index):
+        if self.vals is None:
+            raise errors.errors_no_children(Node)
         return self.vals[index]
     #
     def __setitem__(self, index, val):
+        if self.vals is None:
+            raise errors.errors_no_children(Node)
         self.vals[index] = val
+    #
+    def __delitem__(self, index):
+        if self.vals is None:
+            raise errors.errors_no_children(Node)
+        del self.vals[index]
+    #
+    def __iadd__(self, vals):
+        if self.vals is None:
+            self.vals = []
+        self.vals.extend(vals)
+        return self
     #
     def __iter__(self):
         if self.vals is not None:
             return iter(self.vals)
     #
     def __nonzero__(self):
-        return self.attrs is not None or self.vals is not None
+        return self.attrs or self.vals
     #
     def __richcmp__(self, other, op):
         if type(self) is Node:
