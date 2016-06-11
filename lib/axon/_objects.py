@@ -451,15 +451,24 @@ class Node(object):
 
     def __init__(self, name, attrs=None, vals=None):
         self.name = c_as_name(name)
-        if attrs is not None and len(attrs) == 0:
+        
+        if attrs is None:
             self.attrs = None
-        elif attrs is not None:
-            self.attrs = OrderedDict(attrs)
+        else:
+            tp = type(attrs)
+            if tp is OrderedDict:
+                self.attrs = attrs
+            else:
+                self.attrs = OrderedDict(attrs)
             
-        if vals is not None and len(vals) == 0:
+        if vals is None:
             self.vals = None
-        elif vals is not None:
-            self.vals = c_as_list(vals)
+        else:
+            tp = type(vals)
+            if tp is list:
+                self.vals = vals
+            else:
+                self.vals = list(vals)
     #
     def __getattr__(self, name):
         if name.startswith('__'):
@@ -469,7 +478,7 @@ class Node(object):
                 val = self.attrs.get(name, c_undefined)
             else:
                 val = c_undefined
-
+                
             if val is c_undefined:
                 raise AttributeError("Undefined name: " + name)
 

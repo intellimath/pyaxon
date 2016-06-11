@@ -25,6 +25,8 @@
 from cpython.object cimport PyObject, PyObject_Unicode
 from cpython.dict cimport PyDict_GetItem, PyDict_SetItem
 
+#from axon.odict cimport OrderedDict
+
 cdef extern from "utils.h":
     inline unicode c_object_to_unicode(object o)
 
@@ -45,6 +47,14 @@ cdef inline dict c_as_dict(object ob):
         return {}
     else:
         return dict(ob)
+
+# cdef inline OrderedDict c_as_odict(object ob):
+#     if type(ob) is OrderedDict:
+#         return <OrderedDict>ob
+#     elif ob is None:
+#         return OrderedDict([])
+#     else:
+#         return OrderedDict(ob)
 
 cdef inline list c_as_list(object ob):
     if type(ob) is list:
