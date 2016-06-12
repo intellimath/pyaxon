@@ -53,7 +53,7 @@ def reduce_ElementTree(e):
 del reduce_ElementTree
 	
 
-def xml2axon(from_, to_=None):
+def xml2axon(from_, to_=None, pretty=1, braces=0):
     '''
     Convert from `XML` to `AXON`.
     
@@ -75,11 +75,11 @@ def xml2axon(from_, to_=None):
     root = tree._root
     
     if to_ is None:
-        return axon.dumps([root], pretty=1)
+        return axon.dumps([root], pretty=pretty, braces=braces)
     else:
-        axon.dump(to_, [root], pretty=1)
+        axon.dump(to_, [root], pretty=pretty, braces=braces)
 
-def json2axon(from_, to_=None):
+def json2axon(from_, to_=None, pretty=1, braces=1):
     '''
     Convert from `JSON` to `AXON`.
     
@@ -100,6 +100,6 @@ def json2axon(from_, to_=None):
         val = json.load(from_)
 
     if to_ is None:
-        return axon.dumps([val], pretty=1)
+        return axon.dumps([val], pretty=pretty, braces=braces)
     else:
-        axon.dump(to_, [val], pretty=1)
+        axon.dump(to_, [val], pretty=pretty, braces=braces)
