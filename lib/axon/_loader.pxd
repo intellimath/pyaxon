@@ -160,6 +160,9 @@ cdef class Loader:
     @cython.locals(ch=Py_UCS4, pos0=int, text=unicode, numtype=bint, v=bint)
     cdef object get_number(Loader self)
 
+    @cython.locals(ch=Py_UCS4, pos0=int, text=unicode, v=bint)
+    cdef object get_date_time(Loader self)
+
     @cython.locals(ch=Py_UCS4, pos0=int)
     cdef object _get_name(Loader self)
 

@@ -575,6 +575,48 @@ class Loader:
         else:
             return self.sbuilder.create_float(text)
     #
+    def get_date_time(self):
+        pos0 = self.pos
+        ch = next_char(self)
+        while ch >= '0' and ch <= '9':
+            ch = next_char(self)
+
+        if ch == '-':
+            self.pos = pos0
+
+            v = self.get_date()
+            if v < 0:
+                errors.error_invalid_datetime(self)
+
+            ch = current_char(self)
+            if ch == 'T':
+                skip_char(self)
+                v = self.get_time()
+                if v < 0:
+                    errors.error_invalid_datetime(self)
+
+                tzinfo = self.get_tzinfo()
+
+                val = self.sbuilder.create_datetime(
+                            self.da[0], self.da[1], self.da[2],
+                            self.ta[0], self.ta[1], self.ta[2], self.ta[3], tzinfo)
+            else:
+                val = self.sbuilder.create_date(
+                            self.da[0], self.da[1], self.da[2])
+
+            return val
+        elif ch == ':':
+            self.pos = pos0
+
+            v = self.get_time()
+            if v < 0:
+                errors.error_invalid_time(self)
+
+            tzinfo = self.get_tzinfo()
+
+            val = self.sbuilder.create_time(self.ta[0], self.ta[1], self.ta[2], self.ta[3], tzinfo)
+            return val
+    #
     def _get_name(self):
         pos0 = self.pos
         ch = current_char(self)
@@ -832,6 +874,9 @@ class Loader:
             self.bq += 1
             skip_char(self)
             val = self.get_tuple_value()
+        elif ch == '^':
+            skip_char(self)
+            val = self.get_date_time()
         elif ch == '<':
             self.ba += 1
             skip_char(self)

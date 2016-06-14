@@ -230,14 +230,8 @@ cdef public class Dumper[object Dumper, type DumperType]:
     #
     cdef dump_keyval(Dumper self, KeyVal attr)
     #
-    # @cython.locals(i=int)
-    # cdef dump_metadata_values(Dumper self, dict d)
-    #
     @cython.locals(i=int)
-    cdef dump_dict_values(Dumper self, dict d)
-    #
-    @cython.locals(i=int)
-    cdef dump_odict_values(Dumper self, object d)
+    cdef dump_dict_values(Dumper self, object d)
     #
     @cython.locals(i=int)
     cdef dump_attrs_sequence(Dumper self, axon_odict d)
@@ -245,18 +239,12 @@ cdef public class Dumper[object Dumper, type DumperType]:
     @cython.locals(i=int)
     cdef dump_list_sequence(Dumper self, list l)
     #
-    #cdef dump_tuple_ex(Dumper self, TupleEx l)
-    #
     @cython.locals(i=int)
     cdef dump_tuple_sequence(Dumper self, tuple l)
-    #
-    #cdef dump_list_ex(Dumper self, ListEx l)
     #
     cdef dump_list(Dumper self, list l)
     #
     #cdef dump_set(Dumper self, set l)
-    #
-    #cdef dump_dict_ex(Dumper self, DictEx d)
     #
     cdef dump_dict(Dumper self, dict d)
     #
@@ -272,9 +260,6 @@ cdef public class Dumper[object Dumper, type DumperType]:
     @cython.locals(i=int, j=int, flag=int, name=unicode)
     cdef pretty_dump_node_attrs(Dumper self, axon_odict l, unicode w, bint use_offset)
     #
-    #@cython.locals(i=int, n=int)
-    #cdef pretty_dump_metadata(Dumper self, object d, unicode w, bint use_offset)
-    #
     @cython.locals(i=int, n=int)
     cdef pretty_dump_dict_values(Dumper self, object d, unicode w, bint use_offset)
     #
@@ -287,19 +272,12 @@ cdef public class Dumper[object Dumper, type DumperType]:
     @cython.locals(i=int, j=int, flag=int)
     cdef pretty_dump_list_sequence(Dumper self, list l, unicode w, bint use_offset)
     #
-    #@cython.locals(n=int)
-    #cdef pretty_dump_list_ex(Dumper self, ListEx l, unicode w, bint use_offset)
-    #
     @cython.locals(n=int)
     cdef pretty_dump_list(Dumper self, list l, unicode w, bint use_offset)
     #
     #cdef pretty_dump_set(Dumper self, set l, unicode w, bint use_offset)
     #
-    #cdef pretty_dump_dict_ex(Dumper self, DictEx d, unicode w, bint use_offset)
-    #
-    cdef pretty_dump_dict(Dumper self, dict d, unicode w, bint use_offset)
-    #
-    cdef pretty_dump_odict(Dumper self, object d, unicode w, bint use_offset)
+    cdef pretty_dump_dict(Dumper self, object d, unicode w, bint use_offset)
     #
     #@cython.locals(n=int)
     #cdef pretty_dump_tuple_ex(Dumper self, TupleEx l, unicode w, bint use_offset)
@@ -318,15 +296,11 @@ cdef public class Dumper[object Dumper, type DumperType]:
     #
     cdef void collect_list(Dumper self, list lst)
     #
-    #cdef void collect_list_ex(Dumper self, ListEx lst)
-    #
     cdef void collect_tuple(Dumper self, tuple lst)
     #
     cdef void collect_set(Dumper self, set lst)
     #
     cdef void collect_dict(Dumper self, dict d)
-    #
-    #cdef void collect_dict_ex(Dumper self, DictEx d)
     #
     cdef void collect_odict(Dumper self, axon_odict d)
     #
@@ -341,5 +315,3 @@ cdef public class Dumper[object Dumper, type DumperType]:
 
 cdef set _simple_types
 
-
-# cpdef object dump_tok(Token tok)
