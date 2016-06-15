@@ -1068,7 +1068,7 @@ class Loader:
             if ch == ']':
                 skip_char(self)
                 self.bs -= 1
-                return axon_odict([])
+                return c_new_odict([])
             else:
                 errors.error(self, "Invalid empty ordered dict")
         elif ch == '\0':
@@ -1099,16 +1099,8 @@ class Loader:
                 self.bs -= 1
                 if is_odict:
                     return c_new_odict(sequence)
-                    # if metadata is None:
-                    #     return c_new_odict(sequence)
-                    # else:
-                    #     return self.builder.create_odict_ex(sequence, metadata)
                 else:
                     return sequence
-                    # if metadata is None:
-                    #     return sequence
-                    # else:
-                    #     return self.builder.create_list_ex(sequence, metadata)
             elif ch == '\0':
                 errors.error(self, "Unexpected end inside of the list")
 
