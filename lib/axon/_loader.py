@@ -577,7 +577,7 @@ class Loader:
     #
     def get_date_time(self):
         pos0 = self.pos
-        ch = next_char(self)
+        ch = current_char(self)
         while ch >= '0' and ch <= '9':
             ch = next_char(self)
 

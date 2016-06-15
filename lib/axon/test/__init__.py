@@ -6,6 +6,7 @@ from axon.test.test_decimal import *
 from axon.test.test_string import *
 from axon.test.test_constant import *
 from axon.test.test_datetime import *
+from axon.test.test_datetime10 import *
 from axon.test.test_list import *
 from axon.test.test_dict import *
 from axon.test.test_tuple import *

@@ -1,6 +1,21 @@
 History of changes
 ------------------
 
+**0.9**
+
+1. Now date/time/datetime values have prefix ``^`` in order to be more explicit 
+   (``12:00`` --> ``^12:00``, ``2010-12-31`` --> ``^2010-12-31``).
+   This change is important for adding support for more wider range of simple type values
+   for keys in dicts in the next version ``0.10``.
+   In 0.9.x loading of old notation of date/time/datetime values are allowed. 
+   In ``0.10`` old notation will be removed. 
+   In order to convert ``pyaxon`` text in safe mode to new date/time/datetime notation ``0.9``::
+
+      import axon
+	  
+	  axon.dumps(axon.loads(text))
+	  axon.dump(path, axon.loads(path, text))
+
 **0.8.2**
 
 1. Fix dump of toplevel dict when sort=1.
