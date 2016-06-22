@@ -87,7 +87,7 @@ class Loader:
 
     '''
     #
-    def __init__(self, fd, mode='safe', errto=None, json=False):
+    def __init__(self, fd, mode='safe', errto=None):
         '''
         .. py:function:: Loader(fd, readline, builder="safe", sbuilder="default", errto=None)
 
@@ -112,11 +112,6 @@ class Loader:
         self.ba = 0
         
         self.labeled_objects = {}
-
-        if json:
-            self.json = 1
-        else:
-            self.json = 0
 
         self.builder = get_builder(mode)
         if self.builder is None:
@@ -504,7 +499,6 @@ class Loader:
         return tzinfo
     #
     def get_number(self):
-
         numtype = 1
         pos0 = self.pos
         ch = next_char(self)
@@ -877,10 +871,10 @@ class Loader:
         elif ch == '^':
             skip_char(self)
             val = self.get_date_time()
-        elif ch == '<':
-            self.ba += 1
-            skip_char(self)
-            val = self.get_odict_value()
+        # elif ch == '<':
+        #     self.ba += 1
+        #     skip_char(self)
+        #     val = self.get_odict_value()
         elif ch == '|':
             val = self.get_base64()
         elif ch == '∞': # \U221E
@@ -934,12 +928,13 @@ class Loader:
                 name = None
             
             if name is None:
-                errors.error(self, "Invalid token")
+                errors.error(self, "Expected name here")
 
             if is_idn:
                 val = reserved_name_dict.get(name, c_undefined)
             else:
                 val = c_undefined
+                
                 
             if val is c_undefined:
 
@@ -962,98 +957,93 @@ class Loader:
                     elif ch == ':':
                         skip_char(self)
                         ch = self.skip_spaces()
-
-                        if self.before08 and self.is_nl:
-                            if self.eof or self.col <= idn:
-                                val = self.builder.create_node(name, None, None)
-                            elif self.col > idn:
-                                val = self.get_complex_value(name, self.col, idn)
+                        if flag == 1:
+                            val = c_new_attribute(name, self.get_value(idn, idn))
+                        elif flag == 2:
+                            if is_idn:
+                                val = c_new_keyval(name, self.get_value(idn, idn))
                             else:
-                                errors.error_indentation(self, idn)
+                                errors.error(self, "Unexpected key:val pair")
                         else:
-                            if flag == 1:
-                                val = c_new_attribute(name, self.get_value(idn, idn))
-                            elif flag == 2:
-                                if is_idn:
-                                    val = c_new_keyval(name, self.get_value(idn, idn))
-                                else:
-                                    errors.error(self, "Unexpected key:val pair")
-                            else:
-                                errors.error(self, "Unexpected attribute")
+                            errors.error(self, "Unexpected attribute")
                     else:
                         errors.error_unexpected_value(self, 'Expected attribute or complex value with the name %r' % name)
-
-        #if not valid_end_item(self):
-        #    errors.error_end_item(self)
 
         return val
     #
     def get_complex_value(self, name, idn, idn0):
-        attrs = None
-        vals = None
-        #metadata = None
+        attrs = []
         ch = self.skip_spaces()
         
-        # if ch == '@':
-        #     metadata = self.get_metadata()
-        #     ch = self.skip_spaces()
-        # else:
-        #     metadata = None
-        
-        flag = 0
+        vals = self.get_attributes(attrs, idn, idn0)
+        if len(attrs) == 0:
+            attrs = None
+        if vals is not None:
+            self.get_values(vals, idn, idn0)
+            
+        return self.builder.create_node(name, attrs, vals)
+    #
+    def get_attributes(self, attrs, idn, idn0):                
         while 1:
+            ch = self.skip_spaces()
+            
             if ch == '#':
                 self.skip_comments()
                 ch = current_char(self)
                 
             if idn:
                 if self.eof or self.col <= idn0:
-                    #val = self.builder.create_node(name, attrs, vals)
-                    break
+                    return None
                 elif self.col == idn:
                     pass
                 elif self.is_nl:
                     errors.error_indentation(self, idn)
             elif self.eof:
-                errors.error(self, "Unexpected end inside complex value with name %r" + name)
+                errors.error(self, "Unexpected end inside complex value")
             
             if ch == '}':
                 self.bc -= 1
                 skip_char(self)
-                break
+                return None
             else:
                 val = self.get_value(idn, idn0, 1)
                 if type(val) is Attribute:
-                    if attrs is None:
-                        attrs = axon_odict()
-                    attr = val
-                    attrs[attr.name] = attr.val
+                    attrs.append(val)
                 else:
-                    if vals is None:
-                        vals = [val]
-                    else:
-                        vals.append(val)
+                    return [val]
+    #
+    def get_values(self, vals, idn, idn0):
+        while 1:
+            ch = self.skip_spaces()
 
-            ch = self.skip_spaces()            
-
-        val = self.builder.create_node(name, attrs, vals)
-        # if metadata is not None:
-        #     val = c_add_metadata(val, metadata)
-        return val
+            if ch == '#':
+                self.skip_comments()
+                ch = current_char(self)
+                
+            if idn:
+                if self.eof or self.col <= idn0:
+                    return 1
+                elif self.col == idn:
+                    pass
+                elif self.is_nl:
+                    errors.error_indentation(self, idn)
+            elif self.eof:
+                errors.error(self, "Unexpected end inside complex value")
+            
+            if ch == '}':
+                self.bc -= 1
+                skip_char(self)
+                return 1
+            else:
+                val = self.get_value(idn, idn0, 0)
+                vals.append(val)
     #
     def get_list_value(self):
 
         sequence = []
         is_odict = 0
-        #metadata = None
 
         ch = self.skip_spaces()
-        
-        # if ch == '@':
-        #     metadata = self.get_metadata()
-        #     ch = self.skip_spaces()
-        # else:
-        #     metadata = None
         
         if ch == '#':
             self.skip_comments()
@@ -1082,13 +1072,6 @@ class Loader:
             
         ch = self.skip_spaces()
 
-        if self.json:
-            ch = current_char(self)
-            if ch == ',':
-                skip_char(self)
-                ch = self.skip_spaces()
-            
-
         while 1:
             if ch == '#':
                 self.skip_comments()
@@ -1111,25 +1094,12 @@ class Loader:
             sequence.append(val)
 
             ch = self.skip_spaces()
-
-            if self.json:
-                ch = current_char(self)
-                if ch == ',':
-                    skip_char(self)
-                    ch = self.skip_spaces()
     #
     def get_tuple_value(self):
 
         sequence = []
-        #metadata = None
 
         ch = self.skip_spaces()
-        
-        # if ch == '@':
-        #     metadata = self.get_metadata()
-        #     ch = self.skip_spaces()
-        # else:
-        #     metadata = None
         
         while 1:
             if ch == '#':
@@ -1140,10 +1110,6 @@ class Loader:
                 skip_char(self)
                 self.bq -= 1
                 return tuple(sequence)
-                # if metadata is None:
-                #     return tuple(sequence)
-                # else:
-                #     return self.builder.create_tuple_ex(sequence, metadata)
             elif ch == '\0':
                 errors.error(self, "Unexpected end inside of the tuple")
 
@@ -1152,49 +1118,11 @@ class Loader:
 
             ch = self.skip_spaces()
     #
-    # def get_metadata(self):
-    #     metadata = None
-    #
-    #     ch = self.skip_spaces()
-    #
-    #     while ch == '@':
-    #         skip_char(self)
-    #         name = self._get_name()
-    #         if name is None:
-    #             errors.error(self, "Expected name after '@' in the dict")
-    #
-    #         ch = self.skip_spaces()
-    #
-    #         if ch == ':':
-    #             skip_char(self)
-    #         else:
-    #             errors.error(self, "Expected ':' after name in metadata")
-    #
-    #         self.skip_spaces()
-    #
-    #         val = self.get_value(0, 0)
-    #
-    #         if metadata is None:
-    #             metadata = {}
-    #
-    #         metadata[name] = val
-    #
-    #         ch = self.skip_spaces()
-    #
-    #     return metadata
-        
     def get_dict_value(self):
         mapping = {}
-        #metadata = None
 
         ch = self.skip_spaces()
         
-        # if ch == '@':
-        #     metadata = self.get_metadata()
-        #     ch = self.skip_spaces()
-        # else:
-        #     metadata = None
-
         while 1:
         
             if ch == '#':
@@ -1224,59 +1152,49 @@ class Loader:
                     skip_char(self)
                     self.bc -= 1
                     return mapping
-                    # if metadata is None:
-                    #     return mapping
-                    # else:
-                    #     return self.builder.create_dict_ex(mapping, metadata)
                 elif ch == '\0':
                     errors.error(self, "Unexpected end inside of the dict")
                 else:
                     errors.error(self, "Invalid key in the dict")
 
             ch = self.skip_spaces()
-
-            if self.json:
-                ch = current_char(self)
-                if ch == ',':
-                    skip_char(self)
-                    ch = self.skip_spaces()
     #
-    def get_odict_value(self):
-        sequence = []
-        ch = self.skip_spaces()
-        while 1:
-            if ch == '#':
-                self.skip_comments()
-                ch = current_char(self)
-
-            #key = self.try_get_key()
-            
-            if ch.isalpha() or ch == '_':
-                key = self.get_key()
-            elif ch == '"':
-                key = self.get_string(ch)
-            else:
-                key = None
-
-            ch = self.skip_spaces()
-            
-            if key is not None:
-                if ch == ':':
-                    skip_char(self)
-                    self.skip_spaces()
-
-                    val = self.get_value(0, 0)
-                    sequence.append((key,val))
-                else:
-                    errors.error(self, "Expected ':' after the key in the ordered dict")
-            else:
-                if ch == '>':
-                    skip_char(self)
-                    self.ba -= 1
-                    return c_new_odict(sequence)
-                elif ch == '\0':
-                    errors.error(self, "Unexpected end inside of the ordered dict")
-                else:
-                    errors.error(self, "Invalid key in the ordered dict")
-
-            ch = self.skip_spaces()
+    # def get_odict_value(self):
+    #     sequence = []
+    #     ch = self.skip_spaces()
+    #     while 1:
+    #         if ch == '#':
+    #             self.skip_comments()
+    #             ch = current_char(self)
+    #
+    #         #key = self.try_get_key()
+    #
+    #         if ch.isalpha() or ch == '_':
+    #             key = self.get_key()
+    #         elif ch == '"':
+    #             key = self.get_string(ch)
+    #         else:
+    #             key = None
+    #
+    #         ch = self.skip_spaces()
+    #
+    #         if key is not None:
+    #             if ch == ':':
+    #                 skip_char(self)
+    #                 self.skip_spaces()
+    #
+    #                 val = self.get_value(0, 0)
+    #                 sequence.append((key,val))
+    #             else:
+    #                 errors.error(self, "Expected ':' after the key in the ordered dict")
+    #         else:
+    #             if ch == '>':
+    #                 skip_char(self)
+    #                 self.ba -= 1
+    #                 return c_new_odict(sequence)
+    #             elif ch == '\0':
+    #                 errors.error(self, "Unexpected end inside of the ordered dict")
+    #             else:
+    #                 errors.error(self, "Invalid key in the ordered dict")
+    #
+    #         ch = self.skip_spaces()

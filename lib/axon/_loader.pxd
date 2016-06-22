@@ -99,8 +99,6 @@ cdef class Loader:
     cdef int bq
     cdef int ba
     
-    cdef bint json
-
     cdef public Builder builder
     cdef public SimpleBuilder sbuilder
 
@@ -200,8 +198,14 @@ cdef class Loader:
     @cython.locals(ch=Py_UCS4, val=object, is_idn=bint)
     cdef object get_value(Loader self, int idn, int idn0, int flag=*)
 
-    @cython.locals(ch=Py_UCS4, val=object, vals=list, attrs=axon_odict, attr=Attribute, flag=int, metadata=dict)
+    @cython.locals(ch=Py_UCS4, val=object, vals=list, attrs=list, attr=Attribute, flag=int, metadata=dict)
     cdef object get_complex_value(Loader self, object name, int idn, int idn0)
+
+    @cython.locals(ch=Py_UCS4, val=object, attr=Attribute, metadata=dict)
+    cdef object get_attributes(Loader self, list attrs, int idn, int idn0)
+
+    @cython.locals(ch=Py_UCS4, val=object, metadata=dict)
+    cdef object get_values(Loader self, list vals, int idn, int idn0)
 
     @cython.locals(sequence=list, ch=Py_UCS4, val=object, is_odict=bint, metadata=dict)
     cdef object get_list_value(Loader self)
@@ -215,6 +219,6 @@ cdef class Loader:
     @cython.locals(ch=Py_UCS4, mapping=dict, metadata=dict)
     cdef object get_dict_value(Loader self)
 
-    @cython.locals(ch=Py_UCS4, sequence=list)
-    cdef object get_odict_value(Loader self)
+    # @cython.locals(ch=Py_UCS4, sequence=list)
+    # cdef object get_odict_value(Loader self)
 

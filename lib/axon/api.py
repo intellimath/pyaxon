@@ -123,7 +123,7 @@ def dump(fpath, val, pretty=0, braces=0, sorted=1, hsize=0, crossref=0, encoding
     dumper.dump(val)
     fd.close()
 
-def loads(text, mode="safe", errto=None, json=0):
+def loads(text, mode="safe", errto=None):
     '''\
     Load values from unicode text.
 
@@ -137,19 +137,16 @@ def loads(text, mode="safe", errto=None, json=0):
     :param errto:
         Name of file for reporting errors
 
-    :param json:
-        If true then allow JSON encoded parts.
-
     :returns:
         List of values.
     '''
     text = as_unicode(text)
     fd = StringReader(text)
 
-    loader = Loader(fd, mode, errto, json)
+    loader = Loader(fd, mode, errto)
     return loader.load()
 
-def load(fd, mode="safe", errto=None, encoding='utf-8', json=0):
+def load(fd, mode="safe", errto=None, encoding='utf-8'):
     '''
     Load object from unicode text.
 
@@ -172,19 +169,16 @@ def load(fd, mode="safe", errto=None, encoding='utf-8', json=0):
     :param encoding:
         Encoding of input file (default `utf-8`).
 
-    :param json:
-        If true then allow JSON encoded parts.
-
     :returns:
         List of values.
     '''
     if type(fd) in (str_type, unicode_type):
         fd = io.open(fd, mode='r', encoding=encoding)
 
-    loader = Loader(fd, mode, errto, json)
+    loader = Loader(fd, mode, errto)
     return loader.load()
 
-def iload(fd, mode="safe", errto=None, encoding='utf-8', json=0):
+def iload(fd, mode="safe", errto=None, encoding='utf-8'):
     '''\
     Iterative loading values from input file.
 
@@ -197,11 +191,11 @@ def iload(fd, mode="safe", errto=None, encoding='utf-8', json=0):
     if type(fd) in (str_type, unicode_type):
         fd = io.open(fd, mode='r', encoding=encoding)
 
-    loader = Loader(fd, mode, errto, json)
+    loader = Loader(fd, mode, errto)
     for val in loader.iload():
         yield val
     
-def iloads(text, mode="safe", errto=None, json=0):
+def iloads(text, mode="safe", errto=None):
     '''\
     Iterative loading values from unicode text.
 
@@ -215,25 +209,22 @@ def iloads(text, mode="safe", errto=None, json=0):
     :param errto:
         Name of file for reporting errors
 
-    :param json:
-        If true then allow JSON encoded parts.
-
     :returns:
         Iterator object. It returns values during iteration.
     '''
     text = as_unicode(text)
     fd = StringReader(text)
 
-    loader = Loader(fd, mode, errto, json)
+    loader = Loader(fd, mode, errto)
     for val in loader.iload():
         yield val
     
 
-# def itokens(text, mode="safe", errto=None, encoding='utf-8', json=0):
+# def itokens(text, mode="safe", errto=None, encoding='utf-8'):
 #     text = as_unicode(text)
 #     fd = StringReader(text)
 #
-#     loader = Loader(fd, mode, errto, json)
+#     loader = Loader(fd, mode, errto)
 #
 #     for tok in loader.itokens():
 #         yield tok
