@@ -1107,7 +1107,6 @@ class Loader:
     #
     def get_dict_value(self):
 
-        sequence = []
         is_dict = 0
 
         ch = self.skip_spaces()
@@ -1124,10 +1123,13 @@ class Loader:
             errors.error(self, "Unexpected end inside of the list")
         
         val = self.get_value(0, 0)
-        sequence.append(val)
-        
         if type(val) is KeyVal:
             is_dict = 1
+            keyval = val
+            mapping = {keyval.key: keyval.val}
+        else:
+            sequence = {val}
+        
             
         ch = self.skip_spaces()
 
@@ -1140,19 +1142,24 @@ class Loader:
                 skip_char(self)
                 self.bc -= 1
                 if is_dict:
-                    return dict(sequence)
+                    return mapping
                 else:
-                    return set(sequence)
+                    return sequence
             elif ch == '\0':
                 errors.error(self, "Unexpected end inside of the list")
 
             val = self.get_value(0, 0)
-            if is_dict and not type(val) is KeyVal:
-                errors.error(self, "Invalid ordered dict")
-            elif not is_dict and type(val) is KeyVal:
-                errors.error(self, "Invalid list")
-                
-            sequence.append(val)
+            if is_dict:
+                if type(val) is KeyVal:
+                    keyval = val
+                    mapping[keyval.key] = keyval.val
+                else:
+                    errors.error(self, "Invalid dict")
+            else:
+                if type(val) is KeyVal:
+                    errors.error(self, "Invalid set")
+                else:
+                    sequence.add(val)
 
             ch = self.skip_spaces()
     #

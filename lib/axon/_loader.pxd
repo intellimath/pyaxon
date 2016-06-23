@@ -219,7 +219,7 @@ cdef class Loader:
     #@cython.locals(ch=Py_UCS4, metadata=dict)
     #cdef object get_metadata(Loader self)
 
-    @cython.locals(sequence=list, ch=Py_UCS4, val=object, is_dict=bint, metadata=dict)
+    @cython.locals(mapping=dict, sequence=set, ch=Py_UCS4, val=object, is_dict=bint, keyval=KeyVal, metadata=dict)
     cdef object get_dict_value(Loader self)
 
     # @cython.locals(ch=Py_UCS4, sequence=list)
