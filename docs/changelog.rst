@@ -15,6 +15,11 @@ History of changes
 	  
 	  axon.dumps(axon.loads(text))
 	  axon.dump(path, axon.loads(path, text))
+	  
+2. Add syntax reprsenting sets. For example::
+	  
+	  {1 2 3}
+	  {"a" "b" "c" "d"}
 
 **0.8.2**
 
