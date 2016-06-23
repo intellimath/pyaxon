@@ -410,7 +410,7 @@ class Node(object):
                 val = c_undefined
                 
             if val is c_undefined:
-                raise AttributeError("Undefined name: " + name)
+                raise AttributeError("Undefined name: " + self.name)
 
             return val
     #
@@ -465,6 +465,7 @@ class Node(object):
     def __repr__(self):
         attrs = self.attrs
         vals = self.vals
+        name = self.name
         print(self.name, attrs, vals)
         if attrs:
             attrs_text = ', '.join([str(name)+': '+repr(attrs[name]) for name in attrs])
@@ -475,7 +476,7 @@ class Node(object):
         else:
             vals_text = ''
         sp = (' ' if attrs and vals else '')
-        return self.name + '{' + attrs_text + sp + vals_text + '}'
+        return name + '{' + attrs_text + sp + vals_text + '}'
     #
     def __reduce__(self):
         return node, (self.name, self.attrs, self.vals)

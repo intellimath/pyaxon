@@ -195,8 +195,11 @@ cdef class Loader:
     @cython.locals(ch=Py_UCS4)
     cdef object get_negative_constant(Loader self)
 
-    @cython.locals(ch=Py_UCS4, val=object, is_idn=bint)
-    cdef object get_value(Loader self, int idn, int idn0, int flag=*)
+    @cython.locals(ch=Py_UCS4, val=object, name=object)
+    cdef object get_value(Loader self, int idn, int idn0)
+
+    @cython.locals(ch=Py_UCS4, val=object)
+    cdef object get_named(self, object name, int idn, int idn0)
 
     @cython.locals(ch=Py_UCS4, val=object, vals=list, attrs=list, attr=Attribute, flag=int, metadata=dict)
     cdef object get_complex_value(Loader self, object name, int idn, int idn0)
