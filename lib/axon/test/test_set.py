@@ -18,7 +18,7 @@ class SetTestCase(unittest.TestCase):
         s = dumps([v])
         self.assertEqual(s, '∅')
     #
-    def test_empty_set2(self):
+    def test_empty_set1set2(self):
         v = loads('∅')[0]
         self.assertEqual(type(v), set)
         self.assertEqual(v, set())

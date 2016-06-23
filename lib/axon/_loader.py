@@ -850,13 +850,14 @@ class Loader:
                 skip_char(self)
                 val = self.get_negative_constant()
         elif ch == '"':
-            name = self.get_string(ch)
+            text = self.get_string(ch)
             ch = self.skip_spaces()
             if ch == ':':
                 skip_char(self)    
-                val = c_new_keyval(name, self.get_value(idn, idn0))
+                self.skip_spaces()
+                val = c_new_keyval(text, self.get_value(idn, idn0))
             else:                
-                return name
+                return text
         elif ch == '{':
             self.bc += 1
             skip_char(self)
@@ -920,7 +921,10 @@ class Loader:
             name = self.get_name()
             val = self.c_constants.get(name, c_undefined)
             if val is c_undefined:
-                errors.error(self, "Undefined name %r" % name)                    
+                errors.error(self, "Undefined name %r" % name)
+        elif ch == '∅':                 
+            skip_char(self)
+            val = set()
         else:
             errors.error_unexpected_value(self, 'Unexpected value')
 
@@ -1102,43 +1106,53 @@ class Loader:
             ch = self.skip_spaces()
     #
     def get_dict_value(self):
-        mapping = {}
+
+        sequence = []
+        is_dict = 0
 
         ch = self.skip_spaces()
         
-        while 1:
+        if ch == '#':
+            self.skip_comments()
+            ch = current_char(self)
         
+        if ch == '}':
+            skip_char(self)
+            self.bc -= 1
+            return {}
+        elif ch == '\0':
+            errors.error(self, "Unexpected end inside of the list")
+        
+        val = self.get_value(0, 0)
+        sequence.append(val)
+        
+        if type(val) is KeyVal:
+            is_dict = 1
+            
+        ch = self.skip_spaces()
+
+        while 1:
             if ch == '#':
                 self.skip_comments()
                 ch = current_char(self)
-
-            if ch.isalpha() or ch == '_':
-                key = self.get_key()
-            elif ch == '"':
-                key = self.get_string(ch)
-            else:
-                key = None
-
-            ch = self.skip_spaces()
-            
-            if key is not None:
-                if ch == ':':
-                    skip_char(self)
-                    self.skip_spaces()
-
-                    val = self.get_value(0, 0)
-                    mapping[key] = val
+                
+            if ch == '}':
+                skip_char(self)
+                self.bc -= 1
+                if is_dict:
+                    return dict(sequence)
                 else:
-                    errors.error(self, "Expected ':' after the key in the dict")
-            else:
-                if ch == '}':
-                    skip_char(self)
-                    self.bc -= 1
-                    return mapping
-                elif ch == '\0':
-                    errors.error(self, "Unexpected end inside of the dict")
-                else:
-                    errors.error(self, "Invalid key in the dict")
+                    return set(sequence)
+            elif ch == '\0':
+                errors.error(self, "Unexpected end inside of the list")
+
+            val = self.get_value(0, 0)
+            if is_dict and not type(val) is KeyVal:
+                errors.error(self, "Invalid ordered dict")
+            elif not is_dict and type(val) is KeyVal:
+                errors.error(self, "Invalid list")
+                
+            sequence.append(val)
 
             ch = self.skip_spaces()
     #

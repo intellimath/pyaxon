@@ -240,11 +240,14 @@ cdef public class Dumper[object Dumper, type DumperType]:
     cdef dump_list_sequence(Dumper self, list l)
     #
     @cython.locals(i=int)
+    cdef dump_set_sequence(Dumper self, set l)
+    #
+    @cython.locals(i=int)
     cdef dump_tuple_sequence(Dumper self, tuple l)
     #
     cdef dump_list(Dumper self, list l)
     #
-    #cdef dump_set(Dumper self, set l)
+    cdef dump_set(Dumper self, set l)
     #
     cdef dump_dict(Dumper self, dict d)
     #
@@ -270,7 +273,13 @@ cdef public class Dumper[object Dumper, type DumperType]:
     cdef pretty_dump_keyval(Dumper self, KeyVal attr, unicode w, bint use_offset)
     #
     @cython.locals(i=int, j=int, flag=int)
+    cdef pretty_dump_set_sequence(Dumper self, set l, unicode w, bint use_offset)
+    #
+    @cython.locals(i=int, j=int, flag=int)
     cdef pretty_dump_list_sequence(Dumper self, list l, unicode w, bint use_offset)
+    #
+    @cython.locals(n=int)
+    cdef pretty_dump_set(Dumper self, set l, unicode w, bint use_offset)
     #
     @cython.locals(n=int)
     cdef pretty_dump_list(Dumper self, list l, unicode w, bint use_offset)

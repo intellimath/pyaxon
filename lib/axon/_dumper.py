@@ -570,6 +570,8 @@ class Dumper:
                 self.dump_dict(o)
             elif otype is tuple:
                 self.dump_tuple(o)
+            elif otype is set:
+                self.dump_set(o)
             elif otype is Node:
                 self.dump_node(o)
             elif otype is axon_odict or otype is odict:
@@ -591,6 +593,8 @@ class Dumper:
                         self.dump_dict(ob)
                     elif obtype is tuple:
                         self.dump_tuple(ob)
+                    elif obtype is set:
+                        self.dump_set(ob)
                     elif obtype is Node:
                         self.dump_node(ob)
                     elif otype is axon_odict or obtype is odict:
@@ -615,6 +619,8 @@ class Dumper:
                 self.pretty_dump_dict(o, new_offset, use_offset)
             elif otype is tuple:
                 self.pretty_dump_tuple(o, new_offset, use_offset)
+            elif otype is set:
+                self.pretty_dump_set(o, new_offset, use_offset)
             elif otype is Node:
                 self.pretty_dump_node(o, new_offset, 1)
             elif otype is axon_odict or otype is odict:
@@ -638,6 +644,8 @@ class Dumper:
                         self.pretty_dump_list(ob, new_offset, use_offset)
                     elif obtype is tuple:
                         self.pretty_dump_tuple(ob, new_offset, use_offset)
+                    elif obtype is set:
+                        self.pretty_dump_set(ob, new_offset, use_offset)
                     elif obtype is Node:
                         self.pretty_dump_node(ob, new_offset, 1)
                     elif otype is axon_odict or otype is odict:
@@ -796,6 +804,14 @@ class Dumper:
         self.dump_list_sequence(l)
         self.write(']')
     #
+    def dump_set(self, l):
+        if not l:
+            self.write('∅')
+        else:
+            self.write('{')
+            self.dump_set_sequence(l)
+            self.write('}')
+    #    
     def dump_dict(self, d):
         self.write('{')
         self.dump_dict_values(d)
@@ -946,6 +962,62 @@ class Dumper:
 
             j += 1
     #
+    def pretty_dump_set(self, l, w, use_offset):
+        if not l:
+            self.write('∅')
+        else:
+            self.write('{')
+            self.pretty_dump_set_sequence(l, w, use_offset)
+            self.write('}')
+    #    
+    def pretty_dump_set_sequence(self, l, w, use_offset):
+        n = len(l)
+        if n == 0:
+            return
+        elif n == 1:
+            v = l[0]
+            if self.is_simple_type(v):
+                self.dump_simple_value(v)
+            else:
+                self.pretty_dump_value(v, w, 0)
+            return
+            
+        if n <= self.hsize and self.is_all_simple_list(l, n):
+            for i in range(n):
+                v = l[i]
+                if i > 0:
+                    self.write(' ')
+                self.dump_simple_value(v)
+            return
+
+        j = 0
+        flag = 0
+        for i in range(n):
+        
+            v = l[i]
+
+            if i > 0:
+                if not flag or j >= self.hsize:
+                    use_offset = 1
+                    j = 0
+                
+                flag = self.is_simple_type(v)
+                if not flag:
+                    use_offset = 1
+
+            else:
+                flag = self.is_simple_type(v)
+
+            if use_offset:
+                self.write('\n')
+                self.write(w)
+            else:
+                self.write(' ')
+                                
+            self.pretty_dump_value(v, w, 0)
+
+            j += 1
+    #    
     def pretty_dump_list(self, l, w, use_offset):
         self.write('[')
         self.pretty_dump_list_sequence(l, w, use_offset)
@@ -1180,10 +1252,6 @@ class Dumper:
         for v in lst:
             self.collect_value(v)
     #
-    def collect_list_ex(self, lst):
-        for v in lst:
-            self.collect_value(v)
-    #
     def collect_tuple(self, lst):
         for v in lst:
             self.collect_value(v)
@@ -1193,10 +1261,6 @@ class Dumper:
             self.collect_value(v)
     #
     def collect_dict(self, d):
-        for v in d.values():
-            self.collect_value(v)
-    #
-    def collect_dict_ex(self, d):
         for v in d.values():
             self.collect_value(v)
     #
