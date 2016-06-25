@@ -983,7 +983,7 @@ class Loader:
                 elif self.is_nl:
                     errors.error_indentation(self, idn)
             elif self.eof:
-                errors.error(self, "Unexpected end inside complex value")
+                errors.error_unexpected_end_complex_value(self)
             
             if ch == '}':
                 self.bc -= 1
@@ -1012,7 +1012,7 @@ class Loader:
                 elif self.is_nl:
                     errors.error_indentation(self, idn)
             elif self.eof:
-                errors.error(self, "Unexpected end inside complex value")
+                errors.error_unexpected_end_complex_value(self)
             
             if ch == '}':
                 self.bc -= 1
@@ -1020,6 +1020,8 @@ class Loader:
                 return 1
             else:
                 val = self.get_value(idn, idn0)
+                if type(val) is KeyVal:
+                    errors.error_unexpected_keyval(self)
                 vals.append(val)
     #
     def get_list_value(self):
@@ -1046,7 +1048,10 @@ class Loader:
             else:
                 errors.error(self, "Invalid empty ordered dict")
         elif ch == '\0':
-            errors.error(self, "Unexpected end inside of the list")
+            if is_odict:
+                errors.error_unexpected_end_odict(self)
+            else:    
+                errors.error_unexpected_end_list(self)
         
         val = self.get_value(0, 0)
         sequence.append(val)
@@ -1069,19 +1074,22 @@ class Loader:
                 else:
                     return sequence
             elif ch == '\0':
-                errors.error(self, "Unexpected end inside of the list")
-
-            val = self.get_value(0, 0)
-            if is_odict:
-                if type(val) is KeyVal:
-                    sequence.append(val)
-                else:
-                    errors.error(self, "Invalid ordered dict")
+                if is_odict:
+                    errors.error_unexpected_end_odict(self)
+                else:    
+                    errors.error_unexpected_end_list(self)
             else:
-                if type(val) is KeyVal:
-                    errors.error(self, "Invalid list")
+                val = self.get_value(0, 0)
+                if is_odict:
+                    if type(val) is KeyVal:
+                        sequence.append(val)
+                    else:
+                        errors.error_expected_keyval(self)
                 else:
-                    sequence.append(val)
+                    if type(val) is KeyVal:
+                        errors.error_unexpected_keyval(self)
+                    else:
+                        sequence.append(val)
                 
             ch = self.skip_spaces()
     #
@@ -1101,10 +1109,12 @@ class Loader:
                 self.bq -= 1
                 return tuple(sequence)
             elif ch == '\0':
-                errors.error(self, "Unexpected end inside of the tuple")
-
-            val = self.get_value(0, 0)
-            sequence.append(val)
+                errors.error_unexpected_end_tuple(self)
+            else:
+                val = self.get_value(0, 0)
+                if type(val) is KeyVal:
+                    errors.error_unexpected_keyval(self)
+                sequence.append(val)
 
             ch = self.skip_spaces()
     #
@@ -1123,15 +1133,15 @@ class Loader:
             self.bc -= 1
             return {}
         elif ch == '\0':
-            errors.error(self, "Unexpected end inside of the list")
-        
-        val = self.get_value(0, 0)
-        if type(val) is KeyVal:
-            is_dict = 1
-            keyval = val
-            mapping = {keyval.key: keyval.val}
-        else:
-            sequence = {val}
+            errors.error_unexpected_end_list(self)
+        else:        
+            val = self.get_value(0, 0)
+            if type(val) is KeyVal:
+                is_dict = 1
+                keyval = val
+                mapping = {keyval.key: keyval.val}
+            else:
+                sequence = {val}
         
             
         ch = self.skip_spaces()
@@ -1149,59 +1159,20 @@ class Loader:
                 else:
                     return sequence
             elif ch == '\0':
-                errors.error(self, "Unexpected end inside of the list")
-
-            val = self.get_value(0, 0)
-            if is_dict:
-                if type(val) is KeyVal:
-                    keyval = val
-                    mapping[keyval.key] = keyval.val
-                else:
-                    errors.error(self, "Invalid dict")
+                errors.error_unexpected_end_list(self)
             else:
-                if type(val) is KeyVal:
-                    errors.error(self, "Invalid set")
+                val = self.get_value(0, 0)
+                if is_dict:
+                    if type(val) is KeyVal:
+                        keyval = val
+                        mapping[keyval.key] = keyval.val
+                    else:
+                        errors.error(self, "Invalid dict")
                 else:
-                    sequence.add(val)
+                    if type(val) is KeyVal:
+                        errors.error(self, "Invalid set")
+                    else:
+                        sequence.add(val)
 
             ch = self.skip_spaces()
     #
-    # def get_odict_value(self):
-    #     sequence = []
-    #     ch = self.skip_spaces()
-    #     while 1:
-    #         if ch == '#':
-    #             self.skip_comments()
-    #             ch = current_char(self)
-    #
-    #         #key = self.try_get_key()
-    #
-    #         if ch.isalpha() or ch == '_':
-    #             key = self.get_key()
-    #         elif ch == '"':
-    #             key = self.get_string(ch)
-    #         else:
-    #             key = None
-    #
-    #         ch = self.skip_spaces()
-    #
-    #         if key is not None:
-    #             if ch == ':':
-    #                 skip_char(self)
-    #                 self.skip_spaces()
-    #
-    #                 val = self.get_value(0, 0)
-    #                 sequence.append((key,val))
-    #             else:
-    #                 errors.error(self, "Expected ':' after the key in the ordered dict")
-    #         else:
-    #             if ch == '>':
-    #                 skip_char(self)
-    #                 self.ba -= 1
-    #                 return c_new_odict(sequence)
-    #             elif ch == '\0':
-    #                 errors.error(self, "Unexpected end inside of the ordered dict")
-    #             else:
-    #                 errors.error(self, "Invalid key in the ordered dict")
-    #
-    #         ch = self.skip_spaces()

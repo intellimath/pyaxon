@@ -51,8 +51,17 @@ def error(self, msg):
 # def error_getvalue(self):
 #     error(self, 'Invalid simple value')
 #
-def error_unexpected_end(self):
-    error(self, 'Unexpected end')
+def error_unexpected_end_complex_value(self):
+    error(self, 'Unexpected end inside complex value')
+#
+def error_unexpected_end_list(self):
+    error(self, 'Unexpected end inside list')
+#
+def error_unexpected_end_odict(self):
+    error(self, 'Unexpected end inside ordered dict')
+#
+def error_unexpected_end_tuple(self):
+    error(self, 'Unexpected end inside tuple')
 #
 def error_unexpected_end_string(self):
     error(self, 'Unexpected end of the string')
