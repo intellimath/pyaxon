@@ -4,6 +4,7 @@
 #cython: wraparound=False
 #cython: nonecheck=False
 #cython: language_level=3
+#cython: embedsignature=True
 
 # The MIT License (MIT)
 # 

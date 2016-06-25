@@ -4,7 +4,7 @@
 #cython: wraparound=False
 #cython: nonecheck=False
 #cython: language_level=3
-
+#cython: embedsignature=True
 
 # The MIT License (MIT)
 # 
@@ -837,12 +837,7 @@ class Loader:
             val = self.get_number()
             return val
 
-        if ch.isalpha() or ch == '_':
-            name = self.get_name()
-            val = reserved_name_dict.get(name, c_undefined)
-            if val is c_undefined:
-                val = self.get_named(name, idn, idn0)                                                  
-        elif ch == '-':
+        if ch == '-':
             ch = self.line[self.pos+1]
             if ch.isdigit():
                 val = self.get_number()
@@ -873,8 +868,15 @@ class Loader:
         elif ch == '^':
             skip_char(self)
             val = self.get_date_time()
+        elif ch.isalpha() or ch == '_':
+            name = self.get_name()
+            val = reserved_name_dict.get(name, c_undefined)
+            if val is c_undefined:
+                self.skip_spaces()
+                val = self.get_named(name, idn, idn0)                                                  
         elif ch == "`":
             name = self.get_string(ch)
+            self.skip_spaces()
             val = self.get_named(name, idn, idn0)
         # elif ch == '<':
         #     self.ba += 1
@@ -931,8 +933,6 @@ class Loader:
         return val
     #
     def get_named(self, name, idn, idn0):            
-        self.skip_spaces()
-
         if self.is_nl:
             if self.eof or self.col <= idn:
                 val = self.builder.create_node(name, None, None)
@@ -958,7 +958,6 @@ class Loader:
     #
     def get_complex_value(self, name, idn, idn0):
         attrs = []
-        ch = self.skip_spaces()
         
         vals = self.get_attributes(attrs, idn, idn0)
         if len(attrs) == 0:
@@ -1073,13 +1072,17 @@ class Loader:
                 errors.error(self, "Unexpected end inside of the list")
 
             val = self.get_value(0, 0)
-            if is_odict and not type(val) is KeyVal:
-                errors.error(self, "Invalid ordered dict")
-            elif not is_odict and type(val) is KeyVal:
-                errors.error(self, "Invalid list")
+            if is_odict:
+                if type(val) is KeyVal:
+                    sequence.append(val)
+                else:
+                    errors.error(self, "Invalid ordered dict")
+            else:
+                if type(val) is KeyVal:
+                    errors.error(self, "Invalid list")
+                else:
+                    sequence.append(val)
                 
-            sequence.append(val)
-
             ch = self.skip_spaces()
     #
     def get_tuple_value(self):

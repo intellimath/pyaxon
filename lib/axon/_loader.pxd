@@ -210,7 +210,7 @@ cdef class Loader:
     @cython.locals(ch=Py_UCS4, val=object, metadata=dict)
     cdef object get_values(Loader self, list vals, int idn, int idn0)
 
-    @cython.locals(sequence=list, ch=Py_UCS4, val=object, is_odict=bint, metadata=dict)
+    @cython.locals(sequence=list, ch=Py_UCS4, key=object, val=object, is_odict=bint, metadata=dict)
     cdef object get_list_value(Loader self)
 
     @cython.locals(sequence=list, v=bint, metadata=dict)

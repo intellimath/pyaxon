@@ -57,6 +57,12 @@ def error_unexpected_end(self):
 def error_unexpected_end_string(self):
     error(self, 'Unexpected end of the string')
 #
+def error_unexpected_keyval(self):
+    error(self, 'Unexpected key:val')
+#
+def error_expected_keyval(self):
+    error(self, 'Expected key:val')
+#
 def error_getnumber(self):
     error(self, 'Invalid number')
 #
