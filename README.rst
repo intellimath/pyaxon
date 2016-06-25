@@ -45,24 +45,24 @@ Load and dump lists, dicts, tuples::
 	[datetime.now(), Decimal('3.14')]])
 	>>> print(text)
 	["abc абв" 1 3.14 true]
-	[2015-05-12T13:08:37.078189 3.14D]
+	[^2015-05-12T13:08:37.078189 3.14D]
 	
 	>>> vals = [{'id':1, 'nickname':'nick', 'time':time(12, 31, 34), 'text':'hello!'},
 	{'id':2, 'nickname':'mark', 'time':time(12, 32, 3), 'text':'hi!'}]
 	>>> text = axon.dumps(vals)
 	>>> print(text)
-	{id:1 nickname:"nick" text:"hello!" time:12:31:34}
-	{id:2 nickname:"mark" text:"hi!" time:12:32:03}	
+	{id:1 nickname:"nick" text:"hello!" time:^12:31:34}
+	{id:2 nickname:"mark" text:"hi!" time:^12:32:03}	
 	>>> text = axon.dumps(vals, pretty=1)
 	>>> print(text)
 	{ id: 1
 	  nickname: "nick"
 	  text: "hello!"
-	  time: 12:31:34}
+	  time: ^12:31:34}
 	{ id: 2
 	  nickname: "mark"
 	  text: "hi!"
-	  time: 12:32:03}
+	  time: ^12:32:03}
 	>>> vals == axon.loads(text)
 	True
 	  

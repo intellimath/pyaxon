@@ -196,9 +196,9 @@ cdef public class Dumper[object Dumper, type DumperType]:
     cdef int sorted
 
     cdef bint crossref
-    cdef public dict crossref_dict
-    cdef public set crossref_set
-    cdef public set crossref_set2
+    cdef dict crossref_dict
+    cdef set crossref_set
+    cdef set crossref_set2
     cdef bint collected
     #
     cdef inline bint is_simple_type(Dumper self, o)
@@ -287,6 +287,8 @@ cdef public class Dumper[object Dumper, type DumperType]:
     #cdef pretty_dump_set(Dumper self, set l, unicode w, bint use_offset)
     #
     cdef pretty_dump_dict(Dumper self, object d, unicode w, bint use_offset)
+    #
+    cdef pretty_dump_odict(Dumper self, object d, unicode w, bint use_offset)
     #
     #@cython.locals(n=int)
     #cdef pretty_dump_tuple_ex(Dumper self, TupleEx l, unicode w, bint use_offset)

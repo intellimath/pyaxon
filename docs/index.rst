@@ -56,7 +56,7 @@ Creation of ``AXON`` had the following objectives:
 * Saving relative simplicity of the language compared to ``JSON``.
 
 ``AXON`` is designed as text based format that has compact form and
-formatted form in both `JSON/C` and `YAML/Python` style for ease of developers.
+formatted form in both ``JSON/C`` and ``YAML/Python`` style for ease of developers.
 
 ``AXON`` is an object notation for data, which are composed from atomic values
 by several rules of composition:
@@ -85,7 +85,12 @@ by several rules of composition:
 
     <tr><td>tuple</td><td>( <b>V</b> … <b>V</b> )</td>
     <td><pre>
-    (true 12:00 2001-12-31 2001-12-31T12:00)
+    (true ^12:00 ^2001-12-31 ^2001-12-31T12:00)
+    </pre></td></tr>
+
+    <tr><td>set</td><td>{ <b>V</b> … <b>V</b> }</td>
+    <td><pre>
+    {"a" "b" "c" "d" "e" "f"}
     </pre></td></tr>
 
     <tr><td>dict</td><td>{ <b>K</b>:<b>V</b> … <b>K</b>:<b>V</b> }</td>
@@ -129,9 +134,9 @@ Here is an example of ``AXON`` message:
 	    multiline_string: "one
 	two
 	three"
-	    date: 2012-12-31
-	    time: [12:30:34 12:35:12.000120 12:35+03]
-	    datetime: [2012-12-31T12:30 2012-12-31T12:35+03]
+	    date: ^2012-12-31
+	    time: [^12:30:34 ^12:35:12.000120 ^12:35+03]
+	    datetime: [^2012-12-31T12:30 ^2012-12-31T12:35+03]
 	    binary: |QVhPTiBpcyBlWHRlbmRlZCBPYmplY3QgTm90YXRpb24=
 
 	complex_values
@@ -145,6 +150,7 @@ Here is an example of ``AXON`` message:
 	      three: 3
 	      two: 2]
 	    tuple: ("nodes" "edges")
+	    set: {"a" "b" "c"}
 	    node: person
 	      name: "Alex"
 	      age: 32
@@ -163,8 +169,8 @@ Here is an example of ``AXON`` message:
 	    multiline_string: "one
 	two
 	three"
-	    date: 2012-12-31
-	    time: [12:30:34 12:35:12.000120 12:35+03]
+	    date: ^2012-12-31
+	    time: [^12:30:34 ^12:35:12.000120 ^12:35+03]
 	    datetime: [2012-12-31T12:30 2012-12-31T12:35+03]
 	    binary: |QVhPTiBpcyBlWHRlbmRlZCBPYmplY3QgTm90YXRpb24=
 	}
@@ -179,6 +185,7 @@ Here is an example of ``AXON`` message:
 	      three: 3
 	      two: 2]
 	    tuple: ("nodes" "edges")
+	    set: {"a" "b" "c"}
 	    node: person {
 	      name: "Alex"
 	      age: 32}}}
@@ -190,11 +197,12 @@ Here is an example of ``AXON`` message:
 	atomic_values{int:[0 -1 17] float:[3.1428 1.5e-17] decimal:[10D 1000.35D -1.25E+6D] 
 	bool:[true false] string:"abc абв 中文本" multiline_string:"one
 	two
-	three" date:2012-12-31 time:[12:30:34 12:35:12.000120 12:35+03]
-	datetime:[2012-12-31T12:30 2012-12-31T12:35+03]
+	three" date:^2012-12-31 time:[^12:30:34 ^12:35:12.000120 ^12:35+03]
+	datetime:[^2012-12-31T12:30 ^2012-12-31T12:35+03]
 	binary:|QVhPTiBpcyBlWHRlbmRlZCBPYmplY3QgTm90YXRpb24=
 	} complex_values{list:["one" "two" "three"] dict:{one:1 three:3 two:2}
-	odered_dict:[one:1 two:2 three:3] tuple:("nodes" "edges") node:person{name:"Alex" age:32}}}
+	odered_dict:[one:1 two:2 three:3] tuple:("nodes" "edges")
+	set:{"a" "b" "c"} node:person{name:"Alex" age:32}}}
     </pre></td></tr>
     </table>                    
 
