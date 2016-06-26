@@ -20,7 +20,7 @@ links
 Installation
 ------------
 
-`pyaxon` runs under Python 2.7/3.3/3.4. 
+`pyaxon` runs under Python 2.7, 3.3, 3.4 and 3.5
 
 It can be installed via pip::
 
@@ -66,10 +66,10 @@ Load and dump lists, dicts, tuples::
 	>>> vals == axon.loads(text)
 	True
 	  
-	>>> vals = [[{'a':1, 'b':2, 'c':3}, {'a':[1,2,3], 'b':(1,2,3), 'c':[]}]]
+	>>> vals = [[{'a':1, 'b':2, 'c':3}, {'a':[1,2,3], 'b':(1,2,3), 'c':{1,2,3}}]]
 	>>> text = axon.dumps(vals)
 	>>> print(text)
-	[{a:1 b:2 c:3} {a:[1 2 3] b:(1 2 3) c:[]}]
+	[{a:1 b:2 c:3} {a:[1 2 3] b:(1 2 3) c:{1 2 3}}]
 	>>> text = axon.dumps(vals, pretty=1)
 	>>> print(text)
 	[ { a: 1
@@ -77,7 +77,7 @@ Load and dump lists, dicts, tuples::
 	    c: 3}
 	  { a: [1 2 3]
 	    b: (1 2 3)
-	    c: []}]
+	    c: {1 2 3}}]
 	>>> vals == axon.loads(text)
 	True
 
@@ -131,8 +131,6 @@ Dump, load objects in unsafe mode::
 	>>> val = axon.loads(text, mode='strict')[0]
 	>>> print(val)
 	Person(name='nick', age=32, email='mail@example.com')
-	>>> print(val.name==p.name, val.age==p.age, val.email==p.email)
-	True True True
 	
 Features
 --------

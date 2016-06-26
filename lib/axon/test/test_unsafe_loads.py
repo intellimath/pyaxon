@@ -20,7 +20,7 @@ class E(object):
 def instance_maker(cls):
     def make_instance(attrs, vals=None):
         inst = cls.__new__(cls)
-        for name, value in attrs:
+        for name, value in attrs.items():
             setattr(inst, name, value)
         return inst
     return make_instance
@@ -71,7 +71,7 @@ class Edge(Base):
         
 @axon.factory('graph')
 def create_graph2(attrs, args):
-    return Graph(*attrs)
+    return Graph(**attrs)
 
 @axon.factory('node')
 def create_node2(attrs, args):
@@ -83,8 +83,8 @@ def create_edge(attrs, args):
 
 @axon.reduce(Graph)
 def reduce_graph(graph):
-    return axon.node('graph', [('nodes',graph.nodes), 
-                               ('edges',graph.edges)], None)
+    return axon.node('graph', {'nodes':graph.nodes, 
+                               'edges':graph.edges}, None)
 
 @axon.reduce(Node)
 def reduce_node(node):

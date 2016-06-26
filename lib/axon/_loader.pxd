@@ -71,8 +71,7 @@ from axon._common cimport c_as_unicode, c_as_list, c_as_dict, c_as_tuple, dict_g
 #from axon._objects cimport end_token, dict_token, tuple_token, list_token
 #from axon._objects cimport ATOMIC, END, COMPLEX, ATTRIBUTE, KEY, REFERENCE, LABEL, LIST, DICT, TUPLE
 
-from axon.odict cimport OrderedDict as axon_odict, c_new_odict
-#from axon.odict cimport OrderedDictEx as axon_odict_ex, c_new_odict_ex
+from axon.odict cimport OrderedDict, c_new_odict
 
 cdef object unicode_type, str_type, int_type, long_type
 cdef object bool_type, float_type, bytes_type
@@ -201,7 +200,8 @@ cdef class Loader:
     @cython.locals(ch=Py_UCS4, val=object)
     cdef object get_named(self, object name, int idn, int idn0)
 
-    @cython.locals(ch=Py_UCS4, val=object, vals=list, attrs=list, attr=Attribute, flag=int, metadata=dict)
+    @cython.locals(ch=Py_UCS4, val=object, vals=list, attrs=list, attrs_od=OrderedDict, 
+                   attr=Attribute, flag=int, metadata=dict)
     cdef object get_complex_value(Loader self, object name, int idn, int idn0)
 
     @cython.locals(ch=Py_UCS4, val=object, attr=Attribute, metadata=dict)

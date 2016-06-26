@@ -199,7 +199,7 @@ class Loader:
             sequence.append(val)
 
         if is_odict:
-            return axon_odict(sequence)
+            return OrderedDict(sequence)
         else:
             return sequence
     #
@@ -965,7 +965,9 @@ class Loader:
         if vals is not None:
             self.get_values(vals, idn, idn0)
             
-        return self.builder.create_node(name, attrs, vals)
+        attrs_od = c_new_odict(attrs)
+            
+        return self.builder.create_node(name, attrs_od, vals)
     #
     def get_attributes(self, attrs, idn, idn0):                
         while 1:

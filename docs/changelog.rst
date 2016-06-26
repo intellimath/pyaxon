@@ -14,7 +14,7 @@ History of changes
       import axon
 	  
 	  axon.dumps(axon.loads(text))
-	  axon.dump(path, axon.loads(path, text))
+	  axon.dump(path, axon.load(path, text))
 	  
 2. Add syntax reprsenting sets. For example::
 	  

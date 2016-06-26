@@ -216,7 +216,7 @@ cdef public class Node[type NodeType, object NodeObject]:
     cdef list vals
 
 @cython.locals(node=Node, _attrs=OrderedDict)
-cdef public object c_new_node(object name, list attrs, list vals)
+cdef public object c_new_node(object name, OrderedDict attrs, list vals)
 
 # @cython.locals(o=ObjectWithMetadata)
 # cdef public object c_add_metadata(object ob, dict metadata)
@@ -234,7 +234,7 @@ cdef public dict c_factory_dict
 cdef public dict c_factory_dict
 
 cdef class Builder:
-    cdef public object create_node(self, object, list, list)
+    cdef public object create_node(self, object, OrderedDict, list)
     # cdef public object create_node_ex(self, object, OrderedDict, list, dict)
     # cdef public object create_dict_ex(self, dict, dict)
     # cdef public object create_odict_ex(self, list, dict)
@@ -242,7 +242,7 @@ cdef class Builder:
     # cdef public object create_tuple_ex(self, list, dict)
 
 cdef class SafeBuilder(Builder):
-    cdef public object create_node(self, object, list, list)
+    cdef public object create_node(self, object, OrderedDict, list)
     # cdef public object create_node_ex(self, object, OrderedDict, list, dict)
     # cdef public object create_dict_ex(self, dict, dict)
     # cdef public object create_odict_ex(self, list, dict)
@@ -254,7 +254,7 @@ cdef class StrictBuilder(Builder):
     cdef public dict c_factory_dict
     cdef public dict c_type_factory_dict    
 
-    cdef public object create_node(self, object, list, list)
+    cdef public object create_node(self, object, OrderedDict, list)
     # cdef public object create_node_ex(self, object, OrderedDict, list, dict)
     # cdef public object create_dict_ex(self, dict, dict)
     # cdef public object create_odict_ex(self, list, dict)
@@ -266,7 +266,7 @@ cdef class MixedBuilder(Builder):
     cdef public dict c_factory_dict
     cdef public dict c_type_factory_dict
     
-    cdef public object create_node(self, object, list, list)
+    cdef public object create_node(self, object, OrderedDict, list)
     # cdef public object create_node_ex(self, object, OrderedDict, list, dict)
     # cdef public object create_dict_ex(self, dict, dict)
     # cdef public object create_odict_ex(self, list, dict)

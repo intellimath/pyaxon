@@ -483,14 +483,9 @@ class Node(object):
         return node, (self.name, self.attrs, self.vals)
 
 def c_new_node(name, attrs, vals):
-    if attrs is not None:
-        _attrs = c_new_odict(attrs)
-    else:
-        _attrs = None
-        
     node = Node.__new__(Node)
     node.name = name
-    node.attrs = _attrs
+    node.attrs = attrs
     node.vals = vals
     return node
         
@@ -510,9 +505,9 @@ def node(name, attrs=None, vals=None):
         if len(attrs) == 0:
             _attrs = None
         else:
-            _attrs = c_as_list(attrs)
+            _attrs = OrderedDict(attrs)
     else:
-        _attrs = c_as_list(attrs)
+        _attrs = None
     
     if vals is not None and len(vals) == 0:
         _vals = None
