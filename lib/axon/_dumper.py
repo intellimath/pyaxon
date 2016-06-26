@@ -518,6 +518,12 @@ class Dumper:
                 return 0
         return 1
     #
+    def is_all_simple_set(self, l, n):
+        for v in l:
+            if not self.is_simple_type(v):
+                return 0
+        return 1
+    #
     def write(self, sval):
         if self.sfd is None:
             self.fd.write(sval)
@@ -976,27 +982,27 @@ class Dumper:
         if n == 0:
             return
         elif n == 1:
-            v = l[0]
-            if self.is_simple_type(v):
-                self.dump_simple_value(v)
-            else:
-                self.pretty_dump_value(v, w, 0)
+            for v in l:
+                if self.is_simple_type(v):
+                    self.dump_simple_value(v)
+                else:
+                    self.pretty_dump_value(v, w, 0)
             return
             
-        if n <= self.hsize and self.is_all_simple_list(l, n):
-            for i in range(n):
-                v = l[i]
+        if n <= self.hsize and self.is_all_simple_set(l, n):
+            i = 0
+            for v in l:
                 if i > 0:
                     self.write(' ')
                 self.dump_simple_value(v)
+                i += 1
             return
 
         j = 0
         flag = 0
-        for i in range(n):
+        i = 0
+        for v in l:
         
-            v = l[i]
-
             if i > 0:
                 if not flag or j >= self.hsize:
                     use_offset = 1

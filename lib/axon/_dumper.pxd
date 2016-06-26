@@ -207,6 +207,9 @@ cdef public class Dumper[object Dumper, type DumperType]:
     cdef inline bint is_all_simple_list(Dumper self, list l, int n)
     #
     @cython.locals(i=int)
+    cdef inline bint is_all_simple_set(Dumper self, set l, int n)
+    #
+    @cython.locals(i=int)
     cdef inline bint is_all_simple_tuple(Dumper self, tuple l, int n)
     #
     cdef inline void write(Dumper self, o)
@@ -283,8 +286,6 @@ cdef public class Dumper[object Dumper, type DumperType]:
     #
     @cython.locals(n=int)
     cdef pretty_dump_list(Dumper self, list l, unicode w, bint use_offset)
-    #
-    #cdef pretty_dump_set(Dumper self, set l, unicode w, bint use_offset)
     #
     cdef pretty_dump_dict(Dumper self, object d, unicode w, bint use_offset)
     #
