@@ -20,7 +20,7 @@ links
 Installation
 ------------
 
-`pyaxon` runs under Python 2.7, 3.3, 3.4 and 3.5
+``pyaxon`` runs under Python 2.7, 3.3, 3.4 and 3.5
 
 It can be installed via pip::
 
