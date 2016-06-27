@@ -869,9 +869,14 @@ class Loader:
             skip_char(self)
             val = self.get_date_time()
         elif ch.isalpha() or ch == '_':
-            name = self.get_name()
-            val = reserved_name_dict.get(name, c_undefined)
-            if val is c_undefined:
+            if ch == 'n' or ch == 't' or ch == 'f':
+                name = self.get_name()
+                val = reserved_name_dict.get(name, c_undefined)
+                if val is c_undefined:
+                    self.skip_spaces()
+                    val = self.get_named(name, idn, idn0)                                                  
+            else:
+                name = self.get_name()
                 self.skip_spaces()
                 val = self.get_named(name, idn, idn0)                                                  
         elif ch == "`":
@@ -1141,11 +1146,11 @@ class Loader:
             if type(val) is KeyVal:
                 is_dict = 1
                 keyval = val
-                mapping = {keyval.key: keyval.val}
+                mapping = {}
+                mapping[keyval.key] = keyval.val
             else:
                 sequence = {val}
         
-            
         ch = self.skip_spaces()
 
         while 1:

@@ -56,6 +56,7 @@ cdef extern from "utils.h":
     inline Py_UCS4 next_char(Loader self)
 
     inline unicode get_chunk(Loader self, int pos0)
+    inline int pylist_append(object lst, object x)
 
 from axon._objects cimport c_undefined, empty_name
 from axon._objects cimport c_get_cached_name, c_as_name, c_constants

@@ -73,3 +73,16 @@
 
 #define Py_SET_SIZE(o, n) Py_SIZE(o) = n
 
+/*
+static CYTHON_INLINE int pylist_append(PyObject* list, PyObject* x) {
+    PyListObject* L = (PyListObject*) list;
+    Py_ssize_t len = Py_SIZE(list);
+    if (L->allocated > len) {
+        Py_INCREF(x);
+        PyList_SET_ITEM(list, len, x);
+        Py_SIZE(list) = len+1;
+        return 0;
+    }
+    return PyList_Append(list, x);
+}
+*/
