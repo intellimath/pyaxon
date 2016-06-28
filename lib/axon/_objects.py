@@ -641,7 +641,7 @@ class SimpleBuilder:
         n = c_unicode_length(text)
         num_buffer = PyBytes_FromStringAndSize(cython.NULL, n+1)
 
-        buf = num_buffer
+        buf = PyBytes_AS_STRING(num_buffer)
 
         for i in range(n):
             buf[i] = c_unicode_char(text, i)
@@ -653,7 +653,7 @@ class SimpleBuilder:
         n = c_unicode_length(text)
         num_buffer = PyBytes_FromStringAndSize(cython.NULL, n)
 
-        buf = num_buffer
+        buf = PyBytes_AS_STRING(num_buffer)
 
         for i in range(n):
             buf[i] = c_unicode_char(text, i)

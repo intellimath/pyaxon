@@ -68,8 +68,8 @@ cdef extern from "utils.h":
 
 cdef extern from "bytesobject.h":
     inline bytes PyBytes_FromStringAndSize(char* p, int n)
-    #inline char* PyBytes_AS_STRING(object b)
-    #inline int PyBytes_GET_SIZE(object b)
+    inline char* PyBytes_AS_STRING(object b)
+    inline int PyBytes_GET_SIZE(object b)
 
 
 # ----------------------------------------

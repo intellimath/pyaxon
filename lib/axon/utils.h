@@ -45,6 +45,7 @@
         PyUnicode_FromKindAndData(PyUnicode_KIND(text), PyUnicode_1BYTE_DATA(text) + start*PyUnicode_KIND(text), end-start)
 
     #define c_unicode_length(text) PyUnicode_GET_LENGTH(text)
+    #define c_bytes_length(text) PyBytes_GET_LENGTH(text)
 
 #else
 
@@ -52,6 +53,7 @@
         PyUnicode_FromUnicode(PyUnicode_AS_UNICODE(text)+start, end-start)
 
     #define c_unicode_length(text) PyUnicode_GET_SIZE(text)
+    #define c_bytes_length(text) PyBytes_GET_SIZE(text)
 
 #endif
 

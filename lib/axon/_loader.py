@@ -277,9 +277,9 @@ class Loader:
             self.col = 0
     #
     def skip_spaces(self):
+        self.is_nl = 0
         if self.eof:
             return 0
-        self.is_nl = 0
 
         ch = current_char(self)
         prev_ch = '\0'
@@ -1174,10 +1174,10 @@ class Loader:
                         keyval = val
                         mapping[keyval.key] = keyval.val
                     else:
-                        errors.error(self, "Invalid dict")
+                        errors.error(self, "Invalid dict item")
                 else:
                     if type(val) is KeyVal:
-                        errors.error(self, "Invalid set")
+                        errors.error(self, "Invalid set item")
                     else:
                         sequence.add(val)
 
