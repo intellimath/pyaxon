@@ -47,7 +47,7 @@ if use_cython:
     from Cython.Distutils import Extension, build_ext
     from Cython.Compiler import Options
     Options.fast_fail = True
-    Options.emit_code_comments = False
+    #Options.emit_code_comments = False
     
 
     ext_modules = [
@@ -99,6 +99,7 @@ else:
     ]
 
 long_description = open('README.rst', encoding='utf-8').read()
+
 
 setup(
     name = 'pyaxon',

@@ -193,13 +193,13 @@ cdef public Attribute c_new_attribute(unicode name, object val)
 @cython.freelist(128)
 @cython.final
 cdef public class KeyVal[type KeyValType, object KeyValObject]:
-    cdef public unicode key
+    cdef public object key
     cdef public object val
 
 @cython.locals(a=KeyVal)
 cpdef keyval(key, val)
 
-cdef public KeyVal c_new_keyval(unicode key, object val)
+cdef public object c_new_keyval(object key, object val)
 
 cdef dict reserved_name_dict 
 
