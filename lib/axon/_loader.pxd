@@ -117,7 +117,7 @@ cdef class Loader:
     @cython.locals(is_odict=bint)
     cpdef iload(Loader self)
 
-    @cython.locals(sequence=list, is_odict=bint)
+    @cython.locals(sequence=list, mapping=OrderedDict, keyval=KeyVal, is_odict=bint)
     cpdef load(Loader self)
 
     #cdef inline void skip_char(Loader self)
@@ -204,15 +204,18 @@ cdef class Loader:
     @cython.locals(ch=Py_UCS4, key=object, val=object)
     cdef object get_keyval_odict(self, OrderedDict mapping)
 
+    @cython.locals(ch=Py_UCS4, key=object, val=object, pos0=int, is_key=bint)
+    cdef object get_keyval_or_value(self)
+
     @cython.locals(ch=Py_UCS4, val=object)
     cdef object get_named(self, object name, int idn, int idn0)
 
-    @cython.locals(ch=Py_UCS4, val=object, vals=list, attrs=list, attrs_od=OrderedDict, 
+    @cython.locals(ch=Py_UCS4, val=object, vals=list, attrs=OrderedDict, 
                    attr=Attribute, flag=int, metadata=dict)
     cdef object get_complex_value(Loader self, object name, int idn, int idn0)
 
-    @cython.locals(ch=Py_UCS4, val=object, attr=Attribute, metadata=dict)
-    cdef object get_attributes(Loader self, list attrs, int idn, int idn0)
+    @cython.locals(ch=Py_UCS4, val=object, attr=Attribute, keyval=KeyVal, metadata=dict)
+    cdef object get_attributes(Loader self, OrderedDict attrs, int idn, int idn0)
 
     @cython.locals(ch=Py_UCS4, val=object, metadata=dict)
     cdef object get_values(Loader self, list vals, int idn, int idn0)

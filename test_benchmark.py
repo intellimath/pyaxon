@@ -61,11 +61,9 @@ json_times_load = []
 axon_times_load = []
 
 def make_test(data):
-    if type(data) == dict:
-        data = [data]
 
     t0 = time.time()
-    axon_text = axon.dumps(data, sorted=0)
+    axon_text = axon.dumps([data], sorted=0)
     dt_axon_dump = time.time() - t0
     axon_times_dump.append(dt_axon_dump)
 
@@ -237,7 +235,6 @@ def test_6():
             random.randint(1,99999), random.randint(1,99999),
             random.randint(1,99999), random.randint(1,99999),
         ])
-    lst = [lst]
     return lst
 
 make_test(test_6())
@@ -263,7 +260,6 @@ def test_7():
             random.random(), random.random(),
             random.random(), random.random(),
         ])
-    lst = [lst]
     return lst
 
 make_test(test_7())

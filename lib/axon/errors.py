@@ -105,6 +105,9 @@ def error_dict_value(self):
 def error_unexpected_attribute(self, name):
     error(self, 'Unexpected attribute %s:?' % name)
 #
+def error_expected_attribute(self):
+    error(self, 'Expected attribute')
+#
 def error_unexpected_value(self, context=''):
     error(self, 'Unexpected value: %s' % context)
 #

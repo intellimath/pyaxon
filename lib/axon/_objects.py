@@ -467,7 +467,6 @@ class Node(object):
         attrs = self.attrs
         vals = self.vals
         name = self.name
-        print(self.name, attrs, vals)
         if attrs:
             attrs_text = ', '.join([str(name)+': '+repr(attrs[name]) for name in attrs])
         else:

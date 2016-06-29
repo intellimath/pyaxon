@@ -377,7 +377,7 @@ text_13_o = '''
 aaa
   a: 1 
   b:2 c:    12
-  bbb
+  bbb {}
   ccc
     c:1     d:""
     ddd

@@ -165,7 +165,6 @@ class Loader:
         '''
         Load all values.
         '''
-        sequence = []
         is_odict = 0
 
         self.skip_spaces()
@@ -174,13 +173,16 @@ class Loader:
             self._check_pairs()
             if self.errto != sys.stderr:
                 self.errto.close()
-            return sequence
+            return []
 
-        idn = self.col
-        val = self.get_value(0, 0)
+        val = self.get_keyval_or_value()        
         if type(val) is KeyVal:
             is_odict = 1
-        sequence.append(val)
+            keyval = val
+            mapping = c_new_odict([])
+            mapping[keyval.key] = keyval.val
+        else:
+            sequence = [val]
 
         while 1:
             self.skip_spaces()
@@ -191,15 +193,17 @@ class Loader:
                     self.errto.close()
                 break
             
-            val = self.get_value(0, 0)
-            if is_odict and not type(val) is KeyVal:
-                errors.error(self, "Expected key:val pair")
-            elif not is_odict and type(val) is KeyVal:
-                errors.error(self, "Unexpected key:val pair")
-            sequence.append(val)
+            if is_odict:
+                self.get_keyval_odict(mapping)
+            else:
+                val = self.get_value(0, 0)
+                if type(val) is KeyVal:
+                    errors.error_unexpected_keyval(self)
+                else:
+                    sequence.append(val)
 
         if is_odict:
-            return OrderedDict(sequence)
+            return mapping
         else:
             return sequence
     #
@@ -217,7 +221,7 @@ class Loader:
                 self.errto.close()
             return
 
-        val = self.get_value(0, 0, 2)
+        val = self.get_keyval_or_value(0, 0)
         if type(val) is KeyVal:
             is_odict = 1
         yield val
@@ -231,7 +235,7 @@ class Loader:
                     self.errto.close()
                 break
 
-            val = self.get_value(0, 0, 2)
+            val = self.get_keyval_or_value(0, 0)
             if is_odict and not type(val) is KeyVal:
                 errors.error(self, "Expected key:val pair")
             elif not is_odict and type(val) is KeyVal:
@@ -848,9 +852,7 @@ class Loader:
             text = self.get_string(ch)
             ch = self.skip_spaces()
             if ch == ':':
-                skip_char(self)    
-                self.skip_spaces()
-                val = c_new_keyval(text, self.get_value(idn, idn0))
+                errors.error_unexpected_keyval()
             else:                
                 return text
         elif ch == '{':
@@ -869,16 +871,13 @@ class Loader:
             skip_char(self)
             val = self.get_date_time()
         elif ch.isalpha() or ch == '_':
-            if ch == 'n' or ch == 't' or ch == 'f':
-                name = self.get_name()
-                val = reserved_name_dict.get(name, c_undefined)
-                if val is c_undefined:
-                    self.skip_spaces()
-                    val = self.get_named(name, idn, idn0)                                                  
-            else:
-                name = self.get_name()
-                self.skip_spaces()
-                val = self.get_named(name, idn, idn0)                                                  
+            name = self.get_name()
+            val = reserved_name_dict.get(name, c_undefined)
+            if val is not c_undefined:
+                return val
+
+            ch = self.skip_spaces()
+            val = self.get_named(name, idn, idn0)                                                  
         elif ch == "`":
             name = self.get_string(ch)
             self.skip_spaces()
@@ -979,12 +978,58 @@ class Loader:
         else:
             errors.error_expected_keyval(self)
     #
+    def get_keyval_or_value(self):
+        pos0 = self.col
+        is_key = 0
+        ch = current_char(self)
+        if ch == '"':
+            is_key = 1
+            key = self.get_string(ch)
+        elif ch == '``':
+            key = self.get_string(ch)
+        elif ch.isalpha() or ch == '_':
+            key = self.get_name()
+        else:    
+            return self.get_value(0, 0)            
+            
+        ch = self.skip_spaces()
+        if ch == ':':
+            skip_char(self)
+            self.skip_spaces()
+            val = self.get_value(0, 0)
+            return c_new_keyval(key, val)
+            
+        if is_key:
+            return key
+                    
+        if ch == '{':
+            self.bc += 1
+            skip_char(self)
+            self.skip_spaces()
+            val = reserved_name_dict.get(key, c_undefined)
+            if val is not c_undefined:
+                return val
+            return self.get_complex_value(key, 0, 0)
+        else:
+            if is_key:
+                return key
+                
+            val = reserved_name_dict.get(key, c_undefined)
+            if val is not c_undefined:
+                return val
+                
+            if self.is_nl:
+                if self.eof or self.col <= pos0:
+                    return self.builder.create_node(key, None, None)
+                elif self.col > pos0:
+                    return self.get_complex_value(key, self.col, pos0)
+                else:
+                    return key
+    #
     def get_named(self, name, idn, idn0):            
         ch = current_char(self)
         if ch == ':':
-            skip_char(self)
-            ch = self.skip_spaces()
-            return c_new_keyval(name, self.get_value(idn, idn))
+            errors.error_unexpected_keyval(self)
 
         if self.is_nl:
             if self.eof or self.col <= idn:
@@ -993,28 +1038,30 @@ class Loader:
                 return self.get_complex_value(name, self.col, idn)
             else:
                 errors.error_indentation(self, idn)
+
+        ch = current_char(self)
+        if ch == '{':
+            self.bc += 1
+            skip_char(self)
+            self.skip_spaces()
+            return self.get_complex_value(name, 0, idn)
         else:
-            ch = current_char(self)
-            if ch == '{':
-                self.bc += 1
-                skip_char(self)
-                self.skip_spaces()
-                return self.get_complex_value(name, 0, idn)
-            else:
-                errors.error_unexpected_value(self, 'Expected attribute or complex value with the name %r' % name)
+            errors.error_unexpected_value(self, 'Expected attribute or complex value with the name %r' % name)
     #
     def get_complex_value(self, name, idn, idn0):
-        attrs = []
+        attrs = c_new_odict([])
         
         vals = self.get_attributes(attrs, idn, idn0)
         if len(attrs) == 0:
             attrs = None
+            
+        #print(name, attrs, vals)
         if vals is not None:
             self.get_values(vals, idn, idn0)
-            
-        attrs_od = c_new_odict(attrs)
-            
-        return self.builder.create_node(name, attrs_od, vals)
+
+        #print(name, attrs, vals)
+                        
+        return self.builder.create_node(name, attrs, vals)
     #
     def get_attributes(self, attrs, idn, idn0):                
         while 1:
@@ -1038,12 +1085,28 @@ class Loader:
                 self.bc -= 1
                 skip_char(self)
                 return None
-            else:
+            
+            if ch.isalpha() or ch == '_':
+                key = self.get_name()
+            elif ch == '`':
+                key = self.get_string(ch)
+            else:    
+                key = None
+        
+            ch = self.skip_spaces()
+            
+            if key is None:
+                val = self.get_value(idn0, idn0)
+                return [val]
+
+            if ch == ':':
+                skip_char(self)
+                self.skip_spaces()
                 val = self.get_value(idn, idn0)
-                if type(val) is KeyVal:
-                    attrs.append(val)
-                else:
-                    return [val]
+                attrs[key] = val
+            else:
+                val = self.get_named(key, idn, idn0)
+                return [val]
     #
     def get_values(self, vals, idn, idn0):
         while 1:
@@ -1100,7 +1163,7 @@ class Loader:
             else:    
                 errors.error_unexpected_end_list(self)
         
-        val = self.get_value(0, 0)        
+        val = self.get_keyval_or_value()        
         if type(val) is KeyVal:
             is_odict = 1
             keyval = val
@@ -1133,10 +1196,7 @@ class Loader:
                     self.get_keyval_odict(mapping)
                 else:
                     val = self.get_value(0, 0)
-                    if type(val) is KeyVal:
-                        errors.error_unexpected_keyval(self)
-                    else:
-                        sequence.append(val)
+                    sequence.append(val)
                 
             ch = self.skip_spaces()
     #
@@ -1159,8 +1219,6 @@ class Loader:
                 errors.error_unexpected_end_tuple(self)
             else:
                 val = self.get_value(0, 0)
-                if type(val) is KeyVal:
-                    errors.error_unexpected_keyval(self)
                 sequence.append(val)
 
             ch = self.skip_spaces()
@@ -1182,7 +1240,7 @@ class Loader:
         elif ch == '\0':
             errors.error_unexpected_end_list(self)
         else:        
-            val = self.get_value(0, 0)
+            val = self.get_keyval_or_value()
             if type(val) is KeyVal:
                 is_dict = 1
                 keyval = val

@@ -20,7 +20,6 @@ for key, d in _dict.items():
     text_o, text_0, text_1, text_2 = d['o'], d['0'], d['1'], d['2']
     def ftest(self, text_o=text_o, text_0=text_0, text_1=text_1, text_2=text_2):
         vs = loads(text_o)
-        print(vs)
         t_0 = dumps(vs, sorted=1)
         t_1 = dumps(vs, pretty=1, braces=1, sorted=1)
         t_2 = dumps(vs, pretty=1, sorted=1)
