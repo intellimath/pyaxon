@@ -79,13 +79,6 @@ text_7_2 = '''aaa'''
 
 #################################
 
-text_7a_o = '''aaa.bbb{}'''
-text_7a_0 = '''aaa.bbb{}'''
-text_7a_1 = '''aaa.bbb {}'''
-text_7a_2 = '''aaa.bbb'''
-
-#################################
-
 text_7b_o = """`aaa@bbb`{}"""
 text_7b_0 = """`aaa@bbb`{}"""
 text_7b_1 = """`aaa@bbb` {}"""
@@ -714,30 +707,30 @@ text_34_o = text_34_1 = text_34_2 = """\
   "e.f": [{ a: 1
       b: 2}]}"""
 
-text_35_0 = """aaa{a.b:bbb{a:(1 2 3) b:(2 3 4)} e.f:[{a:1 b:2} {a:1 b:2}] c.d:ccc{c:(3 4 5)}}"""
+text_35_0 = """aaa{a:bbb{a:(1 2 3) b:(2 3 4)} e:[{a:1 b:2} {a:1 b:2}] c:ccc{c:(3 4 5)}}"""
 text_35_o = text_35_1 = """\
 aaa {
-  a.b: bbb {
+  a: bbb {
     a: (1 2 3)
     b: (2 3 4)}
-  e.f: [
+  e: [
     { a: 1
       b: 2}
     { a: 1
       b: 2}]
-  c.d: ccc {
+  c: ccc {
     c: (3 4 5)}}"""
 text_35_2 = """\
 aaa
-  a.b: bbb
+  a: bbb
     a: (1 2 3)
     b: (2 3 4)
-  e.f: [
+  e: [
     { a: 1
       b: 2}
     { a: 1
       b: 2}]
-  c.d: ccc
+  c: ccc
     c: (3 4 5)"""
     
 text_36_o = '''["123":123]'''

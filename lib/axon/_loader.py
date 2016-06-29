@@ -627,10 +627,10 @@ class Loader:
         while ch.isalnum() or ch == '_':
             ch = next_char(self)
             
-        if ch == '.':
-            ch = next_char(self)
-            while ch.isalnum() or ch == '_':
-                ch = next_char(self)
+        # if ch == '.':
+        #     ch = next_char(self)
+        #     while ch.isalnum() or ch == '_':
+        #         ch = next_char(self)
 
         name0 = get_chunk(self, pos0)
         name = c_get_cached_name(name0)
