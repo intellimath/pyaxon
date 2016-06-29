@@ -937,12 +937,60 @@ class Loader:
 
         return val
     #
+    def get_keyval_dict(self, mapping):
+        ch = current_char(self)
+        if ch == '"':
+            key = self.get_string(ch)
+        elif ch.isalpha() or ch == '_':
+            key = self.get_key()
+        else:    
+            key = None
+            
+        if key is None:
+            errors.error_expected_key(self)
+            
+        ch = self.skip_spaces()
+        if ch == ':':
+            skip_char(self)
+            self.skip_spaces()
+            val = self.get_value(0, 0)
+            mapping[key] = val
+        else:
+            errors.error_expected_keyval(self)
+    #
+    def get_keyval_odict(self, mapping):
+        ch = current_char(self)
+        if ch == '"':
+            key = self.get_string(ch)
+        elif ch.isalpha() or ch == '_':
+            key = self.get_key()
+        else:    
+            key = None
+            
+        if key is None:
+            errors.error_expected_key(self)
+            
+        ch = self.skip_spaces()
+        if ch == ':':
+            skip_char(self)
+            self.skip_spaces()
+            val = self.get_value(0, 0)
+            mapping[key] = val
+        else:
+            errors.error_expected_keyval(self)
+    #
     def get_named(self, name, idn, idn0):            
+        ch = current_char(self)
+        if ch == ':':
+            skip_char(self)
+            ch = self.skip_spaces()
+            return c_new_keyval(name, self.get_value(idn, idn))
+
         if self.is_nl:
             if self.eof or self.col <= idn:
-                val = self.builder.create_node(name, None, None)
+                return self.builder.create_node(name, None, None)
             elif self.col > idn:
-                val = self.get_complex_value(name, self.col, idn)
+                return self.get_complex_value(name, self.col, idn)
             else:
                 errors.error_indentation(self, idn)
         else:
@@ -951,15 +999,9 @@ class Loader:
                 self.bc += 1
                 skip_char(self)
                 self.skip_spaces()
-                val = self.get_complex_value(name, 0, idn)
-            elif ch == ':':
-                skip_char(self)
-                ch = self.skip_spaces()
-                val = c_new_keyval(name, self.get_value(idn, idn))
+                return self.get_complex_value(name, 0, idn)
             else:
                 errors.error_unexpected_value(self, 'Expected attribute or complex value with the name %r' % name)
-
-        return val        
     #
     def get_complex_value(self, name, idn, idn0):
         attrs = []
@@ -1032,8 +1074,6 @@ class Loader:
                 vals.append(val)
     #
     def get_list_value(self):
-
-        sequence = []
         is_odict = 0
 
         ch = self.skip_spaces()
@@ -1060,11 +1100,14 @@ class Loader:
             else:    
                 errors.error_unexpected_end_list(self)
         
-        val = self.get_value(0, 0)
-        sequence.append(val)
-        
+        val = self.get_value(0, 0)        
         if type(val) is KeyVal:
             is_odict = 1
+            keyval = val
+            mapping = c_new_odict([])
+            mapping[keyval.key] = keyval.val
+        else:
+            sequence = [val]
             
         ch = self.skip_spaces()
 
@@ -1077,7 +1120,7 @@ class Loader:
                 skip_char(self)
                 self.bs -= 1
                 if is_odict:
-                    return c_new_odict(sequence)
+                    return mapping
                 else:
                     return sequence
             elif ch == '\0':
@@ -1086,13 +1129,10 @@ class Loader:
                 else:    
                     errors.error_unexpected_end_list(self)
             else:
-                val = self.get_value(0, 0)
                 if is_odict:
-                    if type(val) is KeyVal:
-                        sequence.append(val)
-                    else:
-                        errors.error_expected_keyval(self)
+                    self.get_keyval_odict(mapping)
                 else:
+                    val = self.get_value(0, 0)
                     if type(val) is KeyVal:
                         errors.error_unexpected_keyval(self)
                     else:
@@ -1168,14 +1208,10 @@ class Loader:
             elif ch == '\0':
                 errors.error_unexpected_end_list(self)
             else:
-                val = self.get_value(0, 0)
                 if is_dict:
-                    if type(val) is KeyVal:
-                        keyval = val
-                        mapping[keyval.key] = keyval.val
-                    else:
-                        errors.error(self, "Invalid dict item")
+                    self.get_keyval_dict(mapping)
                 else:
+                    val = self.get_value(0, 0)
                     if type(val) is KeyVal:
                         errors.error(self, "Invalid set item")
                     else:

@@ -198,6 +198,12 @@ cdef class Loader:
     @cython.locals(ch=Py_UCS4, val=object, name=object, text=object)
     cdef object get_value(Loader self, int idn, int idn0)
 
+    @cython.locals(ch=Py_UCS4, key=object, val=object)
+    cdef object get_keyval_dict(self, dict mapping)
+
+    @cython.locals(ch=Py_UCS4, key=object, val=object)
+    cdef object get_keyval_odict(self, OrderedDict mapping)
+
     @cython.locals(ch=Py_UCS4, val=object)
     cdef object get_named(self, object name, int idn, int idn0)
 
@@ -211,7 +217,8 @@ cdef class Loader:
     @cython.locals(ch=Py_UCS4, val=object, metadata=dict)
     cdef object get_values(Loader self, list vals, int idn, int idn0)
 
-    @cython.locals(sequence=list, ch=Py_UCS4, key=object, val=object, is_odict=bint, metadata=dict)
+    @cython.locals(sequence=list, mapping=OrderedDict, ch=Py_UCS4, 
+                   key=object, val=object, is_odict=bint, keyval=KeyVal, metadata=dict)
     cdef object get_list_value(Loader self)
 
     @cython.locals(sequence=list, v=bint, metadata=dict)
@@ -220,7 +227,8 @@ cdef class Loader:
     #@cython.locals(ch=Py_UCS4, metadata=dict)
     #cdef object get_metadata(Loader self)
 
-    @cython.locals(mapping=dict, sequence=set, ch=Py_UCS4, val=object, is_dict=bint, keyval=KeyVal, metadata=dict)
+    @cython.locals(mapping=dict, sequence=set, ch=Py_UCS4, 
+                   val=object, is_dict=bint, keyval=KeyVal, metadata=dict)
     cdef object get_dict_value(Loader self)
 
     # @cython.locals(ch=Py_UCS4, sequence=list)

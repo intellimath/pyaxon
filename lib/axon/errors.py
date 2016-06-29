@@ -72,6 +72,9 @@ def error_unexpected_keyval(self):
 def error_expected_keyval(self):
     error(self, 'Expected key:val')
 #
+def error_expected_key(self):
+    error(self, 'Expected key')
+#
 def error_expected_named_constant(self):
     error(self, 'Expected named constant')
 #
