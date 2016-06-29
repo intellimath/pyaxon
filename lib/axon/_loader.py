@@ -844,10 +844,10 @@ class Loader:
         if ch == '-':
             ch = self.line[self.pos+1]
             if ch.isdigit():
-                val = self.get_number()
+                return self.get_number()
             else:
                 skip_char(self)
-                val = self.get_negative_constant()
+                return self.get_negative_constant()
         elif ch == '"':
             text = self.get_string(ch)
             ch = self.skip_spaces()
@@ -858,18 +858,18 @@ class Loader:
         elif ch == '{':
             self.bc += 1
             skip_char(self)
-            val = self.get_dict_value()
+            return self.get_dict_value()
         elif ch == '[':
             self.bs += 1
             skip_char(self)
-            val = self.get_list_value()
+            return self.get_list_value()
         elif ch == '(':
             self.bq += 1
             skip_char(self)
-            val = self.get_tuple_value()
+            return self.get_tuple_value()
         elif ch == '^':
             skip_char(self)
-            val = self.get_date_time()
+            return self.get_date_time()
         elif ch.isalpha() or ch == '_':
             name = self.get_name()
             val = reserved_name_dict.get(name, c_undefined)
@@ -877,31 +877,27 @@ class Loader:
                 return val
 
             ch = self.skip_spaces()
-            val = self.get_named(name, idn, idn0)                                                  
+            return self.get_named(name, idn, idn0)                                                  
         elif ch == "`":
             name = self.get_string(ch)
             self.skip_spaces()
-            val = self.get_named(name, idn, idn0)
-        # elif ch == '<':
-        #     self.ba += 1
-        #     skip_char(self)
-        #     val = self.get_odict_value()
+            return self.get_named(name, idn, idn0)
         elif ch == '|':
-            val = self.get_base64()
+            return self.get_base64()
         elif ch == '∞': # \U221E
             ch = next_char(self)
             if ch == 'D' or ch == 'd' or ch == '$':
                 skip_char(self)
-                val = self.sbuilder.create_decimal_inf()
+                return self.sbuilder.create_decimal_inf()
             else:
-                val = self.sbuilder.create_inf()
+                return self.sbuilder.create_inf()
         elif ch == '?':
             ch = next_char(self)
             if ch == 'D' or ch == 'd' or ch == '$':
                 skip_char(self)
-                val = self.sbuilder.create_decimal_nan()
+                return self.sbuilder.create_decimal_nan()
             else:
-                val = self.sbuilder.create_nan()
+                return self.sbuilder.create_nan()
         elif ch == '*':
             skip_char(self)
             label = self.get_label()
@@ -910,7 +906,7 @@ class Loader:
             if label is None:
                 errors.error_expected_label(self)
             else:
-                val = self.labeled_objects.get(label, c_undefined)
+                return self.labeled_objects.get(label, c_undefined)
         elif ch == '&':
             pos0 = self.pos
             skip_char(self)
@@ -922,19 +918,19 @@ class Loader:
 
             val = self.get_value(idn, idn0)
             self.labeled_objects[label] = val
+            return val
         elif ch == '$':
             skip_char(self)
             name = self.get_name()
             val = self.c_constants.get(name, c_undefined)
             if val is c_undefined:
                 errors.error(self, "Undefined name %r" % name)
+            return val
         elif ch == '∅':                 
             skip_char(self)
-            val = set()
+            return set()
         else:
             errors.error_unexpected_value(self, 'Unexpected value')
-
-        return val
     #
     def get_keyval_dict(self, mapping):
         ch = current_char(self)
@@ -1055,11 +1051,8 @@ class Loader:
         if len(attrs) == 0:
             attrs = None
             
-        #print(name, attrs, vals)
         if vals is not None:
             self.get_values(vals, idn, idn0)
-
-        #print(name, attrs, vals)
                         
         return self.builder.create_node(name, attrs, vals)
     #
