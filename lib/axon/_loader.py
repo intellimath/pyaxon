@@ -134,10 +134,6 @@ class Loader:
 
         self.lnum = 0
         
-        #self.global_context = {}
-        
-        self.before08 = 0
-
         self.next_line()
     #
     def _check_pairs(self):
@@ -562,7 +558,7 @@ class Loader:
 
         text = get_chunk(self, pos0)
 
-        if ch == 'd' or ch == 'D' or ch == '$':
+        if ch == 'd' or ch == 'D': # or ch == '$':
             skip_char(self)
             return self.sbuilder.create_decimal(text)
 
@@ -908,7 +904,7 @@ class Loader:
             else:
                 return self.labeled_objects.get(label, c_undefined)
         elif ch == '&':
-            pos0 = self.pos
+            #pos0 = self.pos
             skip_char(self)
             label = self.get_label()
             if label is None:
@@ -939,9 +935,6 @@ class Loader:
         elif ch.isalpha() or ch == '_':
             key = self.get_key()
         else:    
-            key = None
-            
-        if key is None:
             errors.error_expected_key(self)
             
         ch = self.skip_spaces()
@@ -960,9 +953,6 @@ class Loader:
         elif ch.isalpha() or ch == '_':
             key = self.get_key()
         else:    
-            key = None
-            
-        if key is None:
             errors.error_expected_key(self)
             
         ch = self.skip_spaces()

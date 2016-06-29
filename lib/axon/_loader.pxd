@@ -111,7 +111,7 @@ cdef class Loader:
 
     cdef bint is_nl
     cdef public int idn
-
+    
     cpdef _check_pairs(Loader self)
 
     @cython.locals(is_odict=bint)
