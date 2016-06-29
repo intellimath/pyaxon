@@ -237,9 +237,9 @@ class Loader:
 
             val = self.get_keyval_or_value(0, 0)
             if is_odict and not type(val) is KeyVal:
-                errors.error(self, "Expected key:val pair")
+                errors.error_expected_keyval(self)
             elif not is_odict and type(val) is KeyVal:
-                errors.error(self, "Unexpected key:val pair")
+                errors.error_unexpected_keyval(self)
             
             yield val
     #

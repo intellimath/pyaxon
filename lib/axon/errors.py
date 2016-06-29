@@ -94,7 +94,10 @@ def error_invalid_datetime(self):
     error(self, 'Invalid datetime')
 #
 def error_invalid_value(self, vtype=''):
-    error(self, 'Invalid %s value' % vtype)
+    error(self, 'Invalid %s value' % vtype.__name__)
+#
+def error_invalid_odict(self, vtype=''):
+    error(self, 'Invalid ordered dict')
 #
 def error_invalid_value_with_prefix(self, prefix):
     error(self, "Invalid value with prefix '%s'" % prefix)
