@@ -28,7 +28,7 @@ from axon._objects import as_unicode, StringReader, StringWriter
 
 import io
 
-def display(text, pretty=1, braces=0, sorted=1, hsize=0, crossref=0):
+def display(text, pretty=1, braces=0, sorted=0, hsize=0, crossref=0):
     '''
     Display AXON text in formatted form for easy read.
 
@@ -72,7 +72,7 @@ def display_html(vals):
 
     return wg    
 
-def dumps(vals, pretty=0, braces=0, sorted=1, hsize=0, crossref=0):
+def dumps(vals, pretty=0, braces=0, sorted=0, hsize=0, crossref=0):
     '''
     Dump sequence of values into unicode text.
 
@@ -108,7 +108,7 @@ def dumps(vals, pretty=0, braces=0, sorted=1, hsize=0, crossref=0):
     fd.close()
     return v
 
-def dump(fpath, val, pretty=0, braces=0, sorted=1, hsize=0, crossref=0, encoding='utf-8'):
+def dump(fpath, val, pretty=0, braces=0, sorted=0, hsize=0, crossref=0, encoding='utf-8'):
     '''\
     Same as :py:func:`dumps` but for dumping into a file.
 

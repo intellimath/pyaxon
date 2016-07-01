@@ -469,7 +469,7 @@ class Dumper:
     Dumper class.
     '''
     #
-    def __init__(self, fd, pretty=0, braces=0, sorted=1, hsize=0, crossref=0):
+    def __init__(self, fd, pretty=0, braces=0, sorted=0, hsize=0, crossref=0):
 
         self.crossref = 1 if crossref else 0
         self.crossref_set = None
