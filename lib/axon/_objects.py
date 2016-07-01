@@ -389,14 +389,15 @@ class Node(object):
         
         if attrs is None:
             self.attrs = None
+        elif type(attrs) == OrderedDict:
+            self.attrs = attrs
         else:
             self.attrs = OrderedDict(attrs)
             
         if vals is None:
             self.vals = None
         else:
-            tp = type(vals)
-            if tp is list:
+            if type(vals) is list:
                 self.vals = vals
             else:
                 self.vals = list(vals)
@@ -423,17 +424,17 @@ class Node(object):
     #
     def __getitem__(self, index):
         if self.vals is None:
-            raise errors.errors_no_children(Node)
+            raise errors.error_no_children(Node)
         return self.vals[index]
     #
     def __setitem__(self, index, val):
         if self.vals is None:
-            raise errors.errors_no_children(Node)
+            raise errors.error_no_children(Node)
         self.vals[index] = val
     #
     def __delitem__(self, index):
         if self.vals is None:
-            raise errors.errors_no_children(Node)
+            raise errors.error_no_children(Node)
         del self.vals[index]
     #
     def __iadd__(self, vals):
