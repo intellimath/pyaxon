@@ -51,7 +51,10 @@ def display_html(vals):
     :returns:
         IPython TabbedView widget.
     '''
-    from IPython.html.widgets import Tab, HTML
+    try:
+        from ipywidgets import Tab, HTML
+    except:
+        from IPython.html.widgets import Tab, HTML
 
     # Compact form
     p1 = dumps(vals, crossref=1)
