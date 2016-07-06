@@ -291,7 +291,7 @@ def c_new_attribute(name, val):
 class KeyVal(object):
     #
     def __init__(self, key, val):
-        self.key = c_as_unicode(key)
+        self.key = key
         self.val = val
     #
     def __getitem__(self, index):

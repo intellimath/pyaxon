@@ -139,6 +139,7 @@ cdef Link link_new(Link prev, Link next):
    return link
 
 cdef public class OrderedDict[object OrderedDictObject, type OrderedDictType]:
+    
     def __init__(self, *args, **kwds):
         '''Initialize an ordered dictionary.  The signature is the same as
         regular dictionaries, but keyword arguments are not recommended because
@@ -155,7 +156,37 @@ cdef public class OrderedDict[object OrderedDictObject, type OrderedDictType]:
             root.prev = root.next = <cython.void*>root
             self.root = root
         
-        self.__update(args, kwds)
+        self._update(args, kwds)
+
+    cdef _update(self, object args, object kwds):
+        if len(args) > 1:
+            raise TypeError(
+                      'update expected at most 1 arguments, got %d' % len(args))
+        if args:
+            other = args[0]
+            if other is not None:
+                tp = type(other)
+                if tp is list:
+                    for key, val in <list>other:
+                        self[key] = val
+                elif tp is dict:
+                    for key, val in (<dict>other).items():
+                        self[key] = val
+                elif tp is tuple:
+                    for key, val in <list>other:
+                        self[key] = val
+                elif isinstance(other, collections.Mapping):
+                    for key in other:
+                        self[key] = other[key]
+                elif hasattr(other, "keys"):
+                    for key in other.keys():
+                        self[key] = other[key]
+                else:
+                    for key, val in other:
+                        self[key] = val
+        if kwds:
+            for key, val in kwds.items():
+                self[key] = val
 
     def __setitem__(self, key, val):
         'od.__setitem__(i, y) <==> od[i]=y'
@@ -287,43 +318,13 @@ cdef public class OrderedDict[object OrderedDictObject, type OrderedDictType]:
         size += _sizeof(self.root) * n         # link objects
         return size
     
-    def __update(self, args, kwds):
-        if len(args) > 1:
-            raise TypeError('update expected at most 1 arguments, got %d' %
-                            len(args))
-        if args:
-            other = args[0]
-            if other is not None:
-                tp = type(other)
-                if tp is list:
-                    for key, val in <list>other:
-                        self[key] = val
-                elif tp is dict:
-                    for key, val in (<dict>other).items():
-                        self[key] = val
-                elif tp is tuple:
-                    for key, val in <list>other:
-                        self[key] = val
-                elif isinstance(other, collections.Mapping):
-                    for key in other:
-                        self[key] = other[key]
-                elif hasattr(other, "keys"):
-                    for key in other.keys():
-                        self[key] = other[key]
-                else:
-                    for key, val in other:
-                        self[key] = val
-        if kwds:
-            for key, val in kwds.items():
-                self[key] = val
-
     def update(self, *args, **kw):
         ''' D.update([E, ]**F) -> None.  Update D from mapping/iterable E and F.
             If E present and has a .keys() method, does:     for k in E: D[k] = E[k]
             If E present and lacks .keys() method, does:     for (k, v) in E: D[k] = v
             In either case, this is followed by: for k, v in F.items(): D[k] = v
         '''
-        self.__update(args, kw)
+        self._update(args, kw)
     
     def get(self, key, default=None):
         'D.get(k[,d]) -> D[k] if k in D, else d.  d defaults to None.'
@@ -490,7 +491,11 @@ cdef OrderedDict c_new_odict(list args):
 #     return od
     
 def odict(args):
-    return c_new_odict(c_as_list(args))            
+    cdef OrderedDict od
+    
+    od = OrderedDict.__new__(OrderedDict)
+    od._update(args, None)
+    return od        
 
 # def odict_ex(args, metadata):
 #     return c_new_odict_ex(c_as_list(args), c_as_dict(metadata))

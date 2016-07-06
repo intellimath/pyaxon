@@ -403,11 +403,11 @@ def _dump_name(ob):
 
     if pos != pos0:
         if text is None:
-            text = name[pos0: pos]
+            text = c_unicode_substr(name, pos0, pos)
         else:
-            text += name[pos0: pos]
+            text += c_unicode_substr(name, pos0, pos)
         if is_qname:
-            text = "`" + text + "`"
+            text = "'" + text + "'"
     else:
         text = ''
 

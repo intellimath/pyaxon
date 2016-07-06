@@ -112,10 +112,12 @@ cdef class Loader:
     cdef bint is_nl
     cdef public int idn
     
+    cdef KeyVal keyval
+    
     cpdef _check_pairs(Loader self)
 
-    @cython.locals(is_odict=bint)
-    cpdef iload(Loader self)
+    #@cython.locals(is_odict=bint)
+    #cpdef iload(Loader self)
 
     @cython.locals(sequence=list, mapping=OrderedDict, keyval=KeyVal, is_odict=bint)
     cpdef load(Loader self)
@@ -162,13 +164,13 @@ cdef class Loader:
     cdef object get_date_time(Loader self)
 
     @cython.locals(ch=Py_UCS4, pos0=int)
-    cdef object _get_name(Loader self)
+    cdef inline object _get_name(Loader self)
 
     @cython.locals(ch=Py_UCS4, pos0=int)
-    cdef object get_name(Loader self)
+    cdef inline object get_name(Loader self)
 
     @cython.locals(ch=Py_UCS4, pos0=int)
-    cdef object get_key(Loader self)
+    cdef inline object get_key(Loader self)
 
     @cython.locals(pos0=int, ch=Py_UCS4)
     cdef object get_label(Loader self)
@@ -177,7 +179,7 @@ cdef class Loader:
                    dig=int, ch0=int)
     cdef unicode get_unicode_hex(Loader self)
 
-    @cython.locals(ch=Py_UCS4, text=unicode, pos0=int)
+    @cython.locals(ch=Py_UCS4, text=unicode, pos0=int, triple=bint)
     cdef object get_string(Loader self, Py_UCS4 endch)
 
     @cython.locals(ch=Py_UCS4, text=unicode, pos0=int)

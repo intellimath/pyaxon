@@ -134,6 +134,8 @@ class Loader:
 
         self.lnum = 0
         
+        self.keyval = KeyVal('', None)
+        
         self.next_line()
     #
     def _check_pairs(self):
@@ -174,9 +176,8 @@ class Loader:
         val = self.get_keyval_or_value()        
         if type(val) is KeyVal:
             is_odict = 1
-            keyval = val
             mapping = c_new_odict([])
-            mapping[keyval.key] = keyval.val
+            mapping[self.keyval.key] = self.keyval.val
         else:
             sequence = [val]
 
@@ -217,10 +218,12 @@ class Loader:
                 self.errto.close()
             return
 
-        val = self.get_keyval_or_value(0, 0)
+        val = self.get_keyval_or_value()
         if type(val) is KeyVal:
             is_odict = 1
-        yield val
+            yield (self.keyval.key, self.keyval.val)
+        else:
+            yield val
 
         while 1:
             self.skip_spaces()
@@ -231,13 +234,22 @@ class Loader:
                     self.errto.close()
                 break
 
-            val = self.get_keyval_or_value(0, 0)
-            if is_odict and not type(val) is KeyVal:
-                errors.error_expected_keyval(self)
-            elif not is_odict and type(val) is KeyVal:
-                errors.error_unexpected_keyval(self)
-            
-            yield val
+            val = self.get_keyval_or_value()
+            # if is_odict and not type(val) is KeyVal:
+            #     errors.error_expected_keyval(self)
+            # elif not is_odict and type(val) is KeyVal:
+            #     errors.error_unexpected_keyval(self)
+
+            if type(val) is KeyVal:
+                if is_odict:
+                    yield (self.keyval.key, self.keyval.val)
+                else:
+                    errors.error_unexpected_keyval(self)
+            else:
+                if is_odict:
+                    errors.error_expected_keyval(self)
+                else:
+                    yield val
     #
     def __iter__(self):
         '''
@@ -874,7 +886,9 @@ class Loader:
 
             ch = self.skip_spaces()
             return self.get_named(name, idn, idn0)                                                  
-        elif ch == "`":
+        elif ch == '`':
+            return self.get_string(ch)
+        elif ch == "'":
             name = self.get_string(ch)
             self.skip_spaces()
             return self.get_named(name, idn, idn0)
@@ -971,10 +985,10 @@ class Loader:
         if ch == '"':
             is_key = 1
             key = self.get_string(ch)
-        elif ch == '``':
-            key = self.get_string(ch)
         elif ch.isalpha() or ch == '_':
-            key = self.get_name()
+            key = self.get_key()
+        elif ch == "'":
+            key = self.get_string(ch)
         else:    
             return self.get_value(0, 0)            
             
@@ -983,7 +997,9 @@ class Loader:
             skip_char(self)
             self.skip_spaces()
             val = self.get_value(0, 0)
-            return c_new_keyval(key, val)
+            self.keyval.key = key
+            self.keyval.val = val
+            return self.keyval
             
         if is_key:
             return key
@@ -1071,7 +1087,7 @@ class Loader:
             
             if ch.isalpha() or ch == '_':
                 key = self.get_name()
-            elif ch == '`':
+            elif ch == "'":
                 key = self.get_string(ch)
             else:    
                 key = None
@@ -1149,9 +1165,8 @@ class Loader:
         val = self.get_keyval_or_value()        
         if type(val) is KeyVal:
             is_odict = 1
-            keyval = val
             mapping = c_new_odict([])
-            mapping[keyval.key] = keyval.val
+            mapping[self.keyval.key] = self.keyval.val
         else:
             sequence = [val]
             
