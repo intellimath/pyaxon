@@ -193,11 +193,7 @@ class Loader:
             if is_odict:
                 self.get_keyval_odict(mapping)
             else:
-                val = self.get_value(0, 0)
-                if type(val) is KeyVal:
-                    errors.error_unexpected_keyval(self)
-                else:
-                    sequence.append(val)
+                sequence.append(self.get_value(0, 0))
 
         if is_odict:
             return mapping
@@ -208,8 +204,6 @@ class Loader:
         '''
         Iterative get value
         '''
-        is_odict = 0
-
         self.skip_spaces()
         if self.eof:
             self.fd.close()
@@ -223,6 +217,7 @@ class Loader:
             is_odict = 1
             yield (self.keyval.key, self.keyval.val)
         else:
+            is_odict = 0
             yield val
 
         while 1:
@@ -234,22 +229,16 @@ class Loader:
                     self.errto.close()
                 break
 
-            val = self.get_keyval_or_value()
             # if is_odict and not type(val) is KeyVal:
             #     errors.error_expected_keyval(self)
             # elif not is_odict and type(val) is KeyVal:
             #     errors.error_unexpected_keyval(self)
 
-            if type(val) is KeyVal:
-                if is_odict:
-                    yield (self.keyval.key, self.keyval.val)
-                else:
-                    errors.error_unexpected_keyval(self)
+            if is_odict:
+                self.get_keyval()
+                yield (self.keyval.key, self.keyval.val)
             else:
-                if is_odict:
-                    errors.error_expected_keyval(self)
-                else:
-                    yield val
+                yield self.get_value(0, 0)
     #
     def __iter__(self):
         '''
@@ -1028,6 +1017,27 @@ class Loader:
                 else:
                     return key
     #
+    def get_keyval(self):
+        ch = current_char(self)
+        if ch == '"':
+            is_key = 1
+            key = self.get_string(ch)
+        elif ch.isalpha() or ch == '_':
+            key = self.get_key()
+        else:
+            errors.error_expected_key(self)
+            
+        ch = self.skip_spaces()
+        if ch == ':':
+            skip_char(self)
+            self.skip_spaces()
+            val = self.get_value(0, 0)
+            self.keyval.key = key
+            self.keyval.val = val
+            #return self.keyval
+        else:
+            errors.error_expected_keyval(self)            
+    #
     def get_named(self, name, idn, idn0):            
         ch = current_char(self)
         if ch == ':':
@@ -1193,8 +1203,7 @@ class Loader:
                 if is_odict:
                     self.get_keyval_odict(mapping)
                 else:
-                    val = self.get_value(0, 0)
-                    sequence.append(val)
+                    sequence.append(self.get_value(0, 0))
                 
             ch = self.skip_spaces()
     #

@@ -209,6 +209,9 @@ cdef class Loader:
     @cython.locals(ch=Py_UCS4, key=object, val=object, pos0=int, is_key=bint)
     cdef object get_keyval_or_value(self)
 
+    @cython.locals(ch=Py_UCS4, key=object, val=object)
+    cdef object get_keyval(self)
+
     @cython.locals(ch=Py_UCS4, val=object)
     cdef object get_named(self, object name, int idn, int idn0)
 

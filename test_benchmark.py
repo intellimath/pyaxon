@@ -63,7 +63,7 @@ axon_times_load = []
 def make_test(data):
 
     t0 = time.time()
-    axon_text = axon.dumps([data], sorted=0)
+    axon_text = axon.dumps([data])
     dt_axon_dump = time.time() - t0
     axon_times_dump.append(dt_axon_dump)
 
