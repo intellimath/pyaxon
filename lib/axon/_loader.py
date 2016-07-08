@@ -5,6 +5,7 @@
 #cython: nonecheck=False
 #cython: language_level=3
 #cython: embedsignature=True
+#cython: optimize.use_switch=False
 
 # The MIT License (MIT)
 # 
@@ -610,17 +611,17 @@ class Loader:
             val = self.sbuilder.create_time(self.ta[0], self.ta[1], self.ta[2], self.ta[3], tzinfo)
             return val
     #
-    def _get_name(self):
-        pos0 = self.pos
-        ch = current_char(self)
-        while ch.isalnum() or ch == '_':
-            ch = next_char(self)
-        
-        if self.pos == pos0:
-            return ''
-                    
-        name0 = get_chunk(self, pos0)
-        return c_get_cached_name(name0)
+    # def _get_name(self):
+    #     pos0 = self.pos
+    #     ch = current_char(self)
+    #     while ch.isalnum() or ch == '_':
+    #         ch = next_char(self)
+    #
+    #     if self.pos == pos0:
+    #         return ''
+    #
+    #     name0 = get_chunk(self, pos0)
+    #     return c_get_cached_name(name0)
     #
     def get_name(self):
         pos0 = self.pos

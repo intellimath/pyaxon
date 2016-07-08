@@ -287,23 +287,23 @@ cdef dict tz_dict = {}
 cdef public class SimpleBuilder[type SimpleBuilderType, object SimpleBuilder]:
 
     @cython.locals(n=int, i=int, buf=cython.p_char, num_buffer=bytes)
-    cdef inline object create_int(self, object text)
+    cdef object create_int(self, object text)
     @cython.locals(n=int, i=int, buf=cython.p_char, num_buffer=bytes)
-    cdef inline object create_float(self, object text)
-    cdef inline object create_decimal(self, object text)
-    cdef inline object create_time(self, int h, int m, int s, int ms, object tz)
-    cdef inline object create_timedelta(self, int d, int s, int ms)
-    cdef inline object create_date(self, int y, int m, int d)
-    cdef inline object create_datetime(self, int y, int M, int d, 
+    cdef object create_float(self, object text)
+    cdef object create_decimal(self, object text)
+    cdef object create_time(self, int h, int m, int s, int ms, object tz)
+    cdef object create_timedelta(self, int d, int s, int ms)
+    cdef object create_date(self, int y, int m, int d)
+    cdef object create_datetime(self, int y, int M, int d, 
                                        int h, int m, int s, int ms, object tz)
-    cdef inline object create_tzinfo(self, int minutes)
-    cdef inline object create_inf(self)
-    cdef inline object create_ninf(self)
-    cdef inline object create_nan(self)
-    cdef inline object create_decimal_inf(self)
-    cdef inline object create_decimal_ninf(self)
-    cdef inline object create_decimal_nan(self)
-    cdef inline object create_binary(self, unicode text)
+    cdef object create_tzinfo(self, int minutes)
+    cdef object create_inf(self)
+    cdef object create_ninf(self)
+    cdef object create_nan(self)
+    cdef object create_decimal_inf(self)
+    cdef object create_decimal_ninf(self)
+    cdef object create_decimal_nan(self)
+    cdef object create_binary(self, unicode text)
 
 ####################################################################
 
