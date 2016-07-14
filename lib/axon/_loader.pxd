@@ -85,6 +85,7 @@ cdef class Loader:
     cdef object encoding
 
     cdef public object line
+    cdef int line_len
     cdef bint eof
     cdef public int pos, col
     cdef public int lnum

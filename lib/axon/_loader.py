@@ -611,18 +611,6 @@ class Loader:
             val = self.sbuilder.create_time(self.ta[0], self.ta[1], self.ta[2], self.ta[3], tzinfo)
             return val
     #
-    # def _get_name(self):
-    #     pos0 = self.pos
-    #     ch = current_char(self)
-    #     while ch.isalnum() or ch == '_':
-    #         ch = next_char(self)
-    #
-    #     if self.pos == pos0:
-    #         return ''
-    #
-    #     name0 = get_chunk(self, pos0)
-    #     return c_get_cached_name(name0)
-    #
     def get_name(self):
         pos0 = self.pos
         ch = next_char(self)
@@ -1140,11 +1128,11 @@ class Loader:
                 self.bc -= 1
                 skip_char(self)
                 return 1
-            else:
-                val = self.get_value(idn, idn0)
-                if type(val) is KeyVal:
-                    errors.error_unexpected_keyval(self)
-                vals.append(val)
+
+            val = self.get_value(idn, idn0)
+            # if type(val) is KeyVal:
+            #     errors.error_unexpected_keyval(self)
+            vals.append(val)
     #
     def get_list_value(self):
         is_odict = 0
@@ -1155,11 +1143,18 @@ class Loader:
             self.skip_comments()
             ch = current_char(self)
         
+        if self.eof:
+            if is_odict:
+                errors.error_unexpected_end_odict(self)
+            else:    
+                errors.error_unexpected_end_list(self)
+        
         if ch == ']':
             skip_char(self)
             self.bs -= 1
             return []
-        elif ch == ':':
+        
+        if ch == ':':
             ch = next_char(self)
             if ch == ']':
                 skip_char(self)
@@ -1167,12 +1162,7 @@ class Loader:
                 return c_new_odict([])
             else:
                 errors.error(self, "Invalid empty ordered dict")
-        elif ch == '\0':
-            if is_odict:
-                errors.error_unexpected_end_odict(self)
-            else:    
-                errors.error_unexpected_end_list(self)
-        
+                
         val = self.get_keyval_or_value()        
         if type(val) is KeyVal:
             is_odict = 1
@@ -1184,6 +1174,12 @@ class Loader:
         ch = self.skip_spaces()
 
         while 1:
+            if self.eof:
+                if is_odict:
+                    errors.error_unexpected_end_odict(self)
+                else:    
+                    errors.error_unexpected_end_list(self)
+
             if ch == '#':
                 self.skip_comments()
                 ch = current_char(self)
@@ -1195,16 +1191,11 @@ class Loader:
                     return mapping
                 else:
                     return sequence
-            elif ch == '\0':
-                if is_odict:
-                    errors.error_unexpected_end_odict(self)
-                else:    
-                    errors.error_unexpected_end_list(self)
+
+            if is_odict:
+                self.get_keyval_odict(mapping)
             else:
-                if is_odict:
-                    self.get_keyval_odict(mapping)
-                else:
-                    sequence.append(self.get_value(0, 0))
+                sequence.append(self.get_value(0, 0))
                 
             ch = self.skip_spaces()
     #
@@ -1218,16 +1209,17 @@ class Loader:
             if ch == '#':
                 self.skip_comments()
                 ch = current_char(self)
+
+            if self.eof:
+                errors.error_unexpected_end_tuple(self)
         
             if ch == ')':
                 skip_char(self)
                 self.bq -= 1
                 return tuple(sequence)
-            elif ch == '\0':
-                errors.error_unexpected_end_tuple(self)
-            else:
-                val = self.get_value(0, 0)
-                sequence.append(val)
+
+            val = self.get_value(0, 0)
+            sequence.append(val)
 
             ch = self.skip_spaces()
     #
@@ -1240,22 +1232,23 @@ class Loader:
         if ch == '#':
             self.skip_comments()
             ch = current_char(self)
+
+        if self.eof:
+            errors.error_unexpected_end_list(self)
         
         if ch == '}':
             skip_char(self)
             self.bc -= 1
             return {}
-        elif ch == '\0':
-            errors.error_unexpected_end_list(self)
-        else:        
-            val = self.get_keyval_or_value()
-            if type(val) is KeyVal:
-                is_dict = 1
-                keyval = val
-                mapping = {}
-                mapping[keyval.key] = keyval.val
-            else:
-                sequence = {val}
+
+        val = self.get_keyval_or_value()
+        if type(val) is KeyVal:
+            is_dict = 1
+            keyval = val
+            mapping = {}
+            mapping[keyval.key] = keyval.val
+        else:
+            sequence = {val}
         
         ch = self.skip_spaces()
 
@@ -1263,6 +1256,9 @@ class Loader:
             if ch == '#':
                 self.skip_comments()
                 ch = current_char(self)
+
+            if self.eof:
+                errors.error_unexpected_end_list(self)
                 
             if ch == '}':
                 skip_char(self)
@@ -1271,17 +1267,15 @@ class Loader:
                     return mapping
                 else:
                     return sequence
-            elif ch == '\0':
-                errors.error_unexpected_end_list(self)
+
+            if is_dict:
+                self.get_keyval_dict(mapping)
             else:
-                if is_dict:
-                    self.get_keyval_dict(mapping)
-                else:
-                    val = self.get_value(0, 0)
-                    if type(val) is KeyVal:
-                        errors.error(self, "Invalid set item")
-                    else:
-                        sequence.add(val)
+                val = self.get_value(0, 0)
+                # if type(val) is KeyVal:
+                #     errors.error(self, "Invalid set item")
+                # else:
+                sequence.add(val)
 
             ch = self.skip_spaces()
     #
