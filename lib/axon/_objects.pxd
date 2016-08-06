@@ -294,7 +294,7 @@ cdef public class SimpleBuilder[type SimpleBuilderType, object SimpleBuilder]:
     cdef object create_time(self, int h, int m, int s, int ms, object tz)
     cdef object create_timedelta(self, int d, int s, int ms)
     cdef object create_date(self, int y, int m, int d)
-    cdef object create_datetime(self, int y, int M, int d, 
+    cdef object create_datetime(self, int y, int M, int d,
                                        int h, int m, int s, int ms, object tz)
     cdef object create_tzinfo(self, int minutes)
     cdef object create_inf(self)

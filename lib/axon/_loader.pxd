@@ -130,7 +130,7 @@ cdef class Loader:
     # @cython.locals(ch=Py_UCS4)
     # cdef inline Py_UCS4 moveto_next_token(Loader self) except -1
 
-    @cython.locals(ch=Py_UCS4)
+    @cython.locals(ch=Py_UCS4, prev_ch=Py_UCS4)
     cdef inline Py_UCS4 skip_spaces(Loader self)
 
     @cython.locals(ch=Py_UCS4, prev_ch=Py_UCS4)

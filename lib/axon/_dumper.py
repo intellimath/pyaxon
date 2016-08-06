@@ -138,9 +138,6 @@ reduce_dict = c_reduce_dict
 #############################################################################
 #
 
-
-#import datetime
-
 class PyPointer:
     pass
 

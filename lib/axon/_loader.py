@@ -828,7 +828,7 @@ class Loader:
             return val
 
         if ch == '-':
-            ch = self.line[self.pos+1]
+            ch = c_unicode_char(self.line, self.pos+1)
             if ch.isdigit():
                 return self.get_number()
             else:
